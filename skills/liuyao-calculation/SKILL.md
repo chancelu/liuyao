@@ -42,7 +42,7 @@ When working on 习题、答案卷、教学材料, first identify the task type:
    - If possible: timing clues and uncertainty notes
 9. If the user is giving a worksheet / answer sheet / study pack, read `references/answer-calibration.md` before answering.
 10. If the task is mainly 象法, read `references/xiangfa-patterns.md`.
-11. If the task is mainly 应期, read `references/timing-patterns.md` and explicitly state 病因 → 解法 → 时间点.
+11. If the task is mainly 应期, read `references/timing-patterns.md` and `references/timing-priority-rules.md`, then explicitly state 病因 → 解法 → 时间点.
 
 ## Output rules
 
@@ -62,6 +62,7 @@ When working on 习题、答案卷、教学材料, first identify the task type:
 - 题卷/答案卷校准: `references/answer-calibration.md`
 - 象法补强: `references/xiangfa-patterns.md`
 - 应期模板: `references/timing-patterns.md`
+- 应期优先级: `references/timing-priority-rules.md`
 - Hard-to-parse charts converted to text: `references/graphic-relations.md`
 - Source map back to the four PDFs: `references/source-index.md`
 

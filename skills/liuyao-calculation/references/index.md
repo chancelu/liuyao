@@ -47,6 +47,7 @@
 
 ### 我主要卡在应期
 - `timing-patterns.md`
+- `timing-priority-rules.md`
 
 ## 关键索引词
 

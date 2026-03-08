@@ -2,10 +2,11 @@
 
 ## 本次升级
 
-新增三份参考：
+新增四份参考：
 - `answer-calibration.md`
 - `xiangfa-patterns.md`
 - `timing-patterns.md`
+- `timing-priority-rules.md`
 
 并在 `SKILL.md` 中加入：
 - 先判题型
