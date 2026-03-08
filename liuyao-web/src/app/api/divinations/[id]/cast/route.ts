@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { buildMockResult } from '@/lib/mock-divination';
-import { getDivinationRecord, saveCastRecord } from '@/lib/mock-db';
+import { getRepository } from '@/lib/repository';
 import type { ApiResponse, SubmitCastRequest, SubmitCastResponse } from '@/lib/api/types';
 import type { CastRecord } from '@/lib/types';
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
-  const record = getDivinationRecord(id);
+  const repo = await getRepository();
+  const record = await repo.getById(id);
 
   if (!record) {
     return NextResponse.json<ApiResponse<SubmitCastResponse>>(
@@ -38,7 +39,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     lines: body.lines,
   });
 
-  saveCastRecord(id, cast, result);
+  await repo.saveCast(id, cast, result);
 
   return NextResponse.json<ApiResponse<SubmitCastResponse>>({
     success: true,

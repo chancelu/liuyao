@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { saveDraftRecord } from '@/lib/mock-db';
+import { getRepository } from '@/lib/repository';
 import type { ApiResponse, CreateDivinationRequest, CreateDivinationResponse } from '@/lib/api/types';
 import type { DivinationDraft } from '@/lib/types';
 
@@ -23,7 +23,8 @@ export async function POST(request: Request) {
     createdAt: new Date().toISOString(),
   };
 
-  saveDraftRecord(draft);
+  const repo = await getRepository();
+  await repo.saveDraft(draft);
 
   return NextResponse.json<ApiResponse<CreateDivinationResponse>>({
     success: true,
