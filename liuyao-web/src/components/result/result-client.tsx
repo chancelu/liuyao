@@ -1,0 +1,82 @@
+'use client';
+
+import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { getMessages } from '@/lib/i18n';
+import type { MockResult } from '@/lib/types';
+
+const messages = getMessages();
+
+export function ResultClient({ id }: { id: string }) {
+  const router = useRouter();
+  const result = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+
+    const raw = localStorage.getItem(`liuyao.result.${id}`);
+    if (!raw) return null;
+
+    try {
+      return JSON.parse(raw) as MockResult;
+    } catch {
+      return null;
+    }
+  }, [id]);
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-8">
+      <div className="space-y-3">
+        <div className="text-xs tracking-[0.3em] text-stone-400 uppercase">Result #{id}</div>
+        <h1 className="text-4xl text-stone-50">{messages.result.title}</h1>
+        <p className="text-sm leading-7 text-stone-300/78">第一屏先给排盘，再给初步结论，后面再展开白话与专业分析。</p>
+      </div>
+
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="rounded-[32px] border border-white/10 bg-white/5 p-8">
+          <div className="mb-5 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.chartTitle}</div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-[24px] border border-white/8 bg-black/15 p-5">
+              <div className="text-xs text-stone-400">本卦</div>
+              <div className="mt-2 text-2xl text-stone-100">{result?.primaryHexagram ?? '待生成'}</div>
+            </div>
+            <div className="rounded-[24px] border border-white/8 bg-black/15 p-5">
+              <div className="text-xs text-stone-400">变卦</div>
+              <div className="mt-2 text-2xl text-stone-100">{result?.changedHexagram ?? '待生成'}</div>
+            </div>
+          </div>
+          <div className="mt-6 rounded-[24px] border border-white/8 bg-black/15 p-5 text-sm leading-7 text-stone-300">
+            动爻：{result?.movingLines.length ? `第 ${result.movingLines.join('、')} 爻` : '当前示意为静卦'} ｜ 世应 / 月建 / 日辰 / 旬空：下一步接入真实排盘引擎
+          </div>
+        </div>
+        <div className="rounded-[32px] border border-emerald-100/12 bg-emerald-100/6 p-8">
+          <div className="mb-5 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.summaryTitle}</div>
+          <div className="space-y-4">
+            <div className="text-2xl leading-relaxed text-stone-50">{result?.summary ?? '正在等待真实结果。'}</div>
+            <p className="text-sm leading-7 text-stone-200/85">{result?.question ?? '这里会展示当前这次问题。'}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-2">
+        <div className="rounded-[28px] border border-white/10 bg-white/5 p-8">
+          <div className="mb-4 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.plainTitle}</div>
+          <p className="text-sm leading-8 text-stone-300">{result?.plainAnalysis ?? '白话分析会在接入真实 analysis service 后替换。'}</p>
+        </div>
+        <div className="rounded-[28px] border border-white/10 bg-white/5 p-8">
+          <div className="mb-4 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.professionalTitle}</div>
+          <p className="text-sm leading-8 text-stone-300">{result?.professionalAnalysis ?? '专业版会展开用神、旺衰、动变、世应、象法与应期。'}</p>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-3 sm:flex-row">
+        <button className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-sm text-white hover:bg-emerald-100/15">{messages.result.save}</button>
+        <button className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20">{messages.result.share}</button>
+        <button
+          className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20"
+          onClick={() => router.push('/cast')}
+        >
+          {messages.result.restart}
+        </button>
+      </section>
+    </div>
+  );
+}
