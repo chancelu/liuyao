@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
-import { createDraft, getTrialState } from '@/services/divination-service';
+import { buildCreateDivinationPayload, createDivinationFlow } from '@/services/divination-api';
 import type { Category, TimeScope } from '@/lib/types';
 
 const messages = getMessages();
@@ -35,6 +35,7 @@ export function AskForm() {
   const [timeScope, setTimeScope] = useState<TimeScope>('recent');
   const [background, setBackground] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const canSubmit = useMemo(() => question.trim().length >= 4, [question]);
 
   const fillExample = (example: string) => {
@@ -42,28 +43,35 @@ export function AskForm() {
     setError('');
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!canSubmit) {
       setError('先把问题写得更具体一点，再开始摇卦。');
       return;
     }
 
-    const trial = getTrialState();
-    if (trial.freeTrialUsed) {
-      setError('游客当前只支持体验一次。下一步接入登录后，这里会引导注册继续使用。');
+    setIsSubmitting(true);
+    setError('');
+
+    const id = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `div-${Date.now()}`;
+    const response = await createDivinationFlow(
+      buildCreateDivinationPayload({
+        id,
+        question: question.trim(),
+        category,
+        timeScope,
+        background: background.trim(),
+        locale: 'zh-CN',
+      }),
+    );
+
+    setIsSubmitting(false);
+
+    if (!response.ok) {
+      setError(response.error);
       return;
     }
 
-    const draft = createDraft({
-      id: typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `div-${Date.now()}`,
-      question: question.trim(),
-      category,
-      timeScope,
-      background: background.trim(),
-      locale: 'zh-CN',
-    });
-
-    router.push(`/cast/ritual?id=${draft.id}`);
+    router.push(`/cast/ritual?id=${response.draft.id}`);
   };
 
   return (
@@ -146,9 +154,9 @@ export function AskForm() {
           type="button"
           onClick={onSubmit}
           className="inline-flex rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-sm text-white transition hover:bg-emerald-100/15 disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={!canSubmit}
+          disabled={!canSubmit || isSubmitting}
         >
-          {messages.ask.submit}
+          {isSubmitting ? '正在进入摇卦…' : messages.ask.submit}
         </button>
       </div>
     </div>

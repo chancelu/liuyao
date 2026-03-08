@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { getCurrentDraft, getOrCreateGuestSession } from '@/lib/storage/draft-storage';
-import { submitCast } from '@/services/divination-service';
+import { submitCastFlow } from '@/services/divination-api';
 import type { CastLine, DivinationDraft } from '@/lib/types';
 
 const messages = getMessages();
@@ -23,6 +23,7 @@ export function RitualClient() {
   const [lines, setLines] = useState<CastLine[]>([]);
   const [lastLabel, setLastLabel] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const draft: DivinationDraft | null = useMemo(() => {
     const parsed = getCurrentDraft();
@@ -55,7 +56,7 @@ export function RitualClient() {
     setError('');
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!draft) {
       setError('没有找到当前问题，请先回到起卦页。');
       return;
@@ -66,7 +67,16 @@ export function RitualClient() {
       return;
     }
 
-    submitCast(lines);
+    setIsSubmitting(true);
+    setError('');
+    const response = await submitCastFlow(lines);
+    setIsSubmitting(false);
+
+    if (!response.ok) {
+      setError(response.error);
+      return;
+    }
+
     router.push(`/cast/processing?id=${draft.id}`);
   };
 
@@ -109,7 +119,7 @@ export function RitualClient() {
             <button
               className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-sm text-white hover:bg-emerald-100/15 disabled:cursor-not-allowed disabled:opacity-50"
               onClick={handleCast}
-              disabled={isComplete}
+              disabled={isComplete || isSubmitting}
             >
               {isComplete ? messages.cast.completed : messages.cast.cta}
             </button>
@@ -119,9 +129,10 @@ export function RitualClient() {
           </div>
           <button
             onClick={handleContinue}
-            className="text-sm text-stone-400 underline-offset-4 hover:text-stone-200 hover:underline"
+            className="text-sm text-stone-400 underline-offset-4 hover:text-stone-200 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isSubmitting}
           >
-            生成排盘与结果
+            {isSubmitting ? '正在生成排盘…' : '生成排盘与结果'}
           </button>
           {error ? <div className="text-sm text-amber-200">{error}</div> : null}
         </div>

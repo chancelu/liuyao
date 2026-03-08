@@ -1,25 +1,32 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
+import { getDivinationResultFlow } from '@/services/divination-api';
 import type { MockResult } from '@/lib/types';
 
 const messages = getMessages();
 
 export function ResultClient({ id }: { id: string }) {
   const router = useRouter();
-  const result = useMemo(() => {
-    if (typeof window === 'undefined') return null;
+  const [result, setResult] = useState<MockResult | null>(null);
 
-    const raw = localStorage.getItem(`liuyao.result.${id}`);
-    if (!raw) return null;
+  useEffect(() => {
+    let cancelled = false;
 
-    try {
-      return JSON.parse(raw) as MockResult;
-    } catch {
-      return null;
+    async function load() {
+      const next = await getDivinationResultFlow(id);
+      if (!cancelled) {
+        setResult(next);
+      }
     }
+
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   return (
