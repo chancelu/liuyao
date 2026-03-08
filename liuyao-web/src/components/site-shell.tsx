@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { getMessages } from '@/lib/i18n';
 import { AuthNav } from '@/components/auth/auth-nav';
@@ -21,7 +22,9 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               {messages.home.primaryCta}
             </Link>
             <Link href="/history" className="hover:text-white">历史记录</Link>
-            <AuthNav />
+            <Suspense fallback={<Link href="/login" className="rounded-full border border-white/10 px-4 py-2 text-sm text-stone-300 transition hover:border-emerald-200/30 hover:text-white">登录</Link>}>
+              <AuthNav />
+            </Suspense>
           </nav>
         </header>
         <main className="flex-1">{children}</main>

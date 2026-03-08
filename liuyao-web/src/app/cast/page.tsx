@@ -1,4 +1,6 @@
 import { Suspense } from 'react';
+
+export const dynamic = 'force-dynamic';
 import { SiteShell } from '@/components/site-shell';
 import { getMessages } from '@/lib/i18n';
 import { AskForm } from '@/components/cast/ask-form';

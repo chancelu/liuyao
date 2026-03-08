@@ -1,4 +1,6 @@
 import { Suspense } from 'react';
+
+export const dynamic = 'force-dynamic';
 import { SiteShell } from '@/components/site-shell';
 import { ProcessingClient } from '@/components/cast/processing-client';
 

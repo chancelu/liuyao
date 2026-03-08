@@ -1,4 +1,6 @@
 import { Suspense } from 'react';
+
+export const dynamic = 'force-dynamic';
 import { SiteShell } from '@/components/site-shell';
 import { RitualClient } from '@/components/cast/ritual-client';
 

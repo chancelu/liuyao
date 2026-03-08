@@ -8,11 +8,15 @@ interface Props {
   onSuccess?: () => void;
   /** 预设错误信息（如来自 URL query） */
   initialError?: string;
+  /** 登录成功后的返回路径 */
+  initialNext?: string;
+  /** 返回路径的人类可读说明 */
+  nextLabel?: string;
 }
 
 type Step = 'input' | 'sent';
 
-export function MagicLinkForm({ onSuccess, initialError }: Props) {
+export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel }: Props) {
   const [email, setEmail] = useState('');
   const [step, setStep] = useState<Step>('input');
   const [busy, setBusy] = useState(false);
@@ -24,7 +28,7 @@ export function MagicLinkForm({ onSuccess, initialError }: Props) {
     setBusy(true);
     setError(null);
 
-    const result = await sendMagicLink(email.trim());
+    const result = await sendMagicLink(email.trim(), initialNext);
     setBusy(false);
 
     if (result.success) {
@@ -45,6 +49,11 @@ export function MagicLinkForm({ onSuccess, initialError }: Props) {
         <p className="text-xs text-stone-400">
           请查收邮件并点击登录链接。链接 10 分钟内有效，若未收到请检查垃圾邮件文件夹。
         </p>
+        {initialNext ? (
+          <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-left text-xs leading-6 text-stone-300">
+            登录完成后会自动返回：<span className="text-stone-100">{nextLabel ?? initialNext}</span>
+          </div>
+        ) : null}
         <button
           type="button"
           onClick={() => { setStep('input'); setError(null); }}
@@ -79,6 +88,12 @@ export function MagicLinkForm({ onSuccess, initialError }: Props) {
           {error}
         </p>
       )}
+
+      {initialNext ? (
+        <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-6 text-stone-300">
+          登录后会自动返回：<span className="text-stone-100">{nextLabel ?? initialNext}</span>
+        </div>
+      ) : null}
 
       <button
         type="submit"

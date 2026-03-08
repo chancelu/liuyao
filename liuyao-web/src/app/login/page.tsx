@@ -1,4 +1,6 @@
 import { Suspense } from 'react';
+
+export const dynamic = 'force-dynamic';
 import { SiteShell } from '@/components/site-shell';
 import { LoginContent } from './login-content';
 
@@ -10,7 +12,7 @@ export default function LoginPage() {
           <div className="text-xs tracking-[0.3em] text-stone-400 uppercase">Account</div>
           <h1 className="text-3xl text-stone-50">登录 / 注册</h1>
           <p className="text-sm leading-7 text-stone-300/80">
-            输入邮箱，我们将发送一封免密登录链接。
+            输入邮箱，我们将发送一封免密登录链接。登录后会自动回到你刚才的页面，不用重新找入口。
           </p>
         </div>
         <div className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur">

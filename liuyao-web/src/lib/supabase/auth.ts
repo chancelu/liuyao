@@ -19,9 +19,9 @@ export interface AuthResult {
 
 /**
  * 发送 Magic Link 到指定邮箱。
- * 用户点击邮件链接后由 /api/auth/callback 完成会话交换。
+ * 用户点击邮件链接后回到 /login，由浏览器端 Supabase client 接管会话恢复。
  */
-export async function sendMagicLink(email: string): Promise<AuthResult> {
+export async function sendMagicLink(email: string, next?: string): Promise<AuthResult> {
   let client;
   try {
     client = getSupabaseBrowserClient();
@@ -29,12 +29,18 @@ export async function sendMagicLink(email: string): Promise<AuthResult> {
     return { success: false, message: '账号系统暂未开放，请稍后再试。' };
   }
 
-  const redirectTo =
+  const redirectBase =
     typeof window !== 'undefined'
-      ? `${window.location.origin}/api/auth/callback`
+      ? `${window.location.origin}/login`
       : process.env.NEXT_PUBLIC_SITE_URL
-        ? `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`
+        ? `${process.env.NEXT_PUBLIC_SITE_URL}/login`
         : undefined;
+
+  const redirectTo = redirectBase
+    ? next
+      ? `${redirectBase}?next=${encodeURIComponent(next)}`
+      : redirectBase
+    : undefined;
 
   const { error } = await client.auth.signInWithOtp({
     email,
