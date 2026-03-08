@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
+import { getUser } from '@/lib/supabase/auth';
 import { getDivinationResultFlow } from '@/services/divination-api';
 import type { MockResult } from '@/lib/types';
 
@@ -11,14 +13,17 @@ const messages = getMessages();
 export function ResultClient({ id }: { id: string }) {
   const router = useRouter();
   const [result, setResult] = useState<MockResult | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const loginHref = useMemo(() => `/login?next=${encodeURIComponent(`/result/${id}`)}`, [id]);
 
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
-      const next = await getDivinationResultFlow(id);
+      const [next, user] = await Promise.all([getDivinationResultFlow(id), getUser()]);
       if (!cancelled) {
         setResult(next);
+        setIsAuthenticated(Boolean(user));
       }
     }
 
@@ -74,15 +79,34 @@ export function ResultClient({ id }: { id: string }) {
         </div>
       </section>
 
-      <section className="flex flex-col gap-3 sm:flex-row">
-        <button className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-sm text-white hover:bg-emerald-100/15">{messages.result.save}</button>
-        <button className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20">{messages.result.share}</button>
-        <button
-          className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20"
-          onClick={() => router.push('/cast')}
-        >
-          {messages.result.restart}
-        </button>
+      <section className="space-y-4">
+        {!isAuthenticated ? (
+          <div className="rounded-[24px] border border-amber-200/15 bg-amber-100/5 p-5 text-sm leading-7 text-stone-300">
+            这次结果已经可以继续阅读；如果你想下次回来接着看，先登录即可，系统会自动带你回到当前结果页。
+          </div>
+        ) : null}
+
+        <div className="flex flex-col gap-3 sm:flex-row">
+          {isAuthenticated ? (
+            <button className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-sm text-white hover:bg-emerald-100/15">
+              {messages.result.save}
+            </button>
+          ) : (
+            <Link
+              href={loginHref}
+              className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-center text-sm text-white transition hover:bg-emerald-100/15"
+            >
+              登录后回到这条结果
+            </Link>
+          )}
+          <button className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20">{messages.result.share}</button>
+          <button
+            className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20"
+            onClick={() => router.push('/cast')}
+          >
+            {messages.result.restart}
+          </button>
+        </div>
       </section>
     </div>
   );
