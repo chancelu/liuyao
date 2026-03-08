@@ -3,8 +3,9 @@
 import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
-import { buildMockResult } from '@/lib/mock-divination';
-import type { CastLine, CastRecord, DivinationDraft } from '@/lib/types';
+import { getCurrentDraft, getOrCreateGuestSession } from '@/lib/storage/draft-storage';
+import { submitCast } from '@/services/divination-service';
+import type { CastLine, DivinationDraft } from '@/lib/types';
 
 const messages = getMessages();
 const CAST_OPTIONS: CastLine[] = ['old_yin', 'young_yin', 'young_yang', 'old_yang'];
@@ -24,22 +25,15 @@ export function RitualClient() {
   const [error, setError] = useState('');
 
   const draft: DivinationDraft | null = useMemo(() => {
-    if (typeof window === 'undefined') return null;
-
-    const raw = localStorage.getItem('liuyao.currentDraft');
-    if (!raw) return null;
-
-    try {
-      const parsed = JSON.parse(raw) as DivinationDraft;
-      if (id && parsed.id === id) return parsed;
-      return parsed;
-    } catch {
-      return null;
-    }
+    const parsed = getCurrentDraft();
+    if (!parsed) return null;
+    if (id && parsed.id === id) return parsed;
+    return parsed;
   }, [id]);
 
   const nextLineNumber = lines.length + 1;
   const isComplete = lines.length === 6;
+  const trialState = useMemo(() => getOrCreateGuestSession(), []);
 
   const handleCast = () => {
     if (!draft) {
@@ -72,23 +66,7 @@ export function RitualClient() {
       return;
     }
 
-    const castRecord: CastRecord = {
-      divinationId: draft.id,
-      lines,
-      updatedAt: new Date().toISOString(),
-    };
-
-    const result = buildMockResult({
-      id: draft.id,
-      question: draft.question,
-      category: draft.category,
-      timeScope: draft.timeScope,
-      background: draft.background,
-      lines,
-    });
-
-    localStorage.setItem('liuyao.currentCast', JSON.stringify(castRecord));
-    localStorage.setItem(`liuyao.result.${draft.id}`, JSON.stringify(result));
+    submitCast(lines);
     router.push(`/cast/processing?id=${draft.id}`);
   };
 
@@ -98,6 +76,7 @@ export function RitualClient() {
         <div className="text-xs tracking-[0.3em] text-stone-400 uppercase">Ritual</div>
         <h1 className="text-4xl leading-tight text-stone-50">{messages.cast.title}</h1>
         <p className="text-sm leading-7 text-stone-300/78">{draft?.question ?? messages.cast.subtitle}</p>
+        <div className="text-xs text-stone-500">游客会话：{trialState.id}</div>
         <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 text-sm leading-7 text-stone-300">
           <div className="mb-3 text-xs tracking-[0.2em] text-stone-500 uppercase">Progress</div>
           {messages.cast.progress.replace('{current}', String(Math.min(nextLineNumber, 6)))}

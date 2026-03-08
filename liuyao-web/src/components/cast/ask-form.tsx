@@ -3,7 +3,8 @@
 import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
-import type { Category, DivinationDraft, TimeScope } from '@/lib/types';
+import { createDraft, getTrialState } from '@/services/divination-service';
+import type { Category, TimeScope } from '@/lib/types';
 
 const messages = getMessages();
 
@@ -23,14 +24,6 @@ const timeScopes: Array<{ value: TimeScope; label: string }> = [
   { value: 'this_year', label: '本年' },
   { value: 'unspecified', label: '未限定' },
 ];
-
-function createId() {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-    return crypto.randomUUID();
-  }
-
-  return `div-${Date.now()}`;
-}
 
 export function AskForm() {
   const router = useRouter();
@@ -55,17 +48,21 @@ export function AskForm() {
       return;
     }
 
-    const draft: DivinationDraft = {
-      id: createId(),
+    const trial = getTrialState();
+    if (trial.freeTrialUsed) {
+      setError('游客当前只支持体验一次。下一步接入登录后，这里会引导注册继续使用。');
+      return;
+    }
+
+    const draft = createDraft({
+      id: typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `div-${Date.now()}`,
       question: question.trim(),
       category,
       timeScope,
       background: background.trim(),
       locale: 'zh-CN',
-      createdAt: new Date().toISOString(),
-    };
+    });
 
-    localStorage.setItem('liuyao.currentDraft', JSON.stringify(draft));
     router.push(`/cast/ritual?id=${draft.id}`);
   };
 
