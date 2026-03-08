@@ -39,6 +39,15 @@
 ### 我想从头到尾做一次完整判断
 - `calculation-workflow.md`
 
+### 我在刷题 / 批改答案 / 校准断法
+- `answer-calibration.md`
+
+### 我主要卡在象法细节
+- `xiangfa-patterns.md`
+
+### 我主要卡在应期
+- `timing-patterns.md`
+
 ## 关键索引词
 
 - 阴阳 / 五行 / 生克 / 乘侮

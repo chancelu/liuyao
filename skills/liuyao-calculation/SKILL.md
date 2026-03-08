@@ -7,7 +7,9 @@ description: Calculate, structure, and interpret Liuyao (六爻) divination usin
 
 ## Overview
 
-Use this skill to turn Liuyao questions into a consistent calculation pipeline instead of loose intuition. Prefer explicit structure: 先定问题 → 起卦/读卦 → 装卦 → 标参数 → 取用神 → 看动静旺衰 → 再下判断.
+Use this skill to turn Liuyao questions into a consistent calculation pipeline instead of loose intuition. Prefer explicit structure: 先定问题 → 起卦/读卦 → 装卦 → 标参数 → 取用神 → 看动静旺衰 → 再下判断。
+
+When working on 习题、答案卷、教学材料, first identify the task type: 取用神 / 旺衰 / 象法 / 应期. Do not answer a narrow题型 with an over-broad断法.
 
 ## Workflow
 
@@ -38,6 +40,9 @@ Use this skill to turn Liuyao questions into a consistent calculation pipeline i
    - 卦面关键结构
    - 吉凶/成败/倾向
    - If possible: timing clues and uncertainty notes
+9. If the user is giving a worksheet / answer sheet / study pack, read `references/answer-calibration.md` before answering.
+10. If the task is mainly 象法, read `references/xiangfa-patterns.md`.
+11. If the task is mainly 应期, read `references/timing-patterns.md` and explicitly state 病因 → 解法 → 时间点.
 
 ## Output rules
 
@@ -54,6 +59,9 @@ Use this skill to turn Liuyao questions into a consistent calculation pipeline i
 - 装卦 details: `references/gua-setup.md`
 - 基础参数: `references/base-parameters.md`
 - 取用神 and advanced 用神 cases: `references/yongshen.md`
+- 题卷/答案卷校准: `references/answer-calibration.md`
+- 象法补强: `references/xiangfa-patterns.md`
+- 应期模板: `references/timing-patterns.md`
 - Hard-to-parse charts converted to text: `references/graphic-relations.md`
 - Source map back to the four PDFs: `references/source-index.md`
 
