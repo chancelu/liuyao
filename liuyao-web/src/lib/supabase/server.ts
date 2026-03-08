@@ -17,3 +17,22 @@ export function getSupabaseServerClient() {
     },
   });
 }
+
+/**
+ * 服务端 Supabase 客户端（使用 anon key）。
+ * 用于 auth callback 等需要代表用户完成 code exchange 的场景。
+ * 若环境变量未配置则返回 null。
+ */
+export function getSupabaseAnonServerClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) return null;
+
+  return createClient(url, key, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getMessages } from '@/lib/i18n';
+import { AuthNav } from '@/components/auth/auth-nav';
 
 const messages = getMessages();
 
@@ -20,6 +21,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               {messages.home.primaryCta}
             </Link>
             <Link href="/history" className="hover:text-white">历史记录</Link>
+            <AuthNav />
           </nav>
         </header>
         <main className="flex-1">{children}</main>
