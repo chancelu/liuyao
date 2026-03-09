@@ -202,10 +202,22 @@ export class SupabaseDivinationRepository implements IDivinationRepository {
           cast: null,
           result: readingRow ? rowToResult(divRow, readingRow) : null,
           savedByUserId: userId,
+          isPublic: (divRow as DivinationRow & { is_public?: boolean }).is_public ?? false,
         };
       }),
     );
 
     return records;
+  }
+
+  async markPublic(divinationId: string): Promise<DivinationRecord | null> {
+    const { error } = await this.client
+      .from('divinations')
+      .update({ is_public: true })
+      .eq('id', divinationId);
+
+    if (error) throw new Error(`markPublic failed: ${error.message}`);
+
+    return this.getById(divinationId);
   }
 }

@@ -5,6 +5,7 @@ export interface DivinationRecord {
   cast: CastRecord | null;
   result: MockResult | null;
   savedByUserId?: string | null;
+  isPublic?: boolean;
 }
 
 /**
@@ -20,4 +21,6 @@ export interface IDivinationRepository {
   saveForUser(divinationId: string, userId: string): Promise<DivinationRecord | null>;
   /** 列出某用户保存的所有卦例（按创建时间倒序） */
   listByUser(userId: string): Promise<DivinationRecord[]>;
+  /** 将卦例标记为公开，允许通过分享链接访问 */
+  markPublic(divinationId: string): Promise<DivinationRecord | null>;
 }

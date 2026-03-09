@@ -5,6 +5,7 @@ import type {
   GetDivinationResponse,
   ListDivinationsResponse,
   SaveDivinationResponse,
+  ShareDivinationResponse,
   SubmitCastRequest,
   SubmitCastResponse,
 } from '@/lib/api/types';
@@ -67,4 +68,16 @@ export async function listDivinationsApi(accessToken: string) {
   });
 
   return parseJson<ListDivinationsResponse>(response);
+}
+
+export async function shareDivinationApi(id: string, accessToken: string) {
+  const response = await fetch(`/api/divinations/${id}/share`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  return parseJson<ShareDivinationResponse>(response);
 }

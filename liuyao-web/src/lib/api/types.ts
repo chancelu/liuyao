@@ -43,10 +43,15 @@ export interface GetDivinationResponse {
   draft: DivinationDraft;
   cast: CastRecord | null;
   result: MockResult | null;
+  isPublic: boolean;
 }
 
 export interface SaveDivinationResponse {
   saved: boolean;
+}
+
+export interface ShareDivinationResponse {
+  shareUrl: string;
 }
 
 export interface DivinationListItem {

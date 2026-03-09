@@ -73,4 +73,13 @@ export class MockDivinationRepository implements IDivinationRepository {
     const db = getDb();
     return ids.map((id) => db.get(id)).filter((r): r is DivinationRecord => r != null);
   }
+
+  async markPublic(divinationId: string): Promise<DivinationRecord | null> {
+    const db = getDb();
+    const existing = db.get(divinationId);
+    if (!existing) return null;
+    const record: DivinationRecord = { ...existing, isPublic: true };
+    db.set(divinationId, record);
+    return record;
+  }
 }

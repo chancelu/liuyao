@@ -98,4 +98,13 @@ class ResilientRepository implements IDivinationRepository {
       return this.fallback.listByUser(userId);
     }
   }
+
+  async markPublic(divinationId: string): Promise<DivinationRecord | null> {
+    try {
+      return await this.primary.markPublic(divinationId);
+    } catch (err) {
+      console.warn('[repository] markPublic fallback to mock:', (err as Error).message);
+      return this.fallback.markPublic(divinationId);
+    }
+  }
 }

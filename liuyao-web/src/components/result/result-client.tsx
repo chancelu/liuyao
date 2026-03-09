@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { getSession, getUser } from '@/lib/supabase/auth';
 import { getDivinationResultFlow } from '@/services/divination-api';
-import { saveDivinationApi } from '@/lib/api/client';
+import { getDivinationApi, saveDivinationApi, shareDivinationApi } from '@/lib/api/client';
 import type { MockResult } from '@/lib/types';
 
 const messages = getMessages();
@@ -17,6 +17,8 @@ export function ResultClient({ id }: { id: string }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [shareState, setShareState] = useState<'idle' | 'sharing' | 'copied' | 'error'>('idle');
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
   const loginHref = useMemo(() => `/login?next=${encodeURIComponent(`/result/${id}`)}`, [id]);
 
   useEffect(() => {
@@ -28,10 +30,21 @@ export function ResultClient({ id }: { id: string }) {
         getUser(),
         getSession(),
       ]);
-      if (!cancelled) {
-        setResult(next);
-        setIsAuthenticated(Boolean(user));
-        setAccessToken(session?.access_token ?? null);
+      if (cancelled) return;
+
+      setResult(next);
+      setIsAuthenticated(Boolean(user));
+      setAccessToken(session?.access_token ?? null);
+
+      // Check if already saved/shared by fetching record metadata
+      if (session?.access_token) {
+        const meta = await getDivinationApi(id);
+        if (!cancelled && meta.success) {
+          if (meta.data.isPublic) {
+            const url = `${window.location.origin}/share/${id}`;
+            setShareUrl(url);
+          }
+        }
       }
     }
 
@@ -47,6 +60,26 @@ export function ResultClient({ id }: { id: string }) {
     setSaveState('saving');
     const res = await saveDivinationApi(id, accessToken);
     setSaveState(res.success ? 'saved' : 'error');
+  }
+
+  async function handleShare() {
+    if (!accessToken) return;
+    setShareState('sharing');
+    const res = await shareDivinationApi(id, accessToken);
+    if (res.success) {
+      const url = res.data.shareUrl || `${window.location.origin}/share/${id}`;
+      setShareUrl(url);
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareState('copied');
+        setTimeout(() => setShareState('idle'), 3000);
+      } catch {
+        setShareState('idle');
+      }
+    } else {
+      setShareState('error');
+      setTimeout(() => setShareState('idle'), 3000);
+    }
   }
 
   return (
@@ -107,6 +140,36 @@ export function ResultClient({ id }: { id: string }) {
           </div>
         ) : null}
 
+        {saveState === 'saved' ? (
+          <div className="rounded-[24px] border border-emerald-300/15 bg-emerald-100/5 p-4 text-sm text-emerald-300">
+            已保存到记录。
+            <Link href="/history" className="ml-3 underline underline-offset-2 hover:text-emerald-200">
+              查看历史记录
+            </Link>
+          </div>
+        ) : null}
+
+        {shareState === 'error' ? (
+          <div className="rounded-[24px] border border-red-300/15 bg-red-100/5 p-4 text-sm text-red-300">
+            生成分享链接失败，请稍后重试。
+          </div>
+        ) : null}
+
+        {shareUrl && shareState !== 'copied' ? (
+          <div className="rounded-[24px] border border-stone-200/10 bg-white/4 p-4 text-sm text-stone-300">
+            分享链接：
+            <a href={shareUrl} target="_blank" rel="noreferrer" className="ml-2 break-all text-emerald-300 underline underline-offset-2 hover:text-emerald-200">
+              {shareUrl}
+            </a>
+          </div>
+        ) : null}
+
+        {shareState === 'copied' ? (
+          <div className="rounded-[24px] border border-emerald-300/15 bg-emerald-100/5 p-4 text-sm text-emerald-300">
+            分享链接已复制到剪贴板！
+          </div>
+        ) : null}
+
         <div className="flex flex-col gap-3 sm:flex-row">
           {isAuthenticated ? (
             <button
@@ -124,7 +187,19 @@ export function ResultClient({ id }: { id: string }) {
               登录后回到这条结果
             </Link>
           )}
-          <button className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20">{messages.result.share}</button>
+          {isAuthenticated ? (
+            <button
+              onClick={handleShare}
+              disabled={shareState === 'sharing'}
+              className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 transition hover:border-white/20 disabled:opacity-60"
+            >
+              {shareState === 'sharing' ? '生成中…' : shareState === 'copied' ? '已复制 ✓' : messages.result.share}
+            </button>
+          ) : (
+            <button className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200/50 cursor-not-allowed">
+              {messages.result.share}
+            </button>
+          )}
           <button
             className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20"
             onClick={() => router.push('/cast')}
@@ -136,4 +211,3 @@ export function ResultClient({ id }: { id: string }) {
     </div>
   );
 }
-

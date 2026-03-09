@@ -20,6 +20,7 @@ export async function GET(_: Request, context: { params: Promise<{ id: string }>
       draft: record.draft,
       cast: record.cast,
       result: record.result,
+      isPublic: record.isPublic ?? false,
     },
     error: null,
   });
