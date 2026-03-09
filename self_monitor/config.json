@@ -1,0 +1,15 @@
+{
+  "gateway_port": 18789,
+  "check_interval": 30,
+  "max_failures": 3,
+  "max_restarts_per_hour": 5,
+  "feishu": {
+    "app_id": "cli_a915b9f076f8dcd6",
+    "app_secret": "GvjKfuWeeODvyLou4DW6dfvJk7W6h6r7",
+    "user_open_id": "ou_05d339b48f79171bd3ed9cc0a67c9b15"
+  },
+  "telegram": {
+    "bot_token": "8703066911:AAEHgSkfSwLcseotgOCK9GkY2k8iTtcElu8",
+    "chat_id": "7191273728"
+  }
+}

@@ -1,0 +1,40 @@
+[Unit]
+Description=OpenClaw Guardian - Self-Monitoring and Auto-Recovery Service
+After=network.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=%USER%
+WorkingDirectory=%WORKSPACE%
+Environment=PYTHONPATH=%WORKSPACE%
+Environment=OPENCLAW_WORKSPACE=%WORKSPACE%
+Environment=LOG_LEVEL=INFO
+
+# 主守护进程
+ExecStart=%PYTHON% %WORKSPACE%/self_monitor/guardian.py
+
+# 健康检查
+ExecStartPost=/bin/sh -c 'sleep 5 && %PYTHON% %WORKSPACE%/self_monitor/health_check.py --quick-check'
+
+# 优雅停止
+ExecStop=/bin/kill -SIGTERM $MAINPID
+ExecStopPost=/bin/sh -c 'echo "OpenClaw Guardian stopped at $(date)" >> %WORKSPACE%/logs/guardian-events.log'
+
+# 重启策略
+Restart=on-failure
+RestartSec=10
+
+# 资源限制
+MemoryLimit=1G
+CPUQuota=50%
+
+# 安全设置
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=%WORKSPACE%/logs %WORKSPACE%/data %WORKSPACE%/config
+
+[Install]
+WantedBy=multi-user.target

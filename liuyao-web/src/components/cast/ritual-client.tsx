@@ -16,6 +16,8 @@ const CAST_LABELS: Record<CastLine, string> = {
   old_yang: '老阳',
 };
 
+const YAO_NAMES = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
+
 export function RitualClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -81,60 +83,114 @@ export function RitualClient() {
   };
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:items-center">
-      <div className="space-y-4">
-        <div className="text-xs tracking-[0.3em] text-stone-400 uppercase">Ritual</div>
-        <h1 className="text-4xl leading-tight text-stone-50">{messages.cast.title}</h1>
-        <p className="text-sm leading-7 text-stone-300/78">{draft?.question ?? messages.cast.subtitle}</p>
-        <div className="text-xs text-stone-500">游客会话：{trialState.id}</div>
-        <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 text-sm leading-7 text-stone-300">
-          <div className="mb-3 text-xs tracking-[0.2em] text-stone-500 uppercase">Progress</div>
-          {messages.cast.progress.replace('{current}', String(Math.min(nextLineNumber, 6)))}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div
-                key={index}
-                className={`rounded-full px-3 py-1 text-xs ${index < lines.length ? 'bg-emerald-100/12 text-emerald-50' : 'bg-white/5 text-stone-500'}`}
-              >
-                第 {index + 1} 爻
-              </div>
-            ))}
+    <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.65fr_1.35fr] lg:items-start">
+      {/* Left — Info & Progress */}
+      <div className="animate-fade-in-up space-y-6">
+        <div className="text-xs tracking-[0.35em] text-[var(--text-dim)] uppercase">Ritual</div>
+        <h1 className="text-4xl leading-tight font-light tracking-wide text-[var(--moon-silver)]">
+          {messages.cast.title}
+        </h1>
+        <p className="text-sm leading-8 text-[var(--text-muted)]">
+          {draft?.question ?? messages.cast.subtitle}
+        </p>
+        <div className="text-xs text-[var(--text-dim)]">会话：{trialState.id}</div>
+
+        {/* Progress Panel */}
+        <div className="card-glass rounded-[22px] p-6">
+          <div className="mb-4 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">Progress</div>
+          <div className="mb-5 text-sm text-[var(--moon-silver-soft)]">
+            {messages.cast.progress.replace('{current}', String(Math.min(nextLineNumber, 6)))}
+          </div>
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 6 }).map((_, index) => {
+              const isDone = index < lines.length;
+              const isCurrent = index === lines.length;
+              return (
+                <div
+                  key={index}
+                  className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-xs transition-all duration-300 ${
+                    isDone
+                      ? 'border border-[rgba(122,173,160,0.15)] bg-[rgba(122,173,160,0.06)] text-[var(--jade-cyan)]'
+                      : isCurrent
+                        ? 'border border-[rgba(200,205,216,0.15)] bg-[rgba(200,205,216,0.04)] text-[var(--moon-silver)]'
+                        : 'border border-transparent text-[var(--text-dim)]'
+                  }`}
+                >
+                  <div
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      isDone
+                        ? 'bg-[var(--jade-cyan)]'
+                        : isCurrent
+                          ? 'animate-gentle-pulse bg-[var(--moon-silver)]'
+                          : 'bg-[var(--text-dim)]'
+                    }`}
+                  />
+                  <span>{YAO_NAMES[index]}</span>
+                  {isDone && <span className="ml-auto text-[var(--jade-cyan-soft)]">{CAST_LABELS[lines[index]]}</span>}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
-      <div className="rounded-[36px] border border-white/10 bg-white/5 p-8 backdrop-blur md:p-10">
-        <div className="mx-auto flex max-w-xl flex-col items-center gap-8 text-center">
-          <div className="grid grid-cols-3 gap-6">
+
+      {/* Right — Ritual Stage */}
+      <div className="card-glass animate-fade-in-up delay-200 rounded-[32px] p-8 md:p-10">
+        <div className="mx-auto flex max-w-xl flex-col items-center gap-10 text-center">
+          {/* Copper Coins */}
+          <div className="grid grid-cols-3 gap-8">
             {[1, 2, 3].map((coin) => (
-              <div key={coin} className="flex h-28 w-28 items-center justify-center rounded-full border border-emerald-100/20 bg-[radial-gradient(circle_at_top,_rgba(222,241,236,0.15),_rgba(255,255,255,0.02))] text-sm text-stone-300 shadow-lg shadow-black/20">
+              <div
+                key={coin}
+                className="animate-slow-float flex h-28 w-28 items-center justify-center rounded-full border border-[rgba(176,154,106,0.20)] bg-[radial-gradient(circle_at_30%_30%,rgba(176,154,106,0.12),rgba(200,205,216,0.03))] text-xs tracking-widest text-[var(--dark-gold-soft)] shadow-lg shadow-black/15"
+                style={{ animationDelay: `${coin * 400}ms` }}
+              >
                 铜钱 {coin}
               </div>
             ))}
           </div>
+
+          {/* Status */}
           <div className="space-y-3">
-            <div className="text-sm text-stone-300">请专注你想问的事情，然后摇出这一爻。</div>
-            <div className="text-xs tracking-[0.25em] text-stone-500 uppercase">{lastLabel || '少阳 / 少阴 / 老阳 / 老阴'}</div>
+            <div className="text-sm text-[var(--moon-silver-soft)]">
+              请专注你想问的事情，然后摇出这一爻。
+            </div>
+            <div className="text-xs tracking-[0.3em] text-[var(--text-dim)] uppercase">
+              {lastLabel || '少阳 / 少阴 / 老阳 / 老阴'}
+            </div>
           </div>
+
+          {/* Actions */}
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
-              className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-sm text-white hover:bg-emerald-100/15 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn-primary rounded-full px-8 py-3.5 text-sm tracking-wide disabled:cursor-not-allowed disabled:opacity-40"
               onClick={handleCast}
               disabled={isComplete || isSubmitting}
             >
               {isComplete ? messages.cast.completed : messages.cast.cta}
             </button>
-            <button className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20" onClick={handleReset}>
+            <button
+              className="btn-secondary rounded-full px-8 py-3.5 text-sm tracking-wide"
+              onClick={handleReset}
+            >
               {messages.cast.reset}
             </button>
           </div>
+
+          {/* Continue Link */}
           <button
             onClick={handleContinue}
-            className="text-sm text-stone-400 underline-offset-4 hover:text-stone-200 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+            className="text-sm text-[var(--text-muted)] underline-offset-4 transition-colors duration-200 hover:text-[var(--foreground)] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
             disabled={isSubmitting}
           >
             {isSubmitting ? '正在生成排盘…' : '生成排盘与结果'}
           </button>
-          {error ? <div className="text-sm text-amber-200">{error}</div> : null}
+
+          {error ? (
+            <div className="rounded-xl border border-[rgba(139,74,74,0.20)] bg-[rgba(139,74,74,0.08)] px-4 py-3 text-sm text-[var(--error)]">
+              {error}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

@@ -7,22 +7,22 @@ const messages = getMessages();
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(93,150,138,0.16),_transparent_28%),linear-gradient(180deg,#0b0d11_0%,#10131a_45%,#0b0d11_100%)] text-stone-100">
-      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-6 sm:px-10">
-        <header className="mb-10 flex items-center justify-between border-b border-white/10 pb-5">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-full border border-emerald-200/25 bg-white/5" />
+    <div className="bg-atmosphere relative min-h-screen text-[var(--foreground)]">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-8 sm:px-12">
+        <header className="mb-14 flex items-center justify-between border-b border-[var(--border)] pb-6">
+          <Link href="/" className="group flex items-center gap-3">
+            <div className="h-9 w-9 rounded-full border border-[rgba(200,205,216,0.15)] bg-[rgba(200,205,216,0.04)] transition-colors duration-200 group-hover:border-[rgba(200,205,216,0.25)]" />
             <div>
-              <div className="text-sm tracking-[0.35em] text-stone-300/70 uppercase">{messages.brand.name}</div>
-              <div className="text-xs text-stone-400">{messages.brand.tagline}</div>
+              <div className="text-sm tracking-[0.35em] text-[var(--moon-silver-soft)] uppercase">{messages.brand.name}</div>
+              <div className="text-xs text-[var(--text-dim)]">{messages.brand.tagline}</div>
             </div>
           </Link>
-          <nav className="flex items-center gap-4 text-sm text-stone-300">
-            <Link href="/cast" className="rounded-full border border-white/10 px-4 py-2 hover:border-emerald-200/30 hover:text-white">
+          <nav className="flex items-center gap-4 text-sm text-[var(--moon-silver-soft)]">
+            <Link href="/cast" className="btn-secondary rounded-full px-4 py-2">
               {messages.home.primaryCta}
             </Link>
-            <Link href="/history" className="hover:text-white">历史记录</Link>
-            <Suspense fallback={<Link href="/login" className="rounded-full border border-white/10 px-4 py-2 text-sm text-stone-300 transition hover:border-emerald-200/30 hover:text-white">登录</Link>}>
+            <Link href="/history" className="transition-colors duration-200 hover:text-[var(--foreground)]">历史记录</Link>
+            <Suspense fallback={<Link href="/login" className="btn-secondary rounded-full px-4 py-2 text-sm">登录</Link>}>
               <AuthNav />
             </Suspense>
           </nav>

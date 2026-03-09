@@ -10,6 +10,65 @@ import { getDivinationApi, saveDivinationApi, shareDivinationApi } from '@/lib/a
 import type { MockResult } from '@/lib/types';
 
 const messages = getMessages();
+const YAO_POS = ['初', '二', '三', '四', '五', '上'];
+
+function YaoLine({ line }: { line: { position: number; spirit: string; relative: string; branch: string; branchElement: string; yinYang: string; moving: boolean; isShi: boolean; isYing: boolean; changedBranch?: string; changedRelative?: string } }) {
+  const isYang = line.yinYang === '阳';
+  const posName = `${YAO_POS[line.position - 1]}爻`;
+
+  return (
+    <div
+      className="animate-fade-in-up group grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 rounded-2xl border border-[var(--border)] bg-[rgba(23,25,34,0.45)] px-5 py-4 transition-colors duration-200 hover:border-[var(--border-hover)]"
+      style={{ animationDelay: `${(6 - line.position) * 80}ms` }}
+    >
+      {/* Position & Spirit */}
+      <div className="text-center">
+        <div className="text-xs font-medium text-[var(--moon-silver)]">{posName}</div>
+        <div className="mt-0.5 text-[10px] text-[var(--text-dim)]">{line.spirit}</div>
+      </div>
+
+      {/* Yao visual + info */}
+      <div className="flex items-center gap-5">
+        {/* Yao line visual */}
+        <div className="w-20 shrink-0">
+          {isYang ? (
+            <div className="h-[5px] w-full rounded-full bg-gradient-to-r from-transparent via-[var(--moon-silver)] to-transparent" />
+          ) : (
+            <div className="flex gap-2.5">
+              <div className="h-[5px] flex-1 rounded-full bg-gradient-to-r from-transparent via-[var(--moon-silver)] to-[var(--moon-silver)]" />
+              <div className="h-[5px] flex-1 rounded-full bg-gradient-to-l from-transparent via-[var(--moon-silver)] to-[var(--moon-silver)]" />
+            </div>
+          )}
+          {line.moving && (
+            <div className="mt-1 text-center text-[10px] text-[var(--dark-gold)]">
+              {isYang ? '○' : '×'}
+            </div>
+          )}
+        </div>
+
+        {/* Relative & Branch */}
+        <div className="flex items-baseline gap-3">
+          <span className="text-sm text-[var(--moon-silver)]">{line.relative}</span>
+          <span className="text-xs text-[var(--text-muted)]">{line.branch}{line.branchElement}</span>
+        </div>
+
+        {/* Moving arrow */}
+        {line.moving && (
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-[var(--dark-gold-soft)]">→</span>
+            <span className="text-[var(--jade-cyan-soft)]">{line.changedBranch} {line.changedRelative}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Shi/Ying */}
+      <div className="w-8 text-center">
+        {line.isShi && <span className="text-xs text-[var(--dark-gold)]">世</span>}
+        {line.isYing && <span className="text-xs text-[var(--jade-cyan)]">应</span>}
+      </div>
+    </div>
+  );
+}
 
 export function ResultClient({ id }: { id: string }) {
   const router = useRouter();
@@ -90,162 +149,152 @@ export function ResultClient({ id }: { id: string }) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
-      <div className="space-y-3">
-        <div className="text-xs tracking-[0.3em] text-stone-400 uppercase">Result #{id}</div>
-        <h1 className="text-4xl text-stone-50">{messages.result.title}</h1>
+    <div className="mx-auto max-w-6xl space-y-10">
+      {/* Header */}
+      <div className="animate-fade-in-up space-y-3">
+        <div className="text-xs tracking-[0.35em] text-[var(--text-dim)] uppercase">Result #{id}</div>
+        <h1 className="text-4xl font-light tracking-wide text-[var(--moon-silver)]">{messages.result.title}</h1>
       </div>
 
-      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[32px] border border-white/10 bg-white/5 p-8">
-          <div className="mb-5 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.chartTitle}</div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-[24px] border border-white/8 bg-black/15 p-5">
-              <div className="text-xs text-stone-400">本卦</div>
-              <div className="mt-2 text-2xl text-stone-100">{result?.primaryHexagram ?? '待生成'}</div>
+      {/* Main Grid: Chart + Summary */}
+      <section className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+        {/* Hexagram Chart */}
+        <div className="card-glass animate-fade-in-up delay-100 rounded-[28px] p-7 lg:p-8">
+          <div className="mb-6 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.result.chartTitle}</div>
+
+          {/* Primary & Changed Hexagram Names */}
+          <div className="mb-6 grid grid-cols-2 gap-4">
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)]/40 p-5">
+              <div className="text-xs text-[var(--text-dim)]">本卦</div>
+              <div className="mt-2 text-2xl font-light tracking-wide text-[var(--moon-silver)]">
+                {result?.primaryHexagram ?? '待生成'}
+              </div>
             </div>
-            <div className="rounded-[24px] border border-white/8 bg-black/15 p-5">
-              <div className="text-xs text-stone-400">变卦</div>
-              <div className="mt-2 text-2xl text-stone-100">{result?.changedHexagram ?? '待生成'}</div>
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)]/40 p-5">
+              <div className="text-xs text-[var(--text-dim)]">变卦</div>
+              <div className="mt-2 text-2xl font-light tracking-wide text-[var(--moon-silver)]">
+                {result?.changedHexagram ?? '待生成'}
+              </div>
             </div>
           </div>
-          <div className="mt-6 rounded-[24px] border border-white/8 bg-black/15 p-5 text-sm leading-7 text-stone-300">
+
+          {/* Moving lines info */}
+          <div className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)]/40 p-5 text-sm leading-7 text-[var(--moon-silver-soft)]">
             {result?.movingLines.length
               ? `动爻：第 ${result.movingLines.join('、')} 爻`
               : '静卦，无动爻'}
           </div>
 
+          {/* Chart Details */}
           {result?.chart ? (
-            <div className="mt-4 space-y-3">
-              <div className="flex flex-wrap gap-2 text-xs text-stone-400">
-                <span className="rounded-lg border border-white/8 bg-black/15 px-3 py-1.5">
+            <div className="space-y-4">
+              {/* Meta Tags */}
+              <div className="flex flex-wrap gap-2 text-xs">
+                <span className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2 text-[var(--text-muted)]">
                   月建：{result.chart.monthBranch}
                 </span>
-                <span className="rounded-lg border border-white/8 bg-black/15 px-3 py-1.5">
+                <span className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2 text-[var(--text-muted)]">
                   日辰：{result.chart.dayStem}{result.chart.dayBranch}
                 </span>
-                <span className="rounded-lg border border-white/8 bg-black/15 px-3 py-1.5">
+                <span className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2 text-[var(--text-muted)]">
                   旬空：{result.chart.xunkong[0]}{result.chart.xunkong[1]}
                 </span>
-                <span className="rounded-lg border border-white/8 bg-black/15 px-3 py-1.5">
+                <span className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2 text-[var(--text-muted)]">
                   宫：{result.chart.primary.palace}宫（{result.chart.primary.palaceElement}）
                 </span>
               </div>
 
-              <div className="overflow-x-auto rounded-[16px] border border-white/8 bg-black/15">
-                <table className="w-full text-xs text-stone-300">
-                  <thead>
-                    <tr className="border-b border-white/8 text-stone-400">
-                      <th className="px-3 py-2 text-left font-normal">爻位</th>
-                      <th className="px-3 py-2 text-left font-normal">六神</th>
-                      <th className="px-3 py-2 text-left font-normal">六亲</th>
-                      <th className="px-3 py-2 text-left font-normal">纳支</th>
-                      <th className="px-3 py-2 text-left font-normal">阴阳</th>
-                      <th className="px-3 py-2 text-left font-normal">世应</th>
-                      <th className="px-3 py-2 text-left font-normal">变</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[...result.chart.lines].reverse().map((line) => (
-                      <tr key={line.position} className="border-b border-white/5 last:border-0">
-                        <td className="px-3 py-2">{['初', '二', '三', '四', '五', '上'][line.position - 1]}爻</td>
-                        <td className="px-3 py-2">{line.spirit}</td>
-                        <td className="px-3 py-2">{line.relative}</td>
-                        <td className="px-3 py-2">{line.branch}{line.branchElement}</td>
-                        <td className="px-3 py-2">
-                          {line.yinYang === '阳' ? '▬▬▬' : '▬ ▬'}
-                          {line.moving ? (line.yinYang === '阳' ? ' ○' : ' ×') : ''}
-                        </td>
-                        <td className="px-3 py-2 text-amber-300/80">
-                          {line.isShi ? '世' : line.isYing ? '应' : ''}
-                        </td>
-                        <td className="px-3 py-2 text-stone-500">
-                          {line.moving ? `→${line.changedBranch} ${line.changedRelative}` : ''}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              {/* Visual Yao Lines — top to bottom (上爻 → 初爻) */}
+              <div className="flex flex-col gap-2">
+                {[...result.chart.lines].reverse().map((line) => (
+                  <YaoLine key={line.position} line={line} />
+                ))}
               </div>
             </div>
           ) : null}
         </div>
-        <div className="rounded-[32px] border border-emerald-100/12 bg-emerald-100/6 p-8">
-          <div className="mb-5 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.summaryTitle}</div>
-          <div className="space-y-4">
-            <div className="text-2xl leading-relaxed text-stone-50">{result?.summary ?? '正在等待分析结果。'}</div>
-            <p className="text-sm leading-7 text-stone-200/85">{result?.question ?? ''}</p>
+
+        {/* Summary Card */}
+        <div className="card-glass animate-fade-in-up delay-300 rounded-[28px] border-[rgba(122,173,160,0.12)] bg-[rgba(122,173,160,0.04)] p-7 lg:p-8">
+          <div className="mb-6 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.result.summaryTitle}</div>
+          <div className="space-y-5">
+            <div className="text-2xl leading-relaxed font-light text-[var(--moon-silver)]">
+              {result?.summary ?? '正在等待分析结果。'}
+            </div>
+            <p className="text-sm leading-8 text-[var(--text-muted)]">{result?.question ?? ''}</p>
           </div>
         </div>
       </section>
 
+      {/* Analysis Cards */}
       <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-[28px] border border-white/10 bg-white/5 p-8">
-          <div className="mb-4 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.plainTitle}</div>
-          <p className="text-sm leading-8 text-stone-300">{result?.plainAnalysis ?? '解读生成中…'}</p>
+        <div className="card-glass animate-fade-in-up delay-400 rounded-[24px] p-7 lg:p-8">
+          <div className="mb-5 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.result.plainTitle}</div>
+          <p className="text-sm leading-9 text-[var(--moon-silver-soft)]">{result?.plainAnalysis ?? '解读生成中…'}</p>
         </div>
-        <div className="rounded-[28px] border border-white/10 bg-white/5 p-8">
-          <div className="mb-4 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.professionalTitle}</div>
-          <p className="text-sm leading-8 text-stone-300">{result?.professionalAnalysis ?? '专业分析生成中…'}</p>
+        <div className="card-glass animate-fade-in-up delay-500 rounded-[24px] p-7 lg:p-8">
+          <div className="mb-5 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.result.professionalTitle}</div>
+          <p className="text-sm leading-9 text-[var(--moon-silver-soft)]">{result?.professionalAnalysis ?? '专业分析生成中…'}</p>
         </div>
       </section>
 
-      <section className="space-y-4">
+      {/* Status Messages & Actions */}
+      <section className="animate-fade-in-up delay-600 space-y-4 pb-8">
         {!isAuthenticated ? (
-          <div className="rounded-[24px] border border-amber-200/15 bg-amber-100/5 p-5 text-sm leading-7 text-stone-300">
+          <div className="rounded-2xl border border-[rgba(176,154,106,0.15)] bg-[rgba(176,154,106,0.04)] p-5 text-sm leading-8 text-[var(--moon-silver-soft)]">
             这次结果已经可以继续阅读；如果你想下次回来接着看，先登录即可，系统会自动带你回到当前结果页。
           </div>
         ) : null}
 
         {saveState === 'error' ? (
-          <div className="rounded-[24px] border border-red-300/15 bg-red-100/5 p-4 text-sm text-red-300">
+          <div className="rounded-2xl border border-[rgba(139,74,74,0.20)] bg-[rgba(139,74,74,0.06)] p-4 text-sm text-[var(--error)]">
             保存失败，请稍后重试。
           </div>
         ) : null}
 
         {saveState === 'saved' ? (
-          <div className="rounded-[24px] border border-emerald-300/15 bg-emerald-100/5 p-4 text-sm text-emerald-300">
+          <div className="rounded-2xl border border-[rgba(122,173,160,0.18)] bg-[rgba(122,173,160,0.06)] p-4 text-sm text-[var(--jade-cyan)]">
             已保存到记录。
-            <Link href="/history" className="ml-3 underline underline-offset-2 hover:text-emerald-200">
+            <Link href="/history" className="ml-3 underline underline-offset-2 transition-colors duration-200 hover:text-[var(--foreground)]">
               查看历史记录
             </Link>
           </div>
         ) : null}
 
         {shareState === 'error' ? (
-          <div className="rounded-[24px] border border-red-300/15 bg-red-100/5 p-4 text-sm text-red-300">
+          <div className="rounded-2xl border border-[rgba(139,74,74,0.20)] bg-[rgba(139,74,74,0.06)] p-4 text-sm text-[var(--error)]">
             生成分享链接失败，请稍后重试。
           </div>
         ) : null}
 
         {shareUrl && shareState !== 'copied' ? (
-          <div className="rounded-[24px] border border-stone-200/10 bg-white/4 p-4 text-sm text-stone-300">
+          <div className="rounded-2xl border border-[var(--border)] bg-[rgba(200,205,216,0.03)] p-4 text-sm text-[var(--moon-silver-soft)]">
             分享链接：
-            <a href={shareUrl} target="_blank" rel="noreferrer" className="ml-2 break-all text-emerald-300 underline underline-offset-2 hover:text-emerald-200">
+            <a href={shareUrl} target="_blank" rel="noreferrer" className="ml-2 break-all text-[var(--jade-cyan)] underline underline-offset-2 transition-colors duration-200 hover:text-[var(--foreground)]">
               {shareUrl}
             </a>
           </div>
         ) : null}
 
         {shareState === 'copied' ? (
-          <div className="rounded-[24px] border border-emerald-300/15 bg-emerald-100/5 p-4 text-sm text-emerald-300">
+          <div className="rounded-2xl border border-[rgba(122,173,160,0.18)] bg-[rgba(122,173,160,0.06)] p-4 text-sm text-[var(--jade-cyan)]">
             分享链接已复制到剪贴板！
           </div>
         ) : null}
 
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row">
           {isAuthenticated ? (
             <button
               onClick={handleSave}
               disabled={saveState === 'saving' || saveState === 'saved'}
-              className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-sm text-white transition hover:bg-emerald-100/15 disabled:opacity-60"
+              className="btn-primary rounded-full px-8 py-3.5 text-sm tracking-wide disabled:opacity-40"
             >
-              {saveState === 'saving' ? '保存中…' : saveState === 'saved' ? '已保存 ✓' : messages.result.save}
+              {saveState === 'saving' ? '保存中…' : saveState === 'saved' ? '已保存' : messages.result.save}
             </button>
           ) : (
             <Link
               href={loginHref}
-              className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-center text-sm text-white transition hover:bg-emerald-100/15"
+              className="btn-primary rounded-full px-8 py-3.5 text-center text-sm tracking-wide"
             >
               登录后回到这条结果
             </Link>
@@ -253,12 +302,12 @@ export function ResultClient({ id }: { id: string }) {
           <button
             onClick={handleShare}
             disabled={shareState === 'sharing'}
-            className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 transition hover:border-white/20 disabled:opacity-60"
+            className="btn-secondary rounded-full px-8 py-3.5 text-sm tracking-wide disabled:opacity-40"
           >
-            {shareState === 'sharing' ? '生成中…' : shareState === 'copied' ? '已复制 ✓' : messages.result.share}
+            {shareState === 'sharing' ? '生成中…' : shareState === 'copied' ? '已复制' : messages.result.share}
           </button>
           <button
-            className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20"
+            className="btn-secondary rounded-full px-8 py-3.5 text-sm tracking-wide"
             onClick={() => router.push('/cast')}
           >
             {messages.result.restart}
