@@ -3,6 +3,8 @@ import type {
   CreateDivinationRequest,
   CreateDivinationResponse,
   GetDivinationResponse,
+  ListDivinationsResponse,
+  SaveDivinationResponse,
   SubmitCastRequest,
   SubmitCastResponse,
 } from '@/lib/api/types';
@@ -40,4 +42,29 @@ export async function getDivinationApi(id: string) {
   });
 
   return parseJson<GetDivinationResponse>(response);
+}
+
+export async function saveDivinationApi(id: string, accessToken: string) {
+  const response = await fetch(`/api/divinations/${id}/save`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  return parseJson<SaveDivinationResponse>(response);
+}
+
+export async function listDivinationsApi(accessToken: string) {
+  const response = await fetch('/api/divinations', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    cache: 'no-store',
+  });
+
+  return parseJson<ListDivinationsResponse>(response);
 }

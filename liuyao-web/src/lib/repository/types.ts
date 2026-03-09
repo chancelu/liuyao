@@ -4,6 +4,7 @@ export interface DivinationRecord {
   draft: DivinationDraft;
   cast: CastRecord | null;
   result: MockResult | null;
+  savedByUserId?: string | null;
 }
 
 /**
@@ -15,4 +16,8 @@ export interface IDivinationRepository {
   saveDraft(draft: DivinationDraft): Promise<DivinationRecord>;
   saveCast(divinationId: string, cast: CastRecord, result: MockResult): Promise<DivinationRecord | null>;
   getById(id: string): Promise<DivinationRecord | null>;
+  /** 将已完成的卦例关联到用户 */
+  saveForUser(divinationId: string, userId: string): Promise<DivinationRecord | null>;
+  /** 列出某用户保存的所有卦例（按创建时间倒序） */
+  listByUser(userId: string): Promise<DivinationRecord[]>;
 }

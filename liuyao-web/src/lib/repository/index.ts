@@ -80,4 +80,22 @@ class ResilientRepository implements IDivinationRepository {
       return this.fallback.getById(id);
     }
   }
+
+  async saveForUser(divinationId: string, userId: string): Promise<DivinationRecord | null> {
+    try {
+      return await this.primary.saveForUser(divinationId, userId);
+    } catch (err) {
+      console.warn('[repository] saveForUser fallback to mock:', (err as Error).message);
+      return this.fallback.saveForUser(divinationId, userId);
+    }
+  }
+
+  async listByUser(userId: string): Promise<DivinationRecord[]> {
+    try {
+      return await this.primary.listByUser(userId);
+    } catch (err) {
+      console.warn('[repository] listByUser fallback to mock:', (err as Error).message);
+      return this.fallback.listByUser(userId);
+    }
+  }
 }

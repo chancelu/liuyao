@@ -13,6 +13,7 @@ interface DivinationRow {
   background: string;
   locale: string;
   created_at: string;
+  saved_by_user_id?: string | null;
 }
 
 interface CastRow {
@@ -160,6 +161,51 @@ export class SupabaseDivinationRepository implements IDivinationRepository {
       draft,
       cast: castRow ? rowToCast(castRow) : null,
       result: readingRow ? rowToResult(divRow, readingRow) : null,
+      savedByUserId: divRow.saved_by_user_id ?? null,
     };
+  }
+
+  async saveForUser(divinationId: string, userId: string): Promise<DivinationRecord | null> {
+    const { error } = await this.client
+      .from('divinations')
+      .update({ saved_by_user_id: userId })
+      .eq('id', divinationId);
+
+    if (error) throw new Error(`saveForUser failed: ${error.message}`);
+
+    return this.getById(divinationId);
+  }
+
+  async listByUser(userId: string): Promise<DivinationRecord[]> {
+    const { data: divRows, error } = await this.client
+      .from('divinations')
+      .select('*')
+      .eq('saved_by_user_id', userId)
+      .order('created_at', { ascending: false })
+      .returns<DivinationRow[]>();
+
+    if (error) throw new Error(`listByUser failed: ${error.message}`);
+    if (!divRows || divRows.length === 0) return [];
+
+    const records: DivinationRecord[] = await Promise.all(
+      divRows.map(async (divRow) => {
+        const { data: readingRow } = await this.client
+          .from('readings')
+          .select('*')
+          .eq('divination_id', divRow.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle<ReadingRow>();
+
+        return {
+          draft: rowToDraft(divRow),
+          cast: null,
+          result: readingRow ? rowToResult(divRow, readingRow) : null,
+          savedByUserId: userId,
+        };
+      }),
+    );
+
+    return records;
   }
 }

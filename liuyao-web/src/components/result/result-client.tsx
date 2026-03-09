@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
-import { getUser } from '@/lib/supabase/auth';
+import { getSession, getUser } from '@/lib/supabase/auth';
 import { getDivinationResultFlow } from '@/services/divination-api';
+import { saveDivinationApi } from '@/lib/api/client';
 import type { MockResult } from '@/lib/types';
 
 const messages = getMessages();
@@ -14,16 +15,23 @@ export function ResultClient({ id }: { id: string }) {
   const router = useRouter();
   const [result, setResult] = useState<MockResult | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const loginHref = useMemo(() => `/login?next=${encodeURIComponent(`/result/${id}`)}`, [id]);
 
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
-      const [next, user] = await Promise.all([getDivinationResultFlow(id), getUser()]);
+      const [next, user, session] = await Promise.all([
+        getDivinationResultFlow(id),
+        getUser(),
+        getSession(),
+      ]);
       if (!cancelled) {
         setResult(next);
         setIsAuthenticated(Boolean(user));
+        setAccessToken(session?.access_token ?? null);
       }
     }
 
@@ -33,6 +41,13 @@ export function ResultClient({ id }: { id: string }) {
       cancelled = true;
     };
   }, [id]);
+
+  async function handleSave() {
+    if (!accessToken) return;
+    setSaveState('saving');
+    const res = await saveDivinationApi(id, accessToken);
+    setSaveState(res.success ? 'saved' : 'error');
+  }
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
@@ -86,10 +101,20 @@ export function ResultClient({ id }: { id: string }) {
           </div>
         ) : null}
 
+        {saveState === 'error' ? (
+          <div className="rounded-[24px] border border-red-300/15 bg-red-100/5 p-4 text-sm text-red-300">
+            保存失败，请稍后重试。
+          </div>
+        ) : null}
+
         <div className="flex flex-col gap-3 sm:flex-row">
           {isAuthenticated ? (
-            <button className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-sm text-white hover:bg-emerald-100/15">
-              {messages.result.save}
+            <button
+              onClick={handleSave}
+              disabled={saveState === 'saving' || saveState === 'saved'}
+              className="rounded-full border border-emerald-200/25 bg-emerald-100/10 px-6 py-3 text-sm text-white transition hover:bg-emerald-100/15 disabled:opacity-60"
+            >
+              {saveState === 'saving' ? '保存中…' : saveState === 'saved' ? '已保存 ✓' : messages.result.save}
             </button>
           ) : (
             <Link
@@ -111,3 +136,4 @@ export function ResultClient({ id }: { id: string }) {
     </div>
   );
 }
+

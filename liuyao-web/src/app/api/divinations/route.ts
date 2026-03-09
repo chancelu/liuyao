@@ -1,7 +1,63 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getRepository } from '@/lib/repository';
-import type { ApiResponse, CreateDivinationRequest, CreateDivinationResponse } from '@/lib/api/types';
+import { getSupabaseAnonServerClient } from '@/lib/supabase/server';
+import type {
+  ApiResponse,
+  CreateDivinationRequest,
+  CreateDivinationResponse,
+  DivinationListItem,
+  ListDivinationsResponse,
+} from '@/lib/api/types';
 import type { DivinationDraft } from '@/lib/types';
+
+export async function GET(request: NextRequest) {
+  // Authenticate via Bearer token (Supabase access token) sent by client
+  const authHeader = request.headers.get('authorization');
+  const accessToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+
+  if (!accessToken) {
+    return NextResponse.json<ApiResponse<ListDivinationsResponse>>(
+      { success: false, data: null, error: '请先登录后查看历史记录。' },
+      { status: 401 },
+    );
+  }
+
+  // Verify token and get user
+  const supabase = getSupabaseAnonServerClient();
+  if (!supabase) {
+    return NextResponse.json<ApiResponse<ListDivinationsResponse>>(
+      { success: false, data: null, error: '账号系统暂未开放。' },
+      { status: 503 },
+    );
+  }
+
+  const { data: { user }, error: userError } = await supabase.auth.getUser(accessToken);
+  if (userError || !user) {
+    return NextResponse.json<ApiResponse<ListDivinationsResponse>>(
+      { success: false, data: null, error: '登录已过期，请重新登录。' },
+      { status: 401 },
+    );
+  }
+
+  const repo = await getRepository();
+  const records = await repo.listByUser(user.id);
+
+  const items: DivinationListItem[] = records.map((r) => ({
+    id: r.draft.id,
+    question: r.draft.question,
+    category: r.draft.category,
+    createdAt: r.draft.createdAt,
+    summary: r.result?.summary ?? null,
+    primaryHexagram: r.result?.primaryHexagram ?? null,
+    changedHexagram: r.result?.changedHexagram ?? null,
+  }));
+
+  return NextResponse.json<ApiResponse<ListDivinationsResponse>>({
+    success: true,
+    data: { items },
+    error: null,
+  });
+}
 
 export async function POST(request: Request) {
   const body = (await request.json()) as Partial<CreateDivinationRequest>;

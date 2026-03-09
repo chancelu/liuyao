@@ -44,3 +44,21 @@ export interface GetDivinationResponse {
   cast: CastRecord | null;
   result: MockResult | null;
 }
+
+export interface SaveDivinationResponse {
+  saved: boolean;
+}
+
+export interface DivinationListItem {
+  id: string;
+  question: string;
+  category: DivinationDraft['category'];
+  createdAt: string;
+  summary: string | null;
+  primaryHexagram: string | null;
+  changedHexagram: string | null;
+}
+
+export interface ListDivinationsResponse {
+  items: DivinationListItem[];
+}
