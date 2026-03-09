@@ -44,6 +44,7 @@ export interface GetDivinationResponse {
   cast: CastRecord | null;
   result: MockResult | null;
   isPublic: boolean;
+  isSaved: boolean;
 }
 
 export interface SaveDivinationResponse {

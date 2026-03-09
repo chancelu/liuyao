@@ -10,27 +10,24 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
   const authHeader = request.headers.get('authorization');
   const accessToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
-  if (!accessToken) {
-    return NextResponse.json<ApiResponse<ShareDivinationResponse>>(
-      { success: false, data: null, error: '请先登录后再分享。' },
-      { status: 401 },
-    );
-  }
-
   const supabase = getSupabaseAnonServerClient();
-  if (!supabase) {
-    return NextResponse.json<ApiResponse<ShareDivinationResponse>>(
-      { success: false, data: null, error: '账号系统暂未开放。' },
-      { status: 503 },
-    );
-  }
 
-  const { data: { user }, error: userError } = await supabase.auth.getUser(accessToken);
-  if (userError || !user) {
-    return NextResponse.json<ApiResponse<ShareDivinationResponse>>(
-      { success: false, data: null, error: '登录已过期，请重新登录。' },
-      { status: 401 },
-    );
+  // If Supabase is configured, require auth. If not (local dev / mock mode), allow without auth.
+  if (supabase) {
+    if (!accessToken) {
+      return NextResponse.json<ApiResponse<ShareDivinationResponse>>(
+        { success: false, data: null, error: '请先登录后再分享。' },
+        { status: 401 },
+      );
+    }
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser(accessToken);
+    if (userError || !user) {
+      return NextResponse.json<ApiResponse<ShareDivinationResponse>>(
+        { success: false, data: null, error: '登录已过期，请重新登录。' },
+        { status: 401 },
+      );
+    }
   }
 
   const repo = await getRepository();

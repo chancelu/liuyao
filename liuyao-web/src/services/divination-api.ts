@@ -1,5 +1,6 @@
 import { createDivinationApi, getDivinationApi, submitCastApi } from '@/lib/api/client';
 import { getTrialState } from '@/services/divination-service';
+import { getSession } from '@/lib/supabase/auth';
 import {
   getCurrentDraft,
   getResultById,
@@ -12,9 +13,13 @@ import type { CreateDivinationRequest } from '@/lib/api/types';
 import type { CastLine, DivinationDraft, MockResult } from '@/lib/types';
 
 export async function createDivinationFlow(payload: CreateDivinationRequest) {
-  const trial = getTrialState();
-  if (trial.freeTrialUsed) {
-    return { ok: false as const, error: '游客当前只支持体验一次。下一步接入登录后，这里会引导注册继续使用。' };
+  // Authenticated users bypass the guest trial gate
+  const session = await getSession();
+  if (!session) {
+    const trial = getTrialState();
+    if (trial.freeTrialUsed) {
+      return { ok: false as const, error: '游客仅支持体验一次。请登录后继续使用，登录后不限次数。' };
+    }
   }
 
   const response = await createDivinationApi(payload);

@@ -70,13 +70,14 @@ export async function listDivinationsApi(accessToken: string) {
   return parseJson<ListDivinationsResponse>(response);
 }
 
-export async function shareDivinationApi(id: string, accessToken: string) {
+export async function shareDivinationApi(id: string, accessToken?: string | null) {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
+  }
   const response = await fetch(`/api/divinations/${id}/share`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    },
+    headers,
   });
 
   return parseJson<ShareDivinationResponse>(response);

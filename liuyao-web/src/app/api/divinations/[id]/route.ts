@@ -21,6 +21,7 @@ export async function GET(_: Request, context: { params: Promise<{ id: string }>
       cast: record.cast,
       result: record.result,
       isPublic: record.isPublic ?? false,
+      isSaved: Boolean(record.savedByUserId),
     },
     error: null,
   });

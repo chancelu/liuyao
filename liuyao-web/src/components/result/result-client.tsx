@@ -33,17 +33,18 @@ export function ResultClient({ id }: { id: string }) {
       if (cancelled) return;
 
       setResult(next);
-      setIsAuthenticated(Boolean(user));
+      const authed = Boolean(user);
+      setIsAuthenticated(authed);
       setAccessToken(session?.access_token ?? null);
 
-      // Check if already saved/shared by fetching record metadata
-      if (session?.access_token) {
-        const meta = await getDivinationApi(id);
-        if (!cancelled && meta.success) {
-          if (meta.data.isPublic) {
-            const url = `${window.location.origin}/share/${id}`;
-            setShareUrl(url);
-          }
+      // Check if already saved/shared
+      const meta = await getDivinationApi(id);
+      if (!cancelled && meta.success) {
+        if (meta.data.isSaved) {
+          setSaveState('saved');
+        }
+        if (meta.data.isPublic) {
+          setShareUrl(`${window.location.origin}/share/${id}`);
         }
       }
     }
@@ -63,9 +64,15 @@ export function ResultClient({ id }: { id: string }) {
   }
 
   async function handleShare() {
-    if (!accessToken) return;
     setShareState('sharing');
-    const res = await shareDivinationApi(id, accessToken);
+
+    // If authenticated and not yet saved, save first so history stays consistent
+    if (accessToken && saveState === 'idle') {
+      await saveDivinationApi(id, accessToken);
+      setSaveState('saved');
+    }
+
+    const res = await shareDivinationApi(id, accessToken ?? undefined);
     if (res.success) {
       const url = res.data.shareUrl || `${window.location.origin}/share/${id}`;
       setShareUrl(url);
@@ -87,7 +94,6 @@ export function ResultClient({ id }: { id: string }) {
       <div className="space-y-3">
         <div className="text-xs tracking-[0.3em] text-stone-400 uppercase">Result #{id}</div>
         <h1 className="text-4xl text-stone-50">{messages.result.title}</h1>
-        <p className="text-sm leading-7 text-stone-300/78">第一屏先给排盘，再给初步结论，后面再展开白话与专业分析。</p>
       </div>
 
       <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -104,14 +110,16 @@ export function ResultClient({ id }: { id: string }) {
             </div>
           </div>
           <div className="mt-6 rounded-[24px] border border-white/8 bg-black/15 p-5 text-sm leading-7 text-stone-300">
-            动爻：{result?.movingLines.length ? `第 ${result.movingLines.join('、')} 爻` : '当前示意为静卦'} ｜ 世应 / 月建 / 日辰 / 旬空：下一步接入真实排盘引擎
+            {result?.movingLines.length
+              ? `动爻：第 ${result.movingLines.join('、')} 爻`
+              : '静卦，无动爻'}
           </div>
         </div>
         <div className="rounded-[32px] border border-emerald-100/12 bg-emerald-100/6 p-8">
           <div className="mb-5 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.summaryTitle}</div>
           <div className="space-y-4">
-            <div className="text-2xl leading-relaxed text-stone-50">{result?.summary ?? '正在等待真实结果。'}</div>
-            <p className="text-sm leading-7 text-stone-200/85">{result?.question ?? '这里会展示当前这次问题。'}</p>
+            <div className="text-2xl leading-relaxed text-stone-50">{result?.summary ?? '正在等待分析结果。'}</div>
+            <p className="text-sm leading-7 text-stone-200/85">{result?.question ?? ''}</p>
           </div>
         </div>
       </section>
@@ -119,11 +127,11 @@ export function ResultClient({ id }: { id: string }) {
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-[28px] border border-white/10 bg-white/5 p-8">
           <div className="mb-4 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.plainTitle}</div>
-          <p className="text-sm leading-8 text-stone-300">{result?.plainAnalysis ?? '白话分析会在接入真实 analysis service 后替换。'}</p>
+          <p className="text-sm leading-8 text-stone-300">{result?.plainAnalysis ?? '解读生成中…'}</p>
         </div>
         <div className="rounded-[28px] border border-white/10 bg-white/5 p-8">
           <div className="mb-4 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.professionalTitle}</div>
-          <p className="text-sm leading-8 text-stone-300">{result?.professionalAnalysis ?? '专业版会展开用神、旺衰、动变、世应、象法与应期。'}</p>
+          <p className="text-sm leading-8 text-stone-300">{result?.professionalAnalysis ?? '专业分析生成中…'}</p>
         </div>
       </section>
 
@@ -187,19 +195,13 @@ export function ResultClient({ id }: { id: string }) {
               登录后回到这条结果
             </Link>
           )}
-          {isAuthenticated ? (
-            <button
-              onClick={handleShare}
-              disabled={shareState === 'sharing'}
-              className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 transition hover:border-white/20 disabled:opacity-60"
-            >
-              {shareState === 'sharing' ? '生成中…' : shareState === 'copied' ? '已复制 ✓' : messages.result.share}
-            </button>
-          ) : (
-            <button className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200/50 cursor-not-allowed">
-              {messages.result.share}
-            </button>
-          )}
+          <button
+            onClick={handleShare}
+            disabled={shareState === 'sharing'}
+            className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 transition hover:border-white/20 disabled:opacity-60"
+          >
+            {shareState === 'sharing' ? '生成中…' : shareState === 'copied' ? '已复制 ✓' : messages.result.share}
+          </button>
           <button
             className="rounded-full border border-white/10 px-6 py-3 text-sm text-stone-200 hover:border-white/20"
             onClick={() => router.push('/cast')}
