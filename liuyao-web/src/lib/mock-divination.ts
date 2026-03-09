@@ -1,11 +1,5 @@
+import { buildChart } from '@/lib/liuyao';
 import type { CastLine, Category, MockResult, TimeScope } from '@/lib/types';
-
-const PRIMARY_HEXAGRAMS = ['雷山小过', '泽地萃', '雷地豫', '风天小畜', '坤为地', '火泽睽'];
-const CHANGED_HEXAGRAMS = ['泽地萃', '风火家人', '雷水解', '地山谦', '火地晋', '水雷屯'];
-
-function hashText(input: string) {
-  return Array.from(input).reduce((sum, ch, index) => sum + ch.charCodeAt(0) * (index + 1), 0);
-}
 
 function getMovingLines(lines: CastLine[]) {
   return lines
@@ -48,10 +42,9 @@ export function buildMockResult(params: {
   background: string;
   lines: CastLine[];
 }): MockResult {
-  const hash = hashText(`${params.question}${params.category}${params.timeScope}${params.lines.join(',')}`);
+  // 使用真实排盘引擎计算 chart
+  const chart = buildChart(params.lines);
   const movingLines = getMovingLines(params.lines);
-  const primaryHexagram = PRIMARY_HEXAGRAMS[hash % PRIMARY_HEXAGRAMS.length];
-  const changedHexagram = CHANGED_HEXAGRAMS[(hash + movingLines.length) % CHANGED_HEXAGRAMS.length];
 
   return {
     id: params.id,
@@ -59,12 +52,13 @@ export function buildMockResult(params: {
     category: params.category,
     timeScope: params.timeScope,
     background: params.background,
-    primaryHexagram,
-    changedHexagram,
+    primaryHexagram: chart.primary.name,
+    changedHexagram: chart.changed.name,
     movingLines,
     summary: getSummary(params.category, movingLines.length),
     plainAnalysis: getPlain(params.question, params.category, params.timeScope, movingLines),
     professionalAnalysis: getProfessional(movingLines),
     createdAt: new Date().toISOString(),
+    chart,
   };
 }

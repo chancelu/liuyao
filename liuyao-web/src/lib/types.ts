@@ -40,4 +40,6 @@ export interface MockResult {
   plainAnalysis: string;
   professionalAnalysis: string;
   createdAt: string;
+  /** 真实排盘数据（v1 引擎生成） */
+  chart?: import('@/lib/liuyao/chart').ChartData;
 }

@@ -114,6 +114,61 @@ export function ResultClient({ id }: { id: string }) {
               ? `动爻：第 ${result.movingLines.join('、')} 爻`
               : '静卦，无动爻'}
           </div>
+
+          {result?.chart ? (
+            <div className="mt-4 space-y-3">
+              <div className="flex flex-wrap gap-2 text-xs text-stone-400">
+                <span className="rounded-lg border border-white/8 bg-black/15 px-3 py-1.5">
+                  月建：{result.chart.monthBranch}
+                </span>
+                <span className="rounded-lg border border-white/8 bg-black/15 px-3 py-1.5">
+                  日辰：{result.chart.dayStem}{result.chart.dayBranch}
+                </span>
+                <span className="rounded-lg border border-white/8 bg-black/15 px-3 py-1.5">
+                  旬空：{result.chart.xunkong[0]}{result.chart.xunkong[1]}
+                </span>
+                <span className="rounded-lg border border-white/8 bg-black/15 px-3 py-1.5">
+                  宫：{result.chart.primary.palace}宫（{result.chart.primary.palaceElement}）
+                </span>
+              </div>
+
+              <div className="overflow-x-auto rounded-[16px] border border-white/8 bg-black/15">
+                <table className="w-full text-xs text-stone-300">
+                  <thead>
+                    <tr className="border-b border-white/8 text-stone-400">
+                      <th className="px-3 py-2 text-left font-normal">爻位</th>
+                      <th className="px-3 py-2 text-left font-normal">六神</th>
+                      <th className="px-3 py-2 text-left font-normal">六亲</th>
+                      <th className="px-3 py-2 text-left font-normal">纳支</th>
+                      <th className="px-3 py-2 text-left font-normal">阴阳</th>
+                      <th className="px-3 py-2 text-left font-normal">世应</th>
+                      <th className="px-3 py-2 text-left font-normal">变</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...result.chart.lines].reverse().map((line) => (
+                      <tr key={line.position} className="border-b border-white/5 last:border-0">
+                        <td className="px-3 py-2">{['初', '二', '三', '四', '五', '上'][line.position - 1]}爻</td>
+                        <td className="px-3 py-2">{line.spirit}</td>
+                        <td className="px-3 py-2">{line.relative}</td>
+                        <td className="px-3 py-2">{line.branch}{line.branchElement}</td>
+                        <td className="px-3 py-2">
+                          {line.yinYang === '阳' ? '▬▬▬' : '▬ ▬'}
+                          {line.moving ? (line.yinYang === '阳' ? ' ○' : ' ×') : ''}
+                        </td>
+                        <td className="px-3 py-2 text-amber-300/80">
+                          {line.isShi ? '世' : line.isYing ? '应' : ''}
+                        </td>
+                        <td className="px-3 py-2 text-stone-500">
+                          {line.moving ? `→${line.changedBranch} ${line.changedRelative}` : ''}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : null}
         </div>
         <div className="rounded-[32px] border border-emerald-100/12 bg-emerald-100/6 p-8">
           <div className="mb-5 text-xs tracking-[0.2em] text-stone-400 uppercase">{messages.result.summaryTitle}</div>
