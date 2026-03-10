@@ -1,40 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  /* === Deep Mystical Palette (design-direction.md) === */
-  --bg-deep:     #0B0B12;
-  --bg-elevated: #10111A;
-  --bg-card:     #141520;
-  --bg-card-alt: #181A26;
+  /* === Mystical Deep Blue-Purple Palette === */
+  --bg-deep:     #0E1225;
+  --bg-elevated: #131838;
+  --bg-card:     #161C3A;
+  --bg-card-alt: #1A2040;
 
   /* === Moon Silver === */
-  --silver:        #C8CDD8;
-  --silver-soft:   #9BA1B0;
-  --silver-dim:    #6B7082;
+  --silver:        #D4D8E8;
+  --silver-soft:   #A8AEBF;
+  --silver-dim:    #6E7590;
 
   /* === Jade Cyan (玉石青) === */
-  --jade:          #7AADA0;
-  --jade-soft:     rgba(122, 173, 160, 0.7);
-  --jade-dim:      rgba(122, 173, 160, 0.4);
-  --jade-mist:     rgba(122, 173, 160, 0.08);
+  --jade:          #6DD4C0;
+  --jade-soft:     rgba(109, 212, 192, 0.7);
+  --jade-dim:      rgba(109, 212, 192, 0.45);
+  --jade-mist:     rgba(109, 212, 192, 0.10);
 
   /* === Dark Gold (暗金) === */
-  --gold:          #B09A6A;
-  --gold-light:    #C4B080;
-  --gold-dim:      #7A6D4A;
-  --gold-mist:     rgba(176, 154, 106, 0.08);
+  --gold:          #C9A84C;
+  --gold-light:    #DBBF6A;
+  --gold-dim:      #8A7A3E;
+  --gold-mist:     rgba(201, 168, 76, 0.10);
 
   /* === Functional === */
-  --success:    #7A9E8A;
-  --warning:    #B09A6A;
-  --error:      #9E6B6B;
+  --success:    #6DD4C0;
+  --warning:    #C9A84C;
+  --error:      #C47070;
 
   /* === Semantic === */
   --foreground:     var(--silver);
   --text-secondary: var(--silver-soft);
   --text-muted:     var(--silver-dim);
-  --border:         rgba(122, 173, 160, 0.08);
-  --border-hover:   rgba(122, 173, 160, 0.18);
+  --border:         rgba(109, 212, 192, 0.10);
+  --border-hover:   rgba(109, 212, 192, 0.22);
   --background:     var(--bg-deep);
 }
 
@@ -58,89 +58,89 @@ body {
 a { text-decoration: none; }
 
 ::selection {
-  background: rgba(122, 173, 160, 0.25);
-  color: var(--silver);
+  background: rgba(109, 212, 192, 0.30);
+  color: #fff;
 }
 
 /* ============================================
-   ATMOSPHERIC BACKGROUND — Mystical depth
-   Deep blue-black with warm jade/gold glows
+   ATMOSPHERIC BACKGROUND
+   Deep blue-purple with visible glows
    ============================================ */
 .bg-atmosphere {
   background:
-    radial-gradient(ellipse 80% 45% at 50% -8%, rgba(122, 173, 160, 0.10), transparent 60%),
-    radial-gradient(ellipse 50% 50% at 90% 80%, rgba(176, 154, 106, 0.07), transparent 55%),
-    radial-gradient(ellipse 45% 45% at 5% 70%, rgba(100, 120, 180, 0.05), transparent 55%),
-    radial-gradient(ellipse 35% 35% at 50% 50%, rgba(122, 173, 160, 0.03), transparent 50%),
-    linear-gradient(180deg, #0B0B12 0%, #0D0E18 40%, #0F1020 70%, #0B0B12 100%);
+    radial-gradient(ellipse 85% 50% at 50% -5%, rgba(109, 212, 192, 0.12), transparent 55%),
+    radial-gradient(ellipse 55% 55% at 90% 85%, rgba(201, 168, 76, 0.08), transparent 50%),
+    radial-gradient(ellipse 50% 50% at 5% 70%, rgba(80, 100, 200, 0.08), transparent 50%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(109, 212, 192, 0.04), transparent 45%),
+    linear-gradient(180deg, #0E1225 0%, #111630 35%, #141A38 65%, #0E1225 100%);
   position: relative;
 }
 
-/* Subtle noise texture for depth */
+/* Noise texture */
 .bg-atmosphere::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 1;
 }
 
-/* Star-like particles — visible */
+/* Visible star particles */
 .bg-atmosphere::after {
   content: '';
   position: fixed;
   inset: 0;
   background-image:
-    radial-gradient(2px 2px at 15% 25%, rgba(200, 205, 216, 0.6), transparent),
-    radial-gradient(1.5px 1.5px at 45% 15%, rgba(200, 205, 216, 0.5), transparent),
-    radial-gradient(2.5px 2.5px at 72% 35%, rgba(122, 173, 160, 0.7), transparent),
-    radial-gradient(1.5px 1.5px at 88% 55%, rgba(200, 205, 216, 0.45), transparent),
-    radial-gradient(2px 2px at 25% 65%, rgba(200, 205, 216, 0.4), transparent),
-    radial-gradient(2.5px 2.5px at 55% 78%, rgba(176, 154, 106, 0.55), transparent),
-    radial-gradient(1.5px 1.5px at 35% 88%, rgba(200, 205, 216, 0.45), transparent),
-    radial-gradient(2px 2px at 78% 82%, rgba(122, 173, 160, 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 8% 48%, rgba(200, 205, 216, 0.35), transparent),
-    radial-gradient(2px 2px at 62% 52%, rgba(200, 205, 216, 0.3), transparent),
-    radial-gradient(2.5px 2.5px at 92% 18%, rgba(122, 173, 160, 0.6), transparent),
-    radial-gradient(2px 2px at 42% 42%, rgba(176, 154, 106, 0.4), transparent),
-    radial-gradient(1.5px 1.5px at 18% 92%, rgba(200, 205, 216, 0.35), transparent),
-    radial-gradient(2px 2px at 82% 12%, rgba(122, 173, 160, 0.45), transparent),
-    radial-gradient(1.5px 1.5px at 52% 32%, rgba(200, 205, 216, 0.3), transparent),
-    radial-gradient(2px 2px at 68% 68%, rgba(176, 154, 106, 0.35), transparent);
+    radial-gradient(3px 3px at 12% 20%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(2px 2px at 38% 12%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(3px 3px at 65% 28%, rgba(109, 212, 192, 0.8), transparent),
+    radial-gradient(2px 2px at 85% 45%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(2.5px 2.5px at 22% 58%, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(3px 3px at 50% 72%, rgba(201, 168, 76, 0.6), transparent),
+    radial-gradient(2px 2px at 30% 85%, rgba(255, 255, 255, 0.45), transparent),
+    radial-gradient(3px 3px at 75% 78%, rgba(109, 212, 192, 0.6), transparent),
+    radial-gradient(2px 2px at 5% 42%, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(2.5px 2.5px at 58% 48%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(3px 3px at 90% 15%, rgba(109, 212, 192, 0.7), transparent),
+    radial-gradient(2px 2px at 42% 35%, rgba(201, 168, 76, 0.4), transparent),
+    radial-gradient(2px 2px at 15% 90%, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(2.5px 2.5px at 80% 8%, rgba(109, 212, 192, 0.5), transparent),
+    radial-gradient(2px 2px at 48% 92%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(3px 3px at 95% 65%, rgba(201, 168, 76, 0.45), transparent);
   pointer-events: none;
   z-index: 1;
-  animation: starTwinkle 10s ease-in-out infinite alternate;
+  animation: starTwinkle 8s ease-in-out infinite alternate;
 }
 
 @keyframes starTwinkle {
-  0% { opacity: 0.6; }
+  0% { opacity: 0.7; }
   50% { opacity: 1; }
-  100% { opacity: 0.7; }
+  100% { opacity: 0.8; }
 }
 
 /* ============================================
-   CARD SYSTEM — Glass with jade/gold tint
+   CARD SYSTEM — Visible glass
    ============================================ */
 .card-glass {
-  background: linear-gradient(165deg, rgba(20, 21, 32, 0.9), rgba(11, 11, 18, 0.95));
-  border: 1px solid rgba(122, 173, 160, 0.08);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(122, 173, 160, 0.04);
-  backdrop-filter: blur(12px);
+  background: linear-gradient(165deg, rgba(22, 28, 58, 0.95), rgba(14, 18, 37, 0.98));
+  border: 1px solid rgba(109, 212, 192, 0.12);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), 0 0 60px rgba(109, 212, 192, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
   transition: border-color 400ms ease, box-shadow 400ms ease;
 }
 
 .card-glass:hover {
-  border-color: rgba(122, 173, 160, 0.16);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(122, 173, 160, 0.04);
+  border-color: rgba(109, 212, 192, 0.22);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 60px rgba(109, 212, 192, 0.06);
 }
 
 /* ============================================
-   BUTTON SYSTEM — Jade primary, gold accent
+   BUTTON SYSTEM
    ============================================ */
 .btn-primary {
-  background: linear-gradient(180deg, rgba(122, 173, 160, 0.14) 0%, rgba(122, 173, 160, 0.05) 100%);
-  border: 1px solid rgba(122, 173, 160, 0.30);
+  background: linear-gradient(180deg, rgba(109, 212, 192, 0.18) 0%, rgba(109, 212, 192, 0.06) 100%);
+  border: 1px solid rgba(109, 212, 192, 0.35);
   color: var(--jade);
   font-family: var(--font-noto-serif-sc), Georgia, serif;
   letter-spacing: 0.1em;
@@ -148,22 +148,22 @@ a { text-decoration: none; }
 }
 
 .btn-primary:hover {
-  background: linear-gradient(180deg, rgba(122, 173, 160, 0.22) 0%, rgba(122, 173, 160, 0.08) 100%);
-  border-color: rgba(122, 173, 160, 0.50);
-  box-shadow: 0 0 30px rgba(122, 173, 160, 0.10), 0 0 60px rgba(122, 173, 160, 0.04);
-  color: #8FC4B6;
+  background: linear-gradient(180deg, rgba(109, 212, 192, 0.28) 0%, rgba(109, 212, 192, 0.10) 100%);
+  border-color: rgba(109, 212, 192, 0.55);
+  box-shadow: 0 0 30px rgba(109, 212, 192, 0.12), 0 0 60px rgba(109, 212, 192, 0.05);
+  color: #8EECD8;
 }
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid rgba(200, 205, 216, 0.10);
+  border: 1px solid rgba(212, 216, 232, 0.14);
   color: var(--silver-soft);
   letter-spacing: 0.06em;
   transition: all 300ms ease;
 }
 
 .btn-secondary:hover {
-  border-color: rgba(200, 205, 216, 0.22);
+  border-color: rgba(212, 216, 232, 0.28);
   color: var(--silver);
 }
 
@@ -181,28 +181,23 @@ a { text-decoration: none; }
 }
 
 @keyframes gentlePulse {
-  0%, 100% { opacity: 0.4; }
+  0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
 
 @keyframes slowFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-8px); }
 }
 
 @keyframes breathe {
-  0%, 100% { opacity: 0.06; transform: scale(1); }
-  50% { opacity: 0.14; transform: scale(1.03); }
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.02); }
 }
 
 @keyframes slowSpin {
   from { transform: translate(-50%, -50%) rotate(0deg); }
   to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
 }
 
 @keyframes coinShake {
@@ -216,9 +211,9 @@ a { text-decoration: none; }
 }
 
 @keyframes coinLand {
-  0% { box-shadow: 0 0 20px rgba(176,154,106,0.08), 0 4px 16px rgba(0,0,0,0.20); }
-  50% { box-shadow: 0 0 28px rgba(176,154,106,0.20), 0 2px 12px rgba(0,0,0,0.30); }
-  100% { box-shadow: 0 0 20px rgba(176,154,106,0.08), 0 4px 16px rgba(0,0,0,0.20); }
+  0% { box-shadow: 0 0 20px rgba(201,168,76,0.10), 0 4px 16px rgba(0,0,0,0.20); }
+  50% { box-shadow: 0 0 28px rgba(201,168,76,0.25), 0 2px 12px rgba(0,0,0,0.30); }
+  100% { box-shadow: 0 0 20px rgba(201,168,76,0.10), 0 4px 16px rgba(0,0,0,0.20); }
 }
 
 .animate-coin-shake {
@@ -249,80 +244,17 @@ a { text-decoration: none; }
 .delay-600 { animation-delay: 600ms; }
 
 /* ============================================
-   HERO DECORATIVE ELEMENTS
-   ============================================ */
-.hero-ring {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.hero-ring-1 {
-  width: 560px; height: 560px;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid rgba(122, 173, 160, 0.15);
-  box-shadow: 0 0 60px rgba(122, 173, 160, 0.04), inset 0 0 60px rgba(122, 173, 160, 0.02);
-  animation: breathe 10s ease-in-out infinite;
-}
-
-.hero-ring-2 {
-  width: 380px; height: 380px;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid rgba(122, 173, 160, 0.22);
-  box-shadow: 0 0 40px rgba(122, 173, 160, 0.06);
-  animation: breathe 10s ease-in-out infinite 3s;
-}
-
-.hero-ring-3 {
-  width: 200px; height: 200px;
-  top: 50%; left: 50%;
-  border: 1px solid rgba(176, 154, 106, 0.18);
-  box-shadow: 0 0 30px rgba(176, 154, 106, 0.05);
-  animation: slowSpin 180s linear infinite;
-}
-
-.hero-trigram {
-  position: absolute;
-  color: rgba(122, 173, 160, 0.10);
-  font-family: var(--font-noto-serif-sc), Georgia, serif;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* ============================================
-   DECORATIVE ELEMENTS
+   DECORATIVE
    ============================================ */
 .gold-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-  opacity: 0.3;
+  opacity: 0.4;
 }
 
 .jade-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(122, 173, 160, 0.4), transparent);
-  opacity: 0.5;
-}
-
-.divider-ornament {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  justify-content: center;
-}
-
-.divider-ornament::before,
-.divider-ornament::after {
-  content: '';
-  height: 1px;
-  width: 60px;
-  background: linear-gradient(90deg, transparent, rgba(122, 173, 160, 0.3));
-}
-
-.divider-ornament::after {
-  background: linear-gradient(270deg, transparent, rgba(122, 173, 160, 0.3));
+  background: linear-gradient(90deg, transparent, rgba(109, 212, 192, 0.5), transparent);
 }
 
 /* ============================================
@@ -330,68 +262,45 @@ a { text-decoration: none; }
    ============================================ */
 .glow-hero {
   background:
-    radial-gradient(ellipse 70% 50% at 50% 20%, rgba(122, 173, 160, 0.07), transparent 60%),
-    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(176, 154, 106, 0.03), transparent 55%);
+    radial-gradient(ellipse 70% 50% at 50% 20%, rgba(109, 212, 192, 0.10), transparent 55%),
+    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(201, 168, 76, 0.05), transparent 50%);
 }
 
 .glow-center {
-  background: radial-gradient(ellipse 50% 40% at 50% 50%, rgba(122, 173, 160, 0.04), transparent 70%);
+  background: radial-gradient(ellipse 50% 40% at 50% 50%, rgba(109, 212, 192, 0.06), transparent 65%);
 }
 
 .glow-ritual {
   background:
-    radial-gradient(ellipse 50% 45% at 50% 40%, rgba(176, 154, 106, 0.05), transparent 65%);
+    radial-gradient(ellipse 50% 45% at 50% 40%, rgba(201, 168, 76, 0.06), transparent 60%);
 }
 
 .glow-result {
   background:
-    radial-gradient(ellipse 55% 45% at 45% 35%, rgba(122, 173, 160, 0.04), transparent 70%);
+    radial-gradient(ellipse 55% 45% at 45% 35%, rgba(109, 212, 192, 0.05), transparent 65%);
 }
 
 /* ============================================
    YAO LINE VISUALS
    ============================================ */
-.yao-yang {
-  display: flex;
-  justify-content: center;
-}
-
+.yao-yang { display: flex; justify-content: center; }
 .yao-yang::before {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 3px;
+  content: ''; display: block; width: 100%; height: 3px;
   background: linear-gradient(90deg, transparent, var(--silver) 10%, var(--silver) 90%, transparent);
   border-radius: 1.5px;
 }
 
-.yao-yin {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-}
-
-.yao-yin::before,
-.yao-yin::after {
-  content: '';
-  display: block;
-  width: 42%;
-  height: 3px;
+.yao-yin { display: flex; justify-content: center; gap: 14px; }
+.yao-yin::before, .yao-yin::after {
+  content: ''; display: block; width: 42%; height: 3px;
   background: linear-gradient(90deg, transparent, var(--jade-soft) 15%, var(--jade-soft) 85%, transparent);
   border-radius: 1.5px;
 }
 
-.yao-moving {
-  position: relative;
-}
-
+.yao-moving { position: relative; }
 .yao-moving::after {
-  position: absolute;
-  right: -20px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 10px;
-  color: var(--gold);
+  position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+  font-size: 10px; color: var(--gold);
 }
 
 /* ============================================
@@ -399,16 +308,13 @@ a { text-decoration: none; }
    ============================================ */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(122, 173, 160, 0.12); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(122, 173, 160, 0.25); }
+::-webkit-scrollbar-thumb { background: rgba(109, 212, 192, 0.15); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(109, 212, 192, 0.30); }
 
 /* ============================================
-   TYPOGRAPHY UTILITIES
+   TYPOGRAPHY
    ============================================ */
-.font-display {
-  font-family: var(--font-noto-serif-sc), Georgia, serif;
-}
-
+.font-display { font-family: var(--font-noto-serif-sc), Georgia, serif; }
 .text-jade { color: var(--jade); }
 .text-gold { color: var(--gold); }
 .text-gold-light { color: var(--gold-light); }
