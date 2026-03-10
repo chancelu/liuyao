@@ -85,6 +85,8 @@ export function ResultClient({ id }: { id: string }) {
   const [shareState, setShareState] = useState<'idle' | 'sharing' | 'copied' | 'error'>('idle');
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [showShareCard, setShowShareCard] = useState(false);
+  const [showPlainAnalysis, setShowPlainAnalysis] = useState(true);
+  const [showProAnalysis, setShowProAnalysis] = useState(true);
   const loginHref = useMemo(() => `/login?next=${encodeURIComponent(`/result/${id}`)}`, [id]);
 
   useEffect(() => {
@@ -196,19 +198,23 @@ export function ResultClient({ id }: { id: string }) {
           {result?.chart ? (
             <div className="space-y-4">
               {/* Meta Tags */}
-              <div className="flex flex-wrap gap-2 text-xs">
-                <span className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2 text-[var(--text-muted)]">
-                  月建：{result.chart.monthBranch}
-                </span>
-                <span className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2 text-[var(--text-muted)]">
-                  日辰：{result.chart.dayStem}{result.chart.dayBranch}
-                </span>
-                <span className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2 text-[var(--text-muted)]">
-                  旬空：{result.chart.xunkong[0]}{result.chart.xunkong[1]}
-                </span>
-                <span className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2 text-[var(--text-muted)]">
-                  宫：{result.chart.primary.palace}宫（{result.chart.primary.palaceElement}）
-                </span>
+              <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2.5">
+                  <div className="text-[10px] text-[var(--text-dim)]">月建</div>
+                  <div className="mt-1 text-[var(--moon-silver-soft)]">{result.chart.monthBranch}</div>
+                </div>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2.5">
+                  <div className="text-[10px] text-[var(--text-dim)]">日辰</div>
+                  <div className="mt-1 text-[var(--moon-silver-soft)]">{result.chart.dayStem}{result.chart.dayBranch}</div>
+                </div>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2.5">
+                  <div className="text-[10px] text-[var(--text-dim)]">旬空</div>
+                  <div className="mt-1 text-[var(--moon-silver-soft)]">{result.chart.xunkong[0]}{result.chart.xunkong[1]}</div>
+                </div>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2.5">
+                  <div className="text-[10px] text-[var(--text-dim)]">宫</div>
+                  <div className="mt-1 text-[var(--moon-silver-soft)]">{result.chart.primary.palace}宫（{result.chart.primary.palaceElement}）</div>
+                </div>
               </div>
 
               {/* Visual Yao Lines — top to bottom (上爻 → 初爻) */}
@@ -222,13 +228,16 @@ export function ResultClient({ id }: { id: string }) {
         </div>
 
         {/* Summary Card */}
-        <div className="card-glass-jade animate-fade-in-up delay-300 rounded-[28px] p-7 lg:p-8">
+        <div className="card-glass-jade animate-fade-in-up delay-300 flex flex-col rounded-[28px] p-7 lg:p-8">
           <div className="mb-6 text-xs tracking-[0.25em] text-[var(--jade-cyan)] uppercase">{messages.result.summaryTitle}</div>
-          <div className="space-y-5">
-            <div className="text-2xl leading-relaxed font-light text-[var(--moon-silver)]">
+          <div className="flex flex-1 flex-col justify-center space-y-5">
+            <div className="border-l-2 border-[var(--jade-cyan-soft)] pl-5 text-2xl leading-relaxed font-light text-[var(--moon-silver)]">
               {result?.summary ?? '正在等待分析结果。'}
             </div>
-            <p className="text-sm leading-8 text-[var(--text-muted)]">{result?.question ?? ''}</p>
+            <div className="rounded-xl bg-[rgba(200,205,216,0.03)] px-4 py-3">
+              <div className="mb-1 text-[10px] tracking-widest text-[var(--text-dim)] uppercase">所问</div>
+              <p className="text-sm leading-8 text-[var(--text-muted)]">{result?.question ?? ''}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -236,15 +245,31 @@ export function ResultClient({ id }: { id: string }) {
       {/* Analysis Cards */}
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="card-glass animate-fade-in-up delay-400 rounded-[24px] p-7 lg:p-8">
-          <div className="mb-5 text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.plainTitle}</div>
-          <p className="text-sm leading-9 text-[var(--moon-silver-soft)]">{result?.plainAnalysis ?? '解读生成中…'}</p>
+          <button
+            onClick={() => setShowPlainAnalysis((v) => !v)}
+            className="mb-5 flex w-full items-center justify-between"
+          >
+            <span className="text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.plainTitle}</span>
+            <span className="text-xs text-[var(--text-dim)] transition-transform duration-200" style={{ transform: showPlainAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
+          </button>
+          {showPlainAnalysis && (
+            <p className="animate-fade-in text-sm leading-9 text-[var(--moon-silver-soft)]">{result?.plainAnalysis ?? '解读生成中…'}</p>
+          )}
         </div>
         <div className="card-glass animate-fade-in-up delay-500 rounded-[24px] p-7 lg:p-8">
-          <div className="mb-5 text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.professionalTitle}</div>
-          {result?.professionalAnalysis ? (
-            <AnnotatedText text={result.professionalAnalysis} className="text-sm leading-9 text-[var(--moon-silver-soft)]" />
-          ) : (
-            <p className="text-sm leading-9 text-[var(--moon-silver-soft)]">专业分析生成中…</p>
+          <button
+            onClick={() => setShowProAnalysis((v) => !v)}
+            className="mb-5 flex w-full items-center justify-between"
+          >
+            <span className="text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.professionalTitle}</span>
+            <span className="text-xs text-[var(--text-dim)] transition-transform duration-200" style={{ transform: showProAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
+          </button>
+          {showProAnalysis && (
+            result?.professionalAnalysis ? (
+              <AnnotatedText text={result.professionalAnalysis} className="animate-fade-in text-sm leading-9 text-[var(--moon-silver-soft)]" />
+            ) : (
+              <p className="animate-fade-in text-sm leading-9 text-[var(--moon-silver-soft)]">专业分析生成中…</p>
+            )
           )}
         </div>
       </section>
