@@ -8,6 +8,7 @@ import { getSession, getUser } from '@/lib/supabase/auth';
 import { getDivinationResultFlow } from '@/services/divination-api';
 import { getDivinationApi, saveDivinationApi, shareDivinationApi } from '@/lib/api/client';
 import { AnnotatedText } from '@/components/ui/annotated-text';
+import { ShareCard } from '@/components/result/share-card';
 import type { MockResult } from '@/lib/types';
 
 const messages = getMessages();
@@ -83,6 +84,7 @@ export function ResultClient({ id }: { id: string }) {
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [shareState, setShareState] = useState<'idle' | 'sharing' | 'copied' | 'error'>('idle');
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [showShareCard, setShowShareCard] = useState(false);
   const loginHref = useMemo(() => `/login?next=${encodeURIComponent(`/result/${id}`)}`, [id]);
 
   useEffect(() => {
@@ -321,8 +323,20 @@ export function ResultClient({ id }: { id: string }) {
           >
             {messages.result.restart}
           </button>
+          {result && (
+            <button
+              className="btn-secondary rounded-full px-8 py-3.5 text-sm tracking-wide"
+              onClick={() => setShowShareCard(true)}
+            >
+              生成分享图
+            </button>
+          )}
         </div>
       </section>
+
+      {showShareCard && result && (
+        <ShareCard result={result} onClose={() => setShowShareCard(false)} />
+      )}
     </div>
   );
 }
