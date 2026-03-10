@@ -109,7 +109,7 @@ export class SupabaseDivinationRepository implements IDivinationRepository {
       divination_id: divinationId,
       lines: cast.lines,
       updated_at: cast.updatedAt,
-    });
+    }, { onConflict: 'divination_id' });
 
     if (castError) throw new Error(`saveCast (cast) failed: ${castError.message}`);
 
@@ -122,7 +122,7 @@ export class SupabaseDivinationRepository implements IDivinationRepository {
       plain_analysis: result.plainAnalysis,
       professional_analysis: result.professionalAnalysis,
       created_at: result.createdAt,
-    });
+    }, { onConflict: 'divination_id' });
 
     if (readingError) throw new Error(`saveCast (reading) failed: ${readingError.message}`);
 
