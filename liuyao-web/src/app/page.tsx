@@ -107,6 +107,25 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* FAQ */}
+      <section className="mt-16 space-y-10 pb-16">
+        <div className="space-y-4">
+          <div className="text-xs tracking-[0.35em] text-[var(--jade-cyan-soft)] uppercase">FAQ</div>
+          <h2 className="text-3xl font-light tracking-wide text-[var(--moon-silver)]">常见问题</h2>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {messages.home.faq.map((item) => (
+            <div
+              key={item.q}
+              className="card-glass rounded-[20px] p-6"
+            >
+              <div className="mb-3 text-sm font-medium text-[var(--moon-silver)]">{item.q}</div>
+              <p className="text-sm leading-7 text-[var(--moon-silver-soft)]">{item.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </SiteShell>
   );
 }

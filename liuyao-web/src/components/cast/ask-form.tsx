@@ -133,16 +133,23 @@ export function AskForm() {
 
       <section className="space-y-3">
         <div className="text-sm text-stone-300">示例问题</div>
-        <div className="flex flex-wrap gap-3">
-          {messages.home.examples.map((example) => (
-            <button
-              key={example}
-              type="button"
-              onClick={() => fillExample(example)}
-              className="rounded-full border border-emerald-200/10 bg-emerald-100/6 px-4 py-2 text-left text-sm text-stone-200 transition hover:border-emerald-200/25 hover:bg-emerald-100/10"
-            >
-              {example}
-            </button>
+        <div className="space-y-4">
+          {messages.home.categorizedExamples.map((group) => (
+            <div key={group.category}>
+              <div className="mb-2 text-xs text-stone-500">{group.category}</div>
+              <div className="flex flex-wrap gap-2">
+                {group.items.map((example) => (
+                  <button
+                    key={example}
+                    type="button"
+                    onClick={() => fillExample(example)}
+                    className="rounded-full border border-emerald-200/10 bg-emerald-100/6 px-4 py-2 text-left text-sm text-stone-200 transition hover:border-emerald-200/25 hover:bg-emerald-100/10"
+                  >
+                    {example}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
