@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { getCurrentDraft, getOrCreateGuestSession } from '@/lib/storage/draft-storage';
 import { submitCastFlow } from '@/services/divination-api';
+import { track } from '@/lib/analytics';
 import type { CastLine, DivinationDraft } from '@/lib/types';
 
 const messages = getMessages();
@@ -89,6 +90,7 @@ export function RitualClient() {
     }
 
     router.push(`/cast/processing?id=${draft.id}`);
+    track('cast_complete');
   };
 
   return (

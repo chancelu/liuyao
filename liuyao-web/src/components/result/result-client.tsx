@@ -9,6 +9,7 @@ import { getDivinationResultFlow } from '@/services/divination-api';
 import { getDivinationApi, saveDivinationApi, shareDivinationApi } from '@/lib/api/client';
 import { AnnotatedText } from '@/components/ui/annotated-text';
 import { ShareCard } from '@/components/result/share-card';
+import { track } from '@/lib/analytics';
 import type { MockResult } from '@/lib/types';
 
 const messages = getMessages();
@@ -101,6 +102,7 @@ export function ResultClient({ id }: { id: string }) {
       if (cancelled) return;
 
       setResult(next);
+      track('page_view_result', { id });
       const authed = Boolean(user);
       setIsAuthenticated(authed);
       setAccessToken(session?.access_token ?? null);
@@ -133,6 +135,7 @@ export function ResultClient({ id }: { id: string }) {
 
   async function handleShare() {
     setShareState('sharing');
+    track('click_share');
 
     // If authenticated and not yet saved, save first so history stays consistent
     if (accessToken && saveState === 'idle') {
@@ -330,6 +333,7 @@ export function ResultClient({ id }: { id: string }) {
           ) : (
             <Link
               href={loginHref}
+              onClick={() => track('click_register')}
               className="btn-primary rounded-full px-8 py-3.5 text-center text-sm tracking-wide"
             >
               登录后回到这条结果
@@ -351,7 +355,7 @@ export function ResultClient({ id }: { id: string }) {
           {result && (
             <button
               className="btn-secondary rounded-full px-8 py-3.5 text-sm tracking-wide"
-              onClick={() => setShowShareCard(true)}
+              onClick={() => { setShowShareCard(true); track('click_share_image'); }}
             >
               生成分享图
             </button>

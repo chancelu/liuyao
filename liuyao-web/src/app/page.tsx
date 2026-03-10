@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { SiteShell } from '@/components/site-shell';
+import { HomeTracker } from '@/components/home-tracker';
 import { getMessages } from '@/lib/i18n';
 
 const messages = getMessages();
@@ -7,6 +8,7 @@ const messages = getMessages();
 export default function HomePage() {
   return (
     <SiteShell>
+      <HomeTracker />
       {/* Hero */}
       <section className="glow-hero animate-fade-in-up grid gap-16 rounded-[32px] pb-8 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
         <div className="space-y-10">

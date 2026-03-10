@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { buildCreateDivinationPayload, createDivinationFlow } from '@/services/divination-api';
+import { track } from '@/lib/analytics';
 import type { Category, TimeScope } from '@/lib/types';
 
 const messages = getMessages();
@@ -72,6 +73,7 @@ export function AskForm() {
     }
 
     router.push(`/cast/ritual?id=${response.draft.id}`);
+    track('click_start_cast', { category });
   };
 
   return (
