@@ -69,7 +69,7 @@ export function AuthNav() {
   return (
     <Link
       href={loginHref}
-      className="text-[var(--gold-dim)] transition-colors duration-300 hover:text-[var(--gold)]"
+      className="text-[var(--dark-gold-dim)] transition-colors duration-300 hover:text-[var(--dark-gold)]"
     >
       登录
     </Link>

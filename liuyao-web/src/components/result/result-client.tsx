@@ -23,7 +23,7 @@ function YaoLine({ line }: { line: { position: number; spirit: string; relative:
     <div
       className={`animate-fade-in-up group grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 rounded-2xl border px-5 py-4 transition-colors duration-200 ${
         line.moving
-          ? 'border-[rgba(176,154,106,0.18)] bg-[rgba(176,154,106,0.04)] hover:border-[rgba(176,154,106,0.28)]'
+          ? 'border-[rgba(196,168,108,0.18)] bg-[rgba(196,168,108,0.04)] hover:border-[rgba(196,168,108,0.28)]'
           : 'border-[var(--border)] bg-[rgba(23,25,34,0.45)] hover:border-[var(--border-hover)]'
       }`}
       style={{ animationDelay: `${(6 - line.position) * 80}ms` }}
@@ -31,7 +31,7 @@ function YaoLine({ line }: { line: { position: number; spirit: string; relative:
       {/* Position & Spirit */}
       <div className="text-center">
         <div className="text-xs font-medium text-[var(--moon-silver)]">{posName}</div>
-        <div className="mt-0.5 text-[10px] text-[var(--text-dim)]">{line.spirit}</div>
+        <div className="mt-0.5 text-[10px] text-[var(--stone-dim)]">{line.spirit}</div>
       </div>
 
       {/* Yao visual + info */}
@@ -56,7 +56,7 @@ function YaoLine({ line }: { line: { position: number; spirit: string; relative:
         {/* Relative & Branch */}
         <div className="flex items-baseline gap-3">
           <span className="text-sm text-[var(--moon-silver)]">{line.relative}</span>
-          <span className="text-xs text-[var(--text-muted)]">{line.branch}{line.branchElement}</span>
+          <span className="text-xs text-[var(--stone)]">{line.branch}{line.branchElement}</span>
         </div>
 
         {/* Moving arrow */}
@@ -162,11 +162,12 @@ export function ResultClient({ id }: { id: string }) {
 
   return (
     <div className="glow-result mx-auto max-w-6xl space-y-10">
-      <div className="animate-fade-in-up rounded-[30px] border border-[rgba(196,164,108,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.00))] px-7 py-8 lg:px-10">
+      {/* Page header */}
+      <div className="animate-fade-in-up rounded-[30px] border border-[rgba(196,168,108,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.00))] px-7 py-8 lg:px-10">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
-            <div className="text-[10px] tracking-[0.4em] text-[var(--gold-dim)] uppercase">Oracle result #{id}</div>
-            <h1 className="font-display text-4xl font-extralight tracking-[0.04em] text-[var(--cream)]">{messages.result.title}</h1>
+            <div className="text-[10px] tracking-[0.4em] text-[var(--dark-gold-dim)] uppercase">Oracle result #{id}</div>
+            <h1 className="font-display text-4xl font-extralight tracking-[0.04em] text-white">{messages.result.title}</h1>
             <p className="max-w-2xl text-sm leading-8 text-[var(--cream-soft)]">先看卦象结构，再看一句话结论，最后展开白话与专业分析。</p>
           </div>
           <div className="grid grid-cols-3 gap-3 text-center text-[10px] tracking-[0.22em] uppercase sm:w-auto">
@@ -185,14 +186,14 @@ export function ResultClient({ id }: { id: string }) {
 
           {/* Primary & Changed Hexagram Names */}
           <div className="mb-6 grid grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)]/40 p-5">
-              <div className="text-xs text-[var(--text-dim)]">本卦</div>
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)] p-5">
+              <div className="text-xs text-[var(--stone-dim)]">本卦</div>
               <div className="mt-2 text-2xl font-light tracking-wide text-[var(--moon-silver)]">
                 {result?.primaryHexagram ?? '待生成'}
               </div>
             </div>
-            <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)]/40 p-5">
-              <div className="text-xs text-[var(--text-dim)]">变卦</div>
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)] p-5">
+              <div className="text-xs text-[var(--stone-dim)]">变卦</div>
               <div className="mt-2 text-2xl font-light tracking-wide text-[var(--moon-silver)]">
                 {result?.changedHexagram ?? '待生成'}
               </div>
@@ -200,7 +201,7 @@ export function ResultClient({ id }: { id: string }) {
           </div>
 
           {/* Moving lines info */}
-          <div className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)]/40 p-5 text-sm leading-7 text-[var(--moon-silver-soft)]">
+          <div className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)] p-5 text-sm leading-7 text-[var(--moon-silver-soft)]">
             {result?.movingLines.length
               ? `动爻：第 ${result.movingLines.join('、')} 爻`
               : '静卦，无动爻'}
@@ -211,20 +212,20 @@ export function ResultClient({ id }: { id: string }) {
             <div className="space-y-4">
               {/* Meta Tags */}
               <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2.5">
-                  <div className="text-[10px] text-[var(--text-dim)]">月建</div>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)] px-3 py-2.5">
+                  <div className="text-[10px] text-[var(--stone-dim)]">月建</div>
                   <div className="mt-1 text-[var(--moon-silver-soft)]">{result.chart.monthBranch}</div>
                 </div>
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2.5">
-                  <div className="text-[10px] text-[var(--text-dim)]">日辰</div>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)] px-3 py-2.5">
+                  <div className="text-[10px] text-[var(--stone-dim)]">日辰</div>
                   <div className="mt-1 text-[var(--moon-silver-soft)]">{result.chart.dayStem}{result.chart.dayBranch}</div>
                 </div>
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2.5">
-                  <div className="text-[10px] text-[var(--text-dim)]">旬空</div>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)] px-3 py-2.5">
+                  <div className="text-[10px] text-[var(--stone-dim)]">旬空</div>
                   <div className="mt-1 text-[var(--moon-silver-soft)]">{result.chart.xunkong[0]}{result.chart.xunkong[1]}</div>
                 </div>
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)]/40 px-3 py-2.5">
-                  <div className="text-[10px] text-[var(--text-dim)]">宫</div>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)] px-3 py-2.5">
+                  <div className="text-[10px] text-[var(--stone-dim)]">宫</div>
                   <div className="mt-1 text-[var(--moon-silver-soft)]">{result.chart.primary.palace}宫（{result.chart.primary.palaceElement}）</div>
                 </div>
               </div>
@@ -247,8 +248,8 @@ export function ResultClient({ id }: { id: string }) {
               {result?.summary ?? '正在等待分析结果。'}
             </div>
             <div className="rounded-xl bg-[rgba(200,205,216,0.03)] px-4 py-3">
-              <div className="mb-1 text-[10px] tracking-widest text-[var(--text-dim)] uppercase">所问</div>
-              <p className="text-sm leading-8 text-[var(--text-muted)]">{result?.question ?? ''}</p>
+              <div className="mb-1 text-[10px] tracking-widest text-[var(--stone-dim)] uppercase">所问</div>
+              <p className="text-sm leading-8 text-[var(--stone)]">{result?.question ?? ''}</p>
             </div>
           </div>
         </div>
@@ -262,7 +263,7 @@ export function ResultClient({ id }: { id: string }) {
             className="mb-5 flex w-full items-center justify-between"
           >
             <span className="text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.plainTitle}</span>
-            <span className="text-xs text-[var(--text-dim)] transition-transform duration-200" style={{ transform: showPlainAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
+            <span className="text-xs text-[var(--stone-dim)] transition-transform duration-200" style={{ transform: showPlainAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
           </button>
           {showPlainAnalysis && (
             <p className="animate-fade-in text-sm leading-9 text-[var(--moon-silver-soft)]">{result?.plainAnalysis ?? '解读生成中…'}</p>
@@ -274,7 +275,7 @@ export function ResultClient({ id }: { id: string }) {
             className="mb-5 flex w-full items-center justify-between"
           >
             <span className="text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.professionalTitle}</span>
-            <span className="text-xs text-[var(--text-dim)] transition-transform duration-200" style={{ transform: showProAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
+            <span className="text-xs text-[var(--stone-dim)] transition-transform duration-200" style={{ transform: showProAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
           </button>
           {showProAnalysis && (
             result?.professionalAnalysis ? (
@@ -289,7 +290,7 @@ export function ResultClient({ id }: { id: string }) {
       {/* Status Messages & Actions */}
       <section className="animate-fade-in-up delay-600 space-y-4 pb-8">
         {!isAuthenticated ? (
-          <div className="rounded-2xl border border-[rgba(176,154,106,0.15)] bg-[rgba(176,154,106,0.04)] p-5 text-sm leading-8 text-[var(--moon-silver-soft)]">
+          <div className="rounded-2xl border border-[rgba(196,168,108,0.15)] bg-[rgba(196,168,108,0.04)] p-5 text-sm leading-8 text-[var(--cream-soft)]">
             这次结果已经可以继续阅读；如果你想下次回来接着看，先登录即可，系统会自动带你回到当前结果页。
           </div>
         ) : null}
@@ -301,9 +302,9 @@ export function ResultClient({ id }: { id: string }) {
         ) : null}
 
         {saveState === 'saved' ? (
-          <div className="rounded-2xl border border-[rgba(122,173,160,0.18)] bg-[rgba(122,173,160,0.06)] p-4 text-sm text-[var(--jade-cyan)]">
+          <div className="rounded-2xl border border-[rgba(122,212,191,0.18)] bg-[rgba(122,212,191,0.06)] p-4 text-sm text-[var(--jade-cyan)]">
             已保存到记录。
-            <Link href="/history" className="ml-3 underline underline-offset-2 transition-colors duration-200 hover:text-[var(--foreground)]">
+            <Link href="/history" className="ml-3 underline underline-offset-2 transition-colors duration-200 hover:text-[var(--cream)]">
               查看历史记录
             </Link>
           </div>
@@ -316,16 +317,16 @@ export function ResultClient({ id }: { id: string }) {
         ) : null}
 
         {shareUrl && shareState !== 'copied' ? (
-          <div className="rounded-2xl border border-[var(--border)] bg-[rgba(200,205,216,0.03)] p-4 text-sm text-[var(--moon-silver-soft)]">
+          <div className="rounded-2xl border border-[var(--border)] bg-[rgba(200,205,216,0.03)] p-4 text-sm text-[var(--cream-soft)]">
             分享链接：
-            <a href={shareUrl} target="_blank" rel="noreferrer" className="ml-2 break-all text-[var(--jade-cyan)] underline underline-offset-2 transition-colors duration-200 hover:text-[var(--foreground)]">
+            <a href={shareUrl} target="_blank" rel="noreferrer" className="ml-2 break-all text-[var(--jade-cyan)] underline underline-offset-2 transition-colors duration-200 hover:text-[var(--cream)]">
               {shareUrl}
             </a>
           </div>
         ) : null}
 
         {shareState === 'copied' ? (
-          <div className="rounded-2xl border border-[rgba(122,173,160,0.18)] bg-[rgba(122,173,160,0.06)] p-4 text-sm text-[var(--jade-cyan)]">
+          <div className="rounded-2xl border border-[rgba(122,212,191,0.18)] bg-[rgba(122,212,191,0.06)] p-4 text-sm text-[var(--jade-cyan)]">
             分享链接已复制到剪贴板！
           </div>
         ) : null}

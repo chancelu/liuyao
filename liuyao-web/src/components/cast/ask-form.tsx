@@ -80,7 +80,7 @@ export function AskForm() {
     <div className="mt-12 space-y-10">
       {/* Question */}
       <section className="space-y-3">
-        <label className="text-[10px] tracking-[0.2em] text-[var(--gold-dim)] uppercase">{messages.ask.questionLabel}</label>
+        <label className="text-[10px] tracking-[0.2em] text-[var(--dark-gold-dim)] uppercase">{messages.ask.questionLabel}</label>
         <textarea
           className="font-display min-h-36 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-6 py-5 text-base leading-8 text-[var(--cream)] outline-none placeholder:text-[var(--stone-dim)] transition-colors focus:border-[var(--border-hover)]"
           placeholder={messages.ask.questionPlaceholder}
@@ -94,7 +94,7 @@ export function AskForm() {
 
       {/* Category */}
       <section className="space-y-3">
-        <div className="text-[10px] tracking-[0.2em] text-[var(--gold-dim)] uppercase">{messages.ask.categoryLabel}</div>
+        <div className="text-[10px] tracking-[0.2em] text-[var(--dark-gold-dim)] uppercase">{messages.ask.categoryLabel}</div>
         <div className="flex flex-wrap gap-3">
           {categories.map((item) => (
             <button
@@ -103,7 +103,7 @@ export function AskForm() {
               onClick={() => setCategory(item.value)}
               className={`rounded-full border px-5 py-2.5 text-sm transition-all duration-300 ${
                 category === item.value
-                  ? 'border-[rgba(196,164,108,0.30)] bg-[rgba(196,164,108,0.08)] text-[var(--gold-light)]'
+                  ? 'border-[rgba(196,168,108,0.30)] bg-[rgba(196,168,108,0.08)] text-[var(--dark-gold-light)]'
                   : 'border-[var(--border)] text-[var(--stone)] hover:border-[var(--border-hover)] hover:text-[var(--cream-soft)]'
               }`}
             >
@@ -115,7 +115,7 @@ export function AskForm() {
 
       {/* Time Scope */}
       <section className="space-y-3">
-        <div className="text-[10px] tracking-[0.2em] text-[var(--gold-dim)] uppercase">{messages.ask.timeScopeLabel}</div>
+        <div className="text-[10px] tracking-[0.2em] text-[var(--dark-gold-dim)] uppercase">{messages.ask.timeScopeLabel}</div>
         <div className="flex flex-wrap gap-3">
           {timeScopes.map((item) => (
             <button
@@ -124,7 +124,7 @@ export function AskForm() {
               onClick={() => setTimeScope(item.value)}
               className={`rounded-full border px-5 py-2.5 text-sm transition-all duration-300 ${
                 timeScope === item.value
-                  ? 'border-[rgba(196,164,108,0.30)] bg-[rgba(196,164,108,0.08)] text-[var(--gold-light)]'
+                  ? 'border-[rgba(196,168,108,0.30)] bg-[rgba(196,168,108,0.08)] text-[var(--dark-gold-light)]'
                   : 'border-[var(--border)] text-[var(--stone)] hover:border-[var(--border-hover)] hover:text-[var(--cream-soft)]'
               }`}
             >
@@ -136,7 +136,7 @@ export function AskForm() {
 
       {/* Background */}
       <section className="space-y-3">
-        <label className="text-[10px] tracking-[0.2em] text-[var(--gold-dim)] uppercase">{messages.ask.backgroundLabel}</label>
+        <label className="text-[10px] tracking-[0.2em] text-[var(--dark-gold-dim)] uppercase">{messages.ask.backgroundLabel}</label>
         <textarea
           className="min-h-28 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-6 py-5 text-base leading-8 text-[var(--cream)] outline-none placeholder:text-[var(--stone-dim)] transition-colors focus:border-[var(--border-hover)]"
           placeholder={messages.ask.backgroundPlaceholder}
@@ -147,7 +147,7 @@ export function AskForm() {
 
       {/* Example Questions */}
       <section className="space-y-4">
-        <div className="text-[10px] tracking-[0.2em] text-[var(--gold-dim)] uppercase">示例问题</div>
+        <div className="text-[10px] tracking-[0.2em] text-[var(--dark-gold-dim)] uppercase">示例问题</div>
         <div className="space-y-5">
           {messages.home.categorizedExamples.map((group) => (
             <div key={group.category}>
@@ -158,7 +158,7 @@ export function AskForm() {
                     key={example}
                     type="button"
                     onClick={() => fillExample(example)}
-                    className="rounded-full border border-[var(--border)] px-4 py-2 text-left text-sm text-[var(--cream-soft)] transition-all duration-300 hover:border-[var(--border-hover)] hover:text-[var(--gold-light)]"
+                    className="rounded-full border border-[var(--border)] px-4 py-2 text-left text-sm text-[var(--cream-soft)] transition-all duration-300 hover:border-[var(--border-hover)] hover:text-[var(--dark-gold-light)]"
                   >
                     {example}
                   </button>

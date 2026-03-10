@@ -96,8 +96,8 @@ export function RitualClient() {
       {/* Left — Info & Progress */}
       <div className="animate-fade-in-up space-y-8">
         <div>
-          <div className="text-[10px] tracking-[0.5em] text-[var(--gold-dim)] uppercase">Ritual</div>
-          <h1 className="font-display mt-3 text-3xl font-extralight tracking-wide text-[var(--cream)]">
+          <div className="text-[10px] tracking-[0.5em] text-[var(--dark-gold-dim)] uppercase">Ritual</div>
+          <h1 className="font-display mt-3 text-3xl font-extralight tracking-wide text-white">
             {messages.cast.title}
           </h1>
           <p className="mt-4 text-sm leading-8 text-[var(--stone)]">
@@ -107,7 +107,7 @@ export function RitualClient() {
 
         {/* Progress */}
         <div className="card-glass rounded-xl p-6">
-          <div className="mb-4 text-[10px] tracking-[0.3em] text-[var(--gold-dim)] uppercase">Progress</div>
+          <div className="mb-4 text-[10px] tracking-[0.3em] text-[var(--dark-gold-dim)] uppercase">Progress</div>
           <div className="mb-5 text-sm text-[var(--stone)]">
             {messages.cast.progress.replace('{current}', String(Math.min(nextLineNumber, 6)))}
           </div>
@@ -120,7 +120,7 @@ export function RitualClient() {
                   key={index}
                   className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-xs transition-all duration-300 ${
                     isDone
-                      ? 'border border-[rgba(196,164,108,0.15)] bg-[rgba(196,164,108,0.05)] text-[var(--gold)]'
+                      ? 'border border-[rgba(196,168,108,0.15)] bg-[rgba(196,168,108,0.05)] text-[var(--dark-gold)]'
                       : isCurrent
                         ? 'border border-[var(--border-hover)] bg-[var(--bg-elevated)] text-[var(--cream)]'
                         : 'border border-transparent text-[var(--stone-dim)]'
@@ -129,14 +129,14 @@ export function RitualClient() {
                   <div
                     className={`h-1.5 w-1.5 rounded-full ${
                       isDone
-                        ? 'bg-[var(--gold)]'
+                        ? 'bg-[var(--dark-gold)]'
                         : isCurrent
                           ? 'animate-gentle-pulse bg-[var(--cream)]'
                           : 'bg-[var(--stone-dim)]'
                     }`}
                   />
                   <span>{YAO_NAMES[index]}</span>
-                  {isDone && <span className="ml-auto text-[var(--gold-dim)]">{CAST_LABELS[lines[index]]}</span>}
+                  {isDone && <span className="ml-auto text-[var(--dark-gold-dim)]">{CAST_LABELS[lines[index]]}</span>}
                 </div>
               );
             })}
@@ -154,7 +154,7 @@ export function RitualClient() {
             {[1, 2, 3].map((coin) => (
               <div
                 key={`${coin}-${shakeKey}`}
-                className={`flex h-24 w-24 items-center justify-center rounded-full border border-[rgba(196,164,108,0.20)] bg-[radial-gradient(circle_at_30%_30%,rgba(196,164,108,0.12),rgba(196,164,108,0.02))] font-display text-xs tracking-widest text-[var(--gold)] shadow-[0_0_20px_rgba(196,164,108,0.06)] ${
+                className={`flex h-24 w-24 items-center justify-center rounded-full border border-[rgba(196,168,108,0.20)] bg-[radial-gradient(circle_at_30%_30%,rgba(196,168,108,0.12),rgba(196,168,108,0.02))] font-display text-xs tracking-widest text-[var(--dark-gold)] shadow-[0_0_20px_rgba(196,168,108,0.06)] ${
                   isShaking ? 'animate-coin-shake' : ''
                 }`}
                 style={isShaking ? { animationDelay: `${coin * 60}ms` } : undefined}
@@ -169,7 +169,7 @@ export function RitualClient() {
             <div className="text-sm text-[var(--stone)]">
               {isShaking ? '正在摇卦…' : isComplete ? '六次摇卦完成，可以生成排盘了。' : '请专注你想问的事情，然后摇出这一爻。'}
             </div>
-            <div className={`font-display text-xs tracking-[0.3em] uppercase transition-all duration-300 ${lastLabel && !isShaking ? 'text-[var(--gold)]' : 'text-[var(--stone-dim)]'}`}>
+            <div className={`font-display text-xs tracking-[0.3em] uppercase transition-all duration-300 ${lastLabel && !isShaking ? 'text-[var(--dark-gold)]' : 'text-[var(--stone-dim)]'}`}>
               {isShaking ? '…' : lastLabel || '少阳 / 少阴 / 老阳 / 老阴'}
             </div>
           </div>
@@ -194,7 +194,7 @@ export function RitualClient() {
           {/* Continue */}
           <button
             onClick={handleContinue}
-            className="text-sm text-[var(--stone)] underline-offset-4 transition-colors duration-300 hover:text-[var(--gold)] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
+            className="text-sm text-[var(--stone)] underline-offset-4 transition-colors duration-300 hover:text-[var(--dark-gold)] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
             disabled={isSubmitting}
           >
             {isSubmitting ? '正在生成排盘…' : '生成排盘与结果'}

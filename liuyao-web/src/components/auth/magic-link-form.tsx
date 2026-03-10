@@ -40,7 +40,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
       <div className="space-y-4 text-center">
         <div className="font-display text-2xl">📬</div>
         <p className="text-sm leading-7 text-[var(--cream-soft)]">
-          验证邮件已发送至 <span className="text-[var(--gold)]">{email}</span>
+          验证邮件已发送至 <span className="text-[var(--dark-gold)]">{email}</span>
         </p>
         <p className="text-xs text-[var(--stone)]">
           请查收邮件并点击登录链接。链接 10 分钟内有效，若未收到请检查垃圾邮件文件夹。
@@ -53,7 +53,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
         <button
           type="button"
           onClick={() => { setStep('input'); setError(null); }}
-          className="mt-2 text-xs text-[var(--stone)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]"
+          className="mt-2 text-xs text-[var(--stone)] underline underline-offset-2 transition-colors hover:text-[var(--dark-gold)]"
         >
           重新输入邮箱
         </button>
@@ -64,7 +64,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-2">
-        <label htmlFor="magic-email" className="block text-[10px] tracking-[0.2em] text-[var(--gold-dim)] uppercase">
+        <label htmlFor="magic-email" className="block text-[10px] tracking-[0.2em] text-[var(--dark-gold-dim)] uppercase">
           邮箱地址
         </label>
         <input
