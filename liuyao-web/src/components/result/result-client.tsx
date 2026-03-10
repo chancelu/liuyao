@@ -18,7 +18,11 @@ function YaoLine({ line }: { line: { position: number; spirit: string; relative:
 
   return (
     <div
-      className="animate-fade-in-up group grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 rounded-2xl border border-[var(--border)] bg-[rgba(23,25,34,0.45)] px-5 py-4 transition-colors duration-200 hover:border-[var(--border-hover)]"
+      className={`animate-fade-in-up group grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 rounded-2xl border px-5 py-4 transition-colors duration-200 ${
+        line.moving
+          ? 'border-[rgba(176,154,106,0.18)] bg-[rgba(176,154,106,0.04)] hover:border-[rgba(176,154,106,0.28)]'
+          : 'border-[var(--border)] bg-[rgba(23,25,34,0.45)] hover:border-[var(--border-hover)]'
+      }`}
       style={{ animationDelay: `${(6 - line.position) * 80}ms` }}
     >
       {/* Position & Spirit */}
@@ -35,8 +39,8 @@ function YaoLine({ line }: { line: { position: number; spirit: string; relative:
             <div className="h-[5px] w-full rounded-full bg-gradient-to-r from-transparent via-[var(--moon-silver)] to-transparent" />
           ) : (
             <div className="flex gap-2.5">
-              <div className="h-[5px] flex-1 rounded-full bg-gradient-to-r from-transparent via-[var(--moon-silver)] to-[var(--moon-silver)]" />
-              <div className="h-[5px] flex-1 rounded-full bg-gradient-to-l from-transparent via-[var(--moon-silver)] to-[var(--moon-silver)]" />
+              <div className="h-[5px] flex-1 rounded-full bg-gradient-to-r from-transparent via-[var(--jade-cyan-soft)] to-[var(--jade-cyan-soft)]" />
+              <div className="h-[5px] flex-1 rounded-full bg-gradient-to-l from-transparent via-[var(--jade-cyan-soft)] to-[var(--jade-cyan-soft)]" />
             </div>
           )}
           {line.moving && (
@@ -149,10 +153,10 @@ export function ResultClient({ id }: { id: string }) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-10">
+    <div className="glow-result mx-auto max-w-6xl space-y-10">
       {/* Header */}
       <div className="animate-fade-in-up space-y-3">
-        <div className="text-xs tracking-[0.35em] text-[var(--text-dim)] uppercase">Result #{id}</div>
+        <div className="text-xs tracking-[0.35em] text-[var(--jade-cyan-soft)] uppercase">Result #{id}</div>
         <h1 className="text-4xl font-light tracking-wide text-[var(--moon-silver)]">{messages.result.title}</h1>
       </div>
 
@@ -160,7 +164,7 @@ export function ResultClient({ id }: { id: string }) {
       <section className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
         {/* Hexagram Chart */}
         <div className="card-glass animate-fade-in-up delay-100 rounded-[28px] p-7 lg:p-8">
-          <div className="mb-6 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.result.chartTitle}</div>
+          <div className="mb-6 text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.chartTitle}</div>
 
           {/* Primary & Changed Hexagram Names */}
           <div className="mb-6 grid grid-cols-2 gap-4">
@@ -215,8 +219,8 @@ export function ResultClient({ id }: { id: string }) {
         </div>
 
         {/* Summary Card */}
-        <div className="card-glass animate-fade-in-up delay-300 rounded-[28px] border-[rgba(122,173,160,0.12)] bg-[rgba(122,173,160,0.04)] p-7 lg:p-8">
-          <div className="mb-6 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.result.summaryTitle}</div>
+        <div className="card-glass-jade animate-fade-in-up delay-300 rounded-[28px] p-7 lg:p-8">
+          <div className="mb-6 text-xs tracking-[0.25em] text-[var(--jade-cyan)] uppercase">{messages.result.summaryTitle}</div>
           <div className="space-y-5">
             <div className="text-2xl leading-relaxed font-light text-[var(--moon-silver)]">
               {result?.summary ?? '正在等待分析结果。'}
@@ -229,11 +233,11 @@ export function ResultClient({ id }: { id: string }) {
       {/* Analysis Cards */}
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="card-glass animate-fade-in-up delay-400 rounded-[24px] p-7 lg:p-8">
-          <div className="mb-5 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.result.plainTitle}</div>
+          <div className="mb-5 text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.plainTitle}</div>
           <p className="text-sm leading-9 text-[var(--moon-silver-soft)]">{result?.plainAnalysis ?? '解读生成中…'}</p>
         </div>
         <div className="card-glass animate-fade-in-up delay-500 rounded-[24px] p-7 lg:p-8">
-          <div className="mb-5 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.result.professionalTitle}</div>
+          <div className="mb-5 text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.professionalTitle}</div>
           <p className="text-sm leading-9 text-[var(--moon-silver-soft)]">{result?.professionalAnalysis ?? '专业分析生成中…'}</p>
         </div>
       </section>

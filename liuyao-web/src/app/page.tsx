@@ -8,16 +8,16 @@ export default function HomePage() {
   return (
     <SiteShell>
       {/* Hero */}
-      <section className="animate-fade-in-up grid gap-16 pb-8 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
+      <section className="glow-hero animate-fade-in-up grid gap-16 rounded-[32px] pb-8 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
         <div className="space-y-10">
-          <div className="inline-flex rounded-full border border-[rgba(200,205,216,0.10)] bg-[rgba(200,205,216,0.03)] px-5 py-2.5 text-xs tracking-[0.35em] text-[var(--moon-silver-soft)] uppercase">
+          <div className="inline-flex rounded-full border border-[rgba(122,173,160,0.15)] bg-[rgba(122,173,160,0.06)] px-5 py-2.5 text-xs tracking-[0.35em] text-[var(--jade-cyan)] uppercase">
             六爻在线占卦体验
           </div>
           <div className="space-y-6">
             <h1 className="max-w-4xl text-5xl leading-[1.08] font-light tracking-wide text-[var(--moon-silver)] sm:text-6xl lg:text-7xl">
               {messages.home.heroTitle}
             </h1>
-            <p className="max-w-2xl text-lg leading-9 text-[var(--text-muted)]">
+            <p className="max-w-2xl text-lg leading-9 text-[var(--moon-silver-soft)]">
               {messages.home.heroDescription}
             </p>
           </div>
@@ -68,19 +68,19 @@ export default function HomePage() {
       {/* How it works */}
       <section id="how-it-works" className="mt-28 space-y-10">
         <div className="space-y-4">
-          <div className="text-xs tracking-[0.35em] text-[var(--text-dim)] uppercase">How it works</div>
+          <div className="text-xs tracking-[0.35em] text-[var(--jade-cyan-soft)] uppercase">How it works</div>
           <h2 className="text-3xl font-light tracking-wide text-[var(--moon-silver)]">{messages.home.stepsTitle}</h2>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {messages.home.steps.map((step, index) => (
             <div
               key={step.title}
-              className="card-glass animate-fade-in-up rounded-[24px] p-7"
+              className="card-glass animate-fade-in-up rounded-[24px] border-[rgba(200,205,216,0.14)] p-7"
               style={{ animationDelay: `${(index + 1) * 120}ms` }}
             >
-              <div className="mb-5 text-sm tracking-[0.3em] text-[var(--dark-gold-soft)] uppercase">0{index + 1}</div>
+              <div className="mb-5 text-sm tracking-[0.3em] text-[var(--jade-cyan)] uppercase">0{index + 1}</div>
               <div className="text-xl font-light tracking-wide text-[var(--moon-silver)]">{step.title}</div>
-              <p className="mt-4 text-sm leading-8 text-[var(--text-muted)]">{step.description}</p>
+              <p className="mt-4 text-sm leading-8 text-[var(--moon-silver-soft)]">{step.description}</p>
             </div>
           ))}
         </div>
@@ -89,9 +89,9 @@ export default function HomePage() {
       {/* Examples */}
       <section className="mt-28 grid gap-12 pb-12 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="space-y-4">
-          <div className="text-xs tracking-[0.35em] text-[var(--text-dim)] uppercase">Examples</div>
+          <div className="text-xs tracking-[0.35em] text-[var(--jade-cyan-soft)] uppercase">Examples</div>
           <h2 className="text-3xl font-light tracking-wide text-[var(--moon-silver)]">{messages.home.examplesTitle}</h2>
-          <p className="max-w-md text-sm leading-8 text-[var(--text-muted)]">
+          <p className="max-w-md text-sm leading-8 text-[var(--moon-silver-soft)]">
             不用先懂术语，也可以先从一个具体的问题开始。
           </p>
         </div>
@@ -100,7 +100,7 @@ export default function HomePage() {
             <Link
               key={example}
               href={`/cast?prefill=${encodeURIComponent(example)}`}
-              className="rounded-full border border-[var(--border)] bg-[rgba(200,205,216,0.03)] px-6 py-3.5 text-sm text-[var(--moon-silver-soft)] transition-all duration-200 hover:border-[rgba(122,173,160,0.25)] hover:bg-[rgba(122,173,160,0.06)] hover:text-[var(--foreground)]"
+              className="rounded-full border border-[rgba(122,173,160,0.15)] bg-[rgba(122,173,160,0.04)] px-6 py-3.5 text-sm text-[var(--jade-cyan-soft)] transition-all duration-200 hover:border-[rgba(122,173,160,0.30)] hover:bg-[rgba(122,173,160,0.08)] hover:text-[var(--jade-cyan)]"
             >
               {example}
             </Link>

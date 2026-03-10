@@ -83,10 +83,10 @@ export function RitualClient() {
   };
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.65fr_1.35fr] lg:items-start">
+    <div className="glow-ritual mx-auto grid max-w-6xl gap-12 rounded-[32px] lg:grid-cols-[0.65fr_1.35fr] lg:items-start">
       {/* Left — Info & Progress */}
       <div className="animate-fade-in-up space-y-6">
-        <div className="text-xs tracking-[0.35em] text-[var(--text-dim)] uppercase">Ritual</div>
+        <div className="text-xs tracking-[0.35em] text-[var(--jade-cyan-soft)] uppercase">Ritual</div>
         <h1 className="text-4xl leading-tight font-light tracking-wide text-[var(--moon-silver)]">
           {messages.cast.title}
         </h1>
@@ -97,7 +97,7 @@ export function RitualClient() {
 
         {/* Progress Panel */}
         <div className="card-glass rounded-[22px] p-6">
-          <div className="mb-4 text-xs tracking-[0.25em] text-[var(--text-dim)] uppercase">Progress</div>
+          <div className="mb-4 text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">Progress</div>
           <div className="mb-5 text-sm text-[var(--moon-silver-soft)]">
             {messages.cast.progress.replace('{current}', String(Math.min(nextLineNumber, 6)))}
           </div>
@@ -142,7 +142,7 @@ export function RitualClient() {
             {[1, 2, 3].map((coin) => (
               <div
                 key={coin}
-                className="animate-slow-float flex h-28 w-28 items-center justify-center rounded-full border border-[rgba(176,154,106,0.20)] bg-[radial-gradient(circle_at_30%_30%,rgba(176,154,106,0.12),rgba(200,205,216,0.03))] text-xs tracking-widest text-[var(--dark-gold-soft)] shadow-lg shadow-black/15"
+                className="animate-slow-float flex h-28 w-28 items-center justify-center rounded-full border border-[rgba(176,154,106,0.25)] bg-[radial-gradient(circle_at_30%_30%,rgba(176,154,106,0.15),rgba(200,205,216,0.04))] text-xs tracking-widest text-[var(--dark-gold)] shadow-[0_0_20px_rgba(176,154,106,0.08),0_4px_16px_rgba(0,0,0,0.20)]"
                 style={{ animationDelay: `${coin * 400}ms` }}
               >
                 铜钱 {coin}

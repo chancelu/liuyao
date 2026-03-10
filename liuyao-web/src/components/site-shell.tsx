@@ -9,11 +9,11 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-atmosphere relative min-h-screen text-[var(--foreground)]">
       <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-8 sm:px-12">
-        <header className="mb-14 flex items-center justify-between border-b border-[var(--border)] pb-6">
+        <header className="mb-14 flex items-center justify-between border-b border-[rgba(200,205,216,0.12)] pb-6">
           <Link href="/" className="group flex items-center gap-3">
-            <div className="h-9 w-9 rounded-full border border-[rgba(200,205,216,0.15)] bg-[rgba(200,205,216,0.04)] transition-colors duration-200 group-hover:border-[rgba(200,205,216,0.25)]" />
+            <div className="h-9 w-9 rounded-full border border-[rgba(122,173,160,0.20)] bg-[rgba(122,173,160,0.06)] transition-colors duration-200 group-hover:border-[rgba(122,173,160,0.35)]" />
             <div>
-              <div className="text-sm tracking-[0.35em] text-[var(--moon-silver-soft)] uppercase">{messages.brand.name}</div>
+              <div className="text-sm tracking-[0.35em] text-[var(--moon-silver)] uppercase">{messages.brand.name}</div>
               <div className="text-xs text-[var(--text-dim)]">{messages.brand.tagline}</div>
             </div>
           </Link>
