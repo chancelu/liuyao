@@ -1,23 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  /* === Luxury Dark Palette === */
-  --bg-deep:    #08080A;
-  --bg-elevated: #0E0E10;
-  --bg-card:    #131315;
+  /* === Deep Mystical Palette (design-direction.md) === */
+  --bg-deep:     #0B0B12;
+  --bg-elevated: #10111A;
+  --bg-card:     #141520;
+  --bg-card-alt: #181A26;
 
-  /* === Gold Spectrum (Cartier-inspired) === */
-  --gold:          #C4A46C;
-  --gold-light:    #D4BA8A;
-  --gold-dim:      #8E7A52;
-  --gold-mist:     rgba(196, 164, 108, 0.08);
+  /* === Moon Silver === */
+  --silver:        #C8CDD8;
+  --silver-soft:   #9BA1B0;
+  --silver-dim:    #6B7082;
 
-  /* === Neutral Spectrum === */
-  --cream:         #F0EBE3;
-  --cream-soft:    #C8C2B8;
-  --stone:         #8A857D;
-  --stone-dim:     #5A5650;
-  --ink:           #2A2926;
+  /* === Jade Cyan (玉石青) === */
+  --jade:          #7AADA0;
+  --jade-soft:     rgba(122, 173, 160, 0.7);
+  --jade-dim:      rgba(122, 173, 160, 0.4);
+  --jade-mist:     rgba(122, 173, 160, 0.08);
+
+  /* === Dark Gold (暗金) === */
+  --gold:          #B09A6A;
+  --gold-light:    #C4B080;
+  --gold-dim:      #7A6D4A;
+  --gold-mist:     rgba(176, 154, 106, 0.08);
 
   /* === Functional === */
   --success:    #7A9E8A;
@@ -25,13 +30,12 @@
   --error:      #9E6B6B;
 
   /* === Semantic === */
-  --foreground:   var(--cream);
-  --text-secondary: var(--cream-soft);
-  --text-muted:   var(--stone);
-  --text-dim:     var(--stone-dim);
-  --border:       rgba(196, 164, 108, 0.08);
-  --border-hover: rgba(196, 164, 108, 0.18);
-  --background:   var(--bg-deep);
+  --foreground:     var(--silver);
+  --text-secondary: var(--silver-soft);
+  --text-muted:     var(--silver-dim);
+  --border:         rgba(122, 173, 160, 0.08);
+  --border-hover:   rgba(122, 173, 160, 0.18);
+  --background:     var(--bg-deep);
 }
 
 @theme inline {
@@ -42,12 +46,11 @@
 }
 
 * { box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
 
 body {
   background: var(--bg-deep);
-  color: var(--cream);
+  color: var(--silver);
   font-family: var(--font-noto-serif-sc), var(--font-geist-sans), 'Georgia', serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -55,97 +58,116 @@ body {
 a { text-decoration: none; }
 
 ::selection {
-  background: rgba(196, 164, 108, 0.25);
-  color: var(--cream);
+  background: rgba(122, 173, 160, 0.25);
+  color: var(--silver);
 }
 
 /* ============================================
-   ATMOSPHERIC BACKGROUND — Dramatic depth
+   ATMOSPHERIC BACKGROUND — Mystical depth
+   Deep blue-black with warm jade/gold glows
    ============================================ */
 .bg-atmosphere {
   background:
-    radial-gradient(ellipse 90% 55% at 50% -5%, rgba(196, 164, 108, 0.07), transparent 65%),
-    radial-gradient(ellipse 50% 50% at 85% 85%, rgba(196, 164, 108, 0.04), transparent 55%),
-    radial-gradient(ellipse 45% 45% at 10% 75%, rgba(160, 130, 70, 0.035), transparent 55%),
-    radial-gradient(ellipse 30% 30% at 50% 50%, rgba(196, 164, 108, 0.02), transparent 50%),
-    var(--bg-deep);
+    radial-gradient(ellipse 80% 45% at 50% -8%, rgba(122, 173, 160, 0.06), transparent 60%),
+    radial-gradient(ellipse 50% 50% at 90% 80%, rgba(176, 154, 106, 0.04), transparent 55%),
+    radial-gradient(ellipse 45% 45% at 5% 70%, rgba(100, 120, 180, 0.03), transparent 55%),
+    radial-gradient(ellipse 35% 35% at 50% 50%, rgba(122, 173, 160, 0.015), transparent 50%),
+    linear-gradient(180deg, #0B0B12 0%, #0D0E18 40%, #0F1020 70%, #0B0B12 100%);
   position: relative;
 }
 
+/* Subtle noise texture for depth */
 .bg-atmosphere::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 1;
 }
 
+/* Star-like particles */
 .bg-atmosphere::after {
-  display: none;
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 25%, rgba(200, 205, 216, 0.3), transparent),
+    radial-gradient(1px 1px at 45% 15%, rgba(200, 205, 216, 0.2), transparent),
+    radial-gradient(1.5px 1.5px at 72% 35%, rgba(122, 173, 160, 0.35), transparent),
+    radial-gradient(1px 1px at 88% 55%, rgba(200, 205, 216, 0.2), transparent),
+    radial-gradient(1px 1px at 25% 65%, rgba(200, 205, 216, 0.15), transparent),
+    radial-gradient(1.5px 1.5px at 55% 78%, rgba(176, 154, 106, 0.25), transparent),
+    radial-gradient(1px 1px at 35% 88%, rgba(200, 205, 216, 0.2), transparent),
+    radial-gradient(1px 1px at 78% 82%, rgba(122, 173, 160, 0.2), transparent),
+    radial-gradient(1px 1px at 8% 48%, rgba(200, 205, 216, 0.15), transparent),
+    radial-gradient(1px 1px at 62% 52%, rgba(200, 205, 216, 0.12), transparent),
+    radial-gradient(1.5px 1.5px at 92% 18%, rgba(122, 173, 160, 0.3), transparent),
+    radial-gradient(1px 1px at 42% 42%, rgba(176, 154, 106, 0.15), transparent);
+  pointer-events: none;
+  z-index: 1;
+  animation: starTwinkle 12s ease-in-out infinite alternate;
+}
+
+@keyframes starTwinkle {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
 }
 
 /* ============================================
-   CARD SYSTEM — Minimal, Hermès-inspired
+   CARD SYSTEM — Glass with jade/gold tint
    ============================================ */
 .card-glass {
-  background: var(--bg-card);
-  border: 1px solid rgba(196, 164, 108, 0.06);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  transition: border-color 300ms ease, box-shadow 300ms ease;
+  background: linear-gradient(165deg, rgba(20, 21, 32, 0.9), rgba(11, 11, 18, 0.95));
+  border: 1px solid rgba(122, 173, 160, 0.08);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(122, 173, 160, 0.04);
+  backdrop-filter: blur(12px);
+  transition: border-color 400ms ease, box-shadow 400ms ease;
 }
 
 .card-glass:hover {
-  border-color: rgba(196, 164, 108, 0.14);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-}
-
-.card-glass-jade {
-  background: var(--bg-card);
-  border: 1px solid rgba(196, 164, 108, 0.10);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.card-glass-jade:hover {
-  border-color: rgba(196, 164, 108, 0.20);
+  border-color: rgba(122, 173, 160, 0.16);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(122, 173, 160, 0.04);
 }
 
 /* ============================================
-   BUTTON SYSTEM — Refined gold accent
+   BUTTON SYSTEM — Jade primary, gold accent
    ============================================ */
 .btn-primary {
-  background: linear-gradient(180deg, rgba(196, 164, 108, 0.15) 0%, rgba(196, 164, 108, 0.06) 100%);
-  border: 1px solid rgba(196, 164, 108, 0.28);
-  color: var(--gold-light);
+  background: linear-gradient(180deg, rgba(122, 173, 160, 0.14) 0%, rgba(122, 173, 160, 0.05) 100%);
+  border: 1px solid rgba(122, 173, 160, 0.30);
+  color: var(--jade);
   font-family: var(--font-noto-serif-sc), Georgia, serif;
-  letter-spacing: 0.08em;
-  transition: all 250ms ease;
+  letter-spacing: 0.1em;
+  transition: all 300ms ease;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(180deg, rgba(196, 164, 108, 0.22) 0%, rgba(196, 164, 108, 0.10) 100%);
-  border-color: rgba(196, 164, 108, 0.45);
-  box-shadow: 0 0 24px rgba(196, 164, 108, 0.08);
+  background: linear-gradient(180deg, rgba(122, 173, 160, 0.22) 0%, rgba(122, 173, 160, 0.08) 100%);
+  border-color: rgba(122, 173, 160, 0.50);
+  box-shadow: 0 0 30px rgba(122, 173, 160, 0.10), 0 0 60px rgba(122, 173, 160, 0.04);
+  color: #8FC4B6;
 }
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid rgba(196, 164, 108, 0.10);
-  color: var(--cream-soft);
-  letter-spacing: 0.04em;
-  transition: all 250ms ease;
+  border: 1px solid rgba(200, 205, 216, 0.10);
+  color: var(--silver-soft);
+  letter-spacing: 0.06em;
+  transition: all 300ms ease;
 }
 
 .btn-secondary:hover {
-  border-color: rgba(196, 164, 108, 0.22);
-  color: var(--cream);
+  border-color: rgba(200, 205, 216, 0.22);
+  color: var(--silver);
 }
 
 /* ============================================
-   ANIMATIONS — Slower, more elegant
+   ANIMATIONS
    ============================================ */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -155,18 +177,28 @@ a { text-decoration: none; }
 }
 
 @keyframes gentlePulse {
-  0%, 100% { opacity: 0.5; }
+  0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
+}
+
+@keyframes slowFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.06; transform: scale(1); }
+  50% { opacity: 0.14; transform: scale(1.03); }
+}
+
+@keyframes slowSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
-}
-
-@keyframes slowFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
 }
 
 @keyframes coinShake {
@@ -180,15 +212,9 @@ a { text-decoration: none; }
 }
 
 @keyframes coinLand {
-  0% { box-shadow: 0 0 20px rgba(196,164,108,0.08), 0 4px 16px rgba(0,0,0,0.20); }
-  50% { box-shadow: 0 0 28px rgba(196,164,108,0.20), 0 2px 12px rgba(0,0,0,0.30); }
-  100% { box-shadow: 0 0 20px rgba(196,164,108,0.08), 0 4px 16px rgba(0,0,0,0.20); }
-}
-
-@keyframes goldLine {
-  0% { width: 0; opacity: 0; }
-  50% { opacity: 1; }
-  100% { width: 60px; opacity: 0.4; }
+  0% { box-shadow: 0 0 20px rgba(176,154,106,0.08), 0 4px 16px rgba(0,0,0,0.20); }
+  50% { box-shadow: 0 0 28px rgba(176,154,106,0.20), 0 2px 12px rgba(0,0,0,0.30); }
+  100% { box-shadow: 0 0 20px rgba(176,154,106,0.08), 0 4px 16px rgba(0,0,0,0.20); }
 }
 
 .animate-coin-shake {
@@ -196,11 +222,11 @@ a { text-decoration: none; }
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 600ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  animation: fadeInUp 700ms cubic-bezier(0.22, 0.1, 0.25, 1) both;
 }
 
 .animate-fade-in {
-  animation: fadeIn 500ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  animation: fadeIn 600ms cubic-bezier(0.22, 0.1, 0.25, 1) both;
 }
 
 .animate-gentle-pulse {
@@ -208,7 +234,7 @@ a { text-decoration: none; }
 }
 
 .animate-slow-float {
-  animation: slowFloat 6s ease-in-out infinite;
+  animation: slowFloat 7s ease-in-out infinite;
 }
 
 .delay-100 { animation-delay: 100ms; }
@@ -219,7 +245,47 @@ a { text-decoration: none; }
 .delay-600 { animation-delay: 600ms; }
 
 /* ============================================
-   DECORATIVE — Gold divider line
+   HERO DECORATIVE ELEMENTS
+   ============================================ */
+.hero-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(122, 173, 160, 0.06);
+  pointer-events: none;
+}
+
+.hero-ring-1 {
+  width: 560px; height: 560px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: breathe 10s ease-in-out infinite;
+}
+
+.hero-ring-2 {
+  width: 380px; height: 380px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-color: rgba(122, 173, 160, 0.10);
+  animation: breathe 10s ease-in-out infinite 3s;
+}
+
+.hero-ring-3 {
+  width: 200px; height: 200px;
+  top: 50%; left: 50%;
+  border-color: rgba(176, 154, 106, 0.08);
+  animation: slowSpin 180s linear infinite;
+}
+
+.hero-trigram {
+  position: absolute;
+  color: rgba(122, 173, 160, 0.04);
+  font-family: var(--font-noto-serif-sc), Georgia, serif;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ============================================
+   DECORATIVE ELEMENTS
    ============================================ */
 .gold-divider {
   height: 1px;
@@ -227,90 +293,12 @@ a { text-decoration: none; }
   opacity: 0.3;
 }
 
-.gold-dot::before {
-  content: '·';
-  color: var(--gold);
-  margin: 0 0.5em;
+.jade-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(122, 173, 160, 0.4), transparent);
+  opacity: 0.5;
 }
 
-/* ============================================
-   SECTION GLOWS — Warm, subtle
-   ============================================ */
-.glow-hero {
-  background:
-    radial-gradient(ellipse 70% 50% at 50% 15%, rgba(196, 164, 108, 0.08), transparent 65%),
-    radial-gradient(ellipse 40% 35% at 50% 45%, rgba(196, 164, 108, 0.04), transparent 60%);
-}
-
-.glow-center {
-  background: radial-gradient(ellipse 50% 40% at 50% 50%, rgba(196, 164, 108, 0.04), transparent 70%);
-}
-
-.glow-ritual {
-  background:
-    radial-gradient(ellipse 50% 45% at 50% 40%, rgba(196, 164, 108, 0.05), transparent 65%);
-}
-
-.glow-result {
-  background:
-    radial-gradient(ellipse 55% 45% at 45% 35%, rgba(196, 164, 108, 0.04), transparent 70%);
-}
-
-/* ============================================
-   HERO DECORATIVE ELEMENTS
-   ============================================ */
-@keyframes slowSpin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes breathe {
-  0%, 100% { opacity: 0.06; transform: scale(1); }
-  50% { opacity: 0.12; transform: scale(1.04); }
-}
-
-.hero-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(196, 164, 108, 0.08);
-  pointer-events: none;
-}
-
-.hero-ring-1 {
-  width: 500px; height: 500px;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  animation: breathe 8s ease-in-out infinite;
-}
-
-.hero-ring-2 {
-  width: 340px; height: 340px;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  border-color: rgba(196, 164, 108, 0.12);
-  animation: breathe 8s ease-in-out infinite 2s;
-}
-
-.hero-ring-3 {
-  width: 180px; height: 180px;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  border-color: rgba(196, 164, 108, 0.06);
-  animation: slowSpin 120s linear infinite;
-}
-
-.hero-trigram {
-  position: absolute;
-  font-size: 80px;
-  color: rgba(196, 164, 108, 0.04);
-  font-family: var(--font-noto-serif-sc), Georgia, serif;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* ============================================
-   DRAMATIC DIVIDER
-   ============================================ */
 .divider-ornament {
   display: flex;
   align-items: center;
@@ -323,11 +311,34 @@ a { text-decoration: none; }
   content: '';
   height: 1px;
   width: 60px;
-  background: linear-gradient(90deg, transparent, rgba(196, 164, 108, 0.3));
+  background: linear-gradient(90deg, transparent, rgba(122, 173, 160, 0.3));
 }
 
 .divider-ornament::after {
-  background: linear-gradient(270deg, transparent, rgba(196, 164, 108, 0.3));
+  background: linear-gradient(270deg, transparent, rgba(122, 173, 160, 0.3));
+}
+
+/* ============================================
+   SECTION GLOWS
+   ============================================ */
+.glow-hero {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 20%, rgba(122, 173, 160, 0.07), transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(176, 154, 106, 0.03), transparent 55%);
+}
+
+.glow-center {
+  background: radial-gradient(ellipse 50% 40% at 50% 50%, rgba(122, 173, 160, 0.04), transparent 70%);
+}
+
+.glow-ritual {
+  background:
+    radial-gradient(ellipse 50% 45% at 50% 40%, rgba(176, 154, 106, 0.05), transparent 65%);
+}
+
+.glow-result {
+  background:
+    radial-gradient(ellipse 55% 45% at 45% 35%, rgba(122, 173, 160, 0.04), transparent 70%);
 }
 
 /* ============================================
@@ -343,7 +354,7 @@ a { text-decoration: none; }
   display: block;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--cream-soft) 10%, var(--cream-soft) 90%, transparent);
+  background: linear-gradient(90deg, transparent, var(--silver) 10%, var(--silver) 90%, transparent);
   border-radius: 1.5px;
 }
 
@@ -359,7 +370,7 @@ a { text-decoration: none; }
   display: block;
   width: 42%;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--cream-soft) 15%, var(--cream-soft) 85%, transparent);
+  background: linear-gradient(90deg, transparent, var(--jade-soft) 15%, var(--jade-soft) 85%, transparent);
   border-radius: 1.5px;
 }
 
@@ -377,12 +388,12 @@ a { text-decoration: none; }
 }
 
 /* ============================================
-   SCROLLBAR — Minimal
+   SCROLLBAR
    ============================================ */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(196, 164, 108, 0.12); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(196, 164, 108, 0.25); }
+::-webkit-scrollbar-thumb { background: rgba(122, 173, 160, 0.12); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(122, 173, 160, 0.25); }
 
 /* ============================================
    TYPOGRAPHY UTILITIES
@@ -391,6 +402,7 @@ a { text-decoration: none; }
   font-family: var(--font-noto-serif-sc), Georgia, serif;
 }
 
+.text-jade { color: var(--jade); }
 .text-gold { color: var(--gold); }
 .text-gold-light { color: var(--gold-light); }
 .text-gold-dim { color: var(--gold-dim); }
