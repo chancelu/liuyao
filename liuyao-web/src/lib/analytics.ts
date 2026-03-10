@@ -52,7 +52,6 @@ export function track(name: EventName, meta?: Record<string, string>) {
 
   // Console (dev only)
   if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line no-console
     console.log('[analytics]', name, meta ?? '');
   }
 
