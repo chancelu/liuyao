@@ -10,64 +10,56 @@ export default function HomePage() {
     <SiteShell>
       <HomeTracker />
 
-      {/* Hero — Luxury editorial style */}
-      <section className="glow-hero animate-fade-in-up pb-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-8 text-[10px] tracking-[0.5em] text-[var(--gold-dim)] uppercase">
-            六爻在线占卦
+      <section className="glow-hero animate-fade-in-up relative overflow-hidden rounded-[36px] border border-[rgba(196,164,108,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.00))] px-6 py-16 sm:px-10 lg:px-14 lg:py-20">
+        <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(196,164,108,0.45),transparent)]" />
+        <div className="grid items-end gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+          <div>
+            <div className="mb-6 inline-flex rounded-full border border-[rgba(196,164,108,0.16)] bg-[rgba(196,164,108,0.05)] px-4 py-2 text-[10px] tracking-[0.38em] text-[var(--gold-light)] uppercase">
+              Ritual-led divination experience
+            </div>
+            <h1 className="max-w-4xl font-display text-5xl leading-[1.08] font-extralight tracking-[0.04em] text-[var(--cream)] sm:text-6xl lg:text-7xl">
+              {messages.home.heroTitle}
+            </h1>
+            <p className="mt-8 max-w-2xl text-[15px] leading-9 text-[var(--cream-soft)]">
+              {messages.home.heroDescription}
+            </p>
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+              <Link href="/cast" className="btn-primary rounded-full px-10 py-4 text-center text-sm">
+                {messages.home.primaryCta}
+              </Link>
+              <a href="#how-it-works" className="btn-secondary rounded-full px-10 py-4 text-center text-sm">
+                {messages.home.secondaryCta}
+              </a>
+            </div>
           </div>
-          <h1 className="font-display text-4xl leading-[1.3] font-extralight tracking-wide text-[var(--cream)] sm:text-5xl lg:text-6xl">
-            {messages.home.heroTitle}
-          </h1>
-          <div className="gold-divider mx-auto mt-10 w-16" />
-          <p className="mx-auto mt-8 max-w-lg text-sm leading-8 text-[var(--stone)]">
-            {messages.home.heroDescription}
-          </p>
-          <div className="mt-12 flex justify-center gap-5">
-            <Link
-              href="/cast"
-              className="btn-primary rounded-full px-10 py-4 text-sm"
-            >
-              {messages.home.primaryCta}
-            </Link>
-            <a
-              href="#how-it-works"
-              className="btn-secondary rounded-full px-10 py-4 text-sm"
-            >
-              {messages.home.secondaryCta}
-            </a>
+          <div className="card-glass relative rounded-[28px] p-8">
+            <div className="mb-6 flex items-center justify-between text-[10px] tracking-[0.32em] text-[var(--gold-dim)] uppercase">
+              <span>Oracle preview</span>
+              <span>Specimen No. 01</span>
+            </div>
+            <div className="space-y-5">
+              <div className="rounded-2xl border border-[rgba(196,164,108,0.10)] bg-[rgba(255,255,255,0.02)] p-5">
+                <div className="text-[10px] tracking-[0.25em] text-[var(--stone-dim)] uppercase">Question</div>
+                <div className="mt-3 font-display text-lg leading-8 text-[var(--cream)]">这段关系接下来还有机会吗？</div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)]/60 p-5">
+                  <div className="text-[10px] tracking-[0.25em] text-[var(--stone-dim)] uppercase">本卦</div>
+                  <div className="mt-3 font-display text-2xl text-[var(--gold-light)]">雷山小过</div>
+                </div>
+                <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-deep)]/60 p-5">
+                  <div className="text-[10px] tracking-[0.25em] text-[var(--stone-dim)] uppercase">变卦</div>
+                  <div className="mt-3 font-display text-2xl text-[var(--gold-light)]">泽地萃</div>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-[rgba(196,164,108,0.14)] bg-[rgba(196,164,108,0.05)] p-5 text-sm leading-8 text-[var(--cream-soft)]">
+                当前阻力较重，但后续仍有转机。先看排盘，再看白话解读与专业分析。
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Preview Card — Minimal showcase */}
-      <section className="mx-auto max-w-2xl pb-28">
-        <div className="card-glass animate-fade-in-up delay-200 rounded-2xl p-8">
-          <div className="mb-6 flex items-center justify-between text-[10px] tracking-[0.3em] text-[var(--stone-dim)] uppercase">
-            <span>排盘预览</span>
-            <span>Preview</span>
-          </div>
-          <div className="space-y-4">
-            <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)] p-5">
-              <div className="text-[10px] tracking-wider text-[var(--stone-dim)] uppercase">问题</div>
-              <div className="mt-2 font-display text-base text-[var(--cream)]">这段关系接下来还有机会吗？</div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)] p-5">
-                <div className="text-[10px] tracking-wider text-[var(--stone-dim)] uppercase">本卦</div>
-                <div className="mt-2 font-display text-xl text-[var(--gold)]">雷山小过</div>
-              </div>
-              <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-deep)] p-5">
-                <div className="text-[10px] tracking-wider text-[var(--stone-dim)] uppercase">变卦</div>
-                <div className="mt-2 font-display text-xl text-[var(--gold)]">泽地萃</div>
-              </div>
-            </div>
-            <div className="rounded-xl border border-[rgba(196,164,108,0.08)] bg-[rgba(196,164,108,0.03)] p-5 text-sm leading-7 text-[var(--cream-soft)]">
-              当前阻力较重，但后续仍有转机。先看排盘，再看白话解读与专业分析。
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* How it works */}
       <section id="how-it-works" className="pb-28">

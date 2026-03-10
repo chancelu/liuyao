@@ -162,10 +162,19 @@ export function ResultClient({ id }: { id: string }) {
 
   return (
     <div className="glow-result mx-auto max-w-6xl space-y-10">
-      {/* Header */}
-      <div className="animate-fade-in-up space-y-3">
-        <div className="text-xs tracking-[0.35em] text-[var(--jade-cyan-soft)] uppercase">Result #{id}</div>
-        <h1 className="text-4xl font-light tracking-wide text-[var(--moon-silver)]">{messages.result.title}</h1>
+      <div className="animate-fade-in-up rounded-[30px] border border-[rgba(196,164,108,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.00))] px-7 py-8 lg:px-10">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-3">
+            <div className="text-[10px] tracking-[0.4em] text-[var(--gold-dim)] uppercase">Oracle result #{id}</div>
+            <h1 className="font-display text-4xl font-extralight tracking-[0.04em] text-[var(--cream)]">{messages.result.title}</h1>
+            <p className="max-w-2xl text-sm leading-8 text-[var(--cream-soft)]">先看卦象结构，再看一句话结论，最后展开白话与专业分析。</p>
+          </div>
+          <div className="grid grid-cols-3 gap-3 text-center text-[10px] tracking-[0.22em] uppercase sm:w-auto">
+            <div className="rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.02)] px-4 py-3 text-[var(--stone)]">Chart</div>
+            <div className="rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.02)] px-4 py-3 text-[var(--stone)]">Meaning</div>
+            <div className="rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.02)] px-4 py-3 text-[var(--stone)]">Action</div>
+          </div>
+        </div>
       </div>
 
       {/* Main Grid: Chart + Summary */}
