@@ -60,19 +60,27 @@ a { text-decoration: none; }
 }
 
 /* ============================================
-   LUXURY ATMOSPHERIC BACKGROUND
-   Subtle warm glow, no stars, no noise
+   ATMOSPHERIC BACKGROUND — Dramatic depth
    ============================================ */
 .bg-atmosphere {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(196, 164, 108, 0.04), transparent 70%),
-    radial-gradient(ellipse 60% 60% at 80% 90%, rgba(196, 164, 108, 0.025), transparent 60%),
-    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(140, 120, 80, 0.02), transparent 60%),
+    radial-gradient(ellipse 90% 55% at 50% -5%, rgba(196, 164, 108, 0.07), transparent 65%),
+    radial-gradient(ellipse 50% 50% at 85% 85%, rgba(196, 164, 108, 0.04), transparent 55%),
+    radial-gradient(ellipse 45% 45% at 10% 75%, rgba(160, 130, 70, 0.035), transparent 55%),
+    radial-gradient(ellipse 30% 30% at 50% 50%, rgba(196, 164, 108, 0.02), transparent 50%),
     var(--bg-deep);
+  position: relative;
 }
 
-/* No ::before noise, no ::after stars — clean luxury */
-.bg-atmosphere::before,
+.bg-atmosphere::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
 .bg-atmosphere::after {
   display: none;
 }
@@ -230,7 +238,8 @@ a { text-decoration: none; }
    ============================================ */
 .glow-hero {
   background:
-    radial-gradient(ellipse 60% 40% at 50% 20%, rgba(196, 164, 108, 0.05), transparent 70%);
+    radial-gradient(ellipse 70% 50% at 50% 15%, rgba(196, 164, 108, 0.08), transparent 65%),
+    radial-gradient(ellipse 40% 35% at 50% 45%, rgba(196, 164, 108, 0.04), transparent 60%);
 }
 
 .glow-center {
@@ -245,6 +254,80 @@ a { text-decoration: none; }
 .glow-result {
   background:
     radial-gradient(ellipse 55% 45% at 45% 35%, rgba(196, 164, 108, 0.04), transparent 70%);
+}
+
+/* ============================================
+   HERO DECORATIVE ELEMENTS
+   ============================================ */
+@keyframes slowSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.06; transform: scale(1); }
+  50% { opacity: 0.12; transform: scale(1.04); }
+}
+
+.hero-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(196, 164, 108, 0.08);
+  pointer-events: none;
+}
+
+.hero-ring-1 {
+  width: 500px; height: 500px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: breathe 8s ease-in-out infinite;
+}
+
+.hero-ring-2 {
+  width: 340px; height: 340px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-color: rgba(196, 164, 108, 0.12);
+  animation: breathe 8s ease-in-out infinite 2s;
+}
+
+.hero-ring-3 {
+  width: 180px; height: 180px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-color: rgba(196, 164, 108, 0.06);
+  animation: slowSpin 120s linear infinite;
+}
+
+.hero-trigram {
+  position: absolute;
+  font-size: 80px;
+  color: rgba(196, 164, 108, 0.04);
+  font-family: var(--font-noto-serif-sc), Georgia, serif;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ============================================
+   DRAMATIC DIVIDER
+   ============================================ */
+.divider-ornament {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+}
+
+.divider-ornament::before,
+.divider-ornament::after {
+  content: '';
+  height: 1px;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, rgba(196, 164, 108, 0.3));
+}
+
+.divider-ornament::after {
+  background: linear-gradient(270deg, transparent, rgba(196, 164, 108, 0.3));
 }
 
 /* ============================================
