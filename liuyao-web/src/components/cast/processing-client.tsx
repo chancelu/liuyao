@@ -74,12 +74,12 @@ export function ProcessingClient() {
   }, [id, router]);
 
   return (
-    <div className="glow-center mx-auto max-w-2xl text-center">
+    <div className="mx-auto max-w-2xl text-center">
       <div className="space-y-4">
-        <div className="text-[10px] tracking-[0.5em] text-[var(--dark-gold-dim)] uppercase">Processing</div>
-        <h1 className="font-display text-3xl font-extralight tracking-wide text-white">{messages.processing.title}</h1>
-        <div className="gold-divider mx-auto w-12" />
-        <p className="text-sm text-[var(--stone)]">
+        <div className="text-[10px] tracking-[0.4em] text-[var(--text-dim)] uppercase">Processing</div>
+        <h1 className="font-display text-3xl font-extralight text-white">{messages.processing.title}</h1>
+        <div className="mx-auto h-px w-12 bg-[var(--gold-dim)]" />
+        <p className="text-sm text-[var(--text-muted)]">
           正在为你排盘并分析卦象，请稍候…
         </p>
       </div>
@@ -87,19 +87,19 @@ export function ProcessingClient() {
         {messages.processing.steps.map((step, index) => (
           <div
             key={step}
-            className={`rounded-xl border px-6 py-4 transition-all duration-500 ${
+            className={`rounded-xl px-6 py-4 transition-all duration-300 ${
               index <= activeStep
-                ? 'border-[rgba(196,168,108,0.15)] bg-[rgba(196,168,108,0.04)] text-[var(--cream)]'
-                : 'border-[var(--border)] bg-[var(--bg-card)] text-[var(--stone-dim)]'
+                ? 'bg-[var(--bg-card)] text-white'
+                : 'bg-[var(--bg-mid)] text-[var(--text-dim)]'
             }`}
           >
-            <div className="text-[10px] tracking-[0.2em] text-[var(--dark-gold-dim)] uppercase">Step 0{index + 1}</div>
+            <div className={`text-[10px] tracking-[0.25em] uppercase ${index <= activeStep ? 'text-[var(--gold)]' : 'text-[var(--text-dim)]'}`}>Step 0{index + 1}</div>
             <div className="font-display mt-1 text-sm">{step}</div>
           </div>
         ))}
       </div>
       {error && (
-        <div className="mt-6 rounded-xl border border-[rgba(158,107,107,0.20)] bg-[rgba(158,107,107,0.06)] px-5 py-3 text-sm text-[var(--error)]">
+        <div className="mt-6 rounded-xl bg-[var(--bg-card)] px-5 py-3 text-sm text-[var(--error)]">
           {error}
         </div>
       )}

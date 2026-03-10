@@ -92,23 +92,23 @@ export function RitualClient() {
   };
 
   return (
-    <div className="glow-ritual mx-auto grid max-w-5xl gap-16 lg:grid-cols-[0.6fr_1.4fr] lg:items-start">
+    <div className="mx-auto grid max-w-5xl gap-16 lg:grid-cols-[0.6fr_1.4fr] lg:items-start">
       {/* Left — Info & Progress */}
       <div className="animate-fade-in-up space-y-8">
         <div>
-          <div className="text-[10px] tracking-[0.5em] text-[var(--dark-gold-dim)] uppercase">Ritual</div>
-          <h1 className="font-display mt-3 text-3xl font-extralight tracking-wide text-white">
+          <div className="text-[10px] tracking-[0.4em] text-[var(--text-dim)] uppercase">Ritual</div>
+          <h1 className="font-display mt-3 text-3xl font-extralight text-white">
             {messages.cast.title}
           </h1>
-          <p className="mt-4 text-sm leading-8 text-[var(--stone)]">
+          <p className="mt-4 text-sm leading-8 text-[var(--text-muted)]">
             {draft?.question ?? messages.cast.subtitle}
           </p>
         </div>
 
         {/* Progress */}
-        <div className="card-glass rounded-xl p-6">
-          <div className="mb-4 text-[10px] tracking-[0.3em] text-[var(--dark-gold-dim)] uppercase">Progress</div>
-          <div className="mb-5 text-sm text-[var(--stone)]">
+        <div className="card-solid rounded-xl p-6">
+          <div className="mb-4 text-[10px] tracking-[0.3em] text-[var(--text-dim)] uppercase">Progress</div>
+          <div className="mb-5 text-sm text-[var(--text-muted)]">
             {messages.cast.progress.replace('{current}', String(Math.min(nextLineNumber, 6)))}
           </div>
           <div className="flex flex-col gap-2">
@@ -118,43 +118,43 @@ export function RitualClient() {
               return (
                 <div
                   key={index}
-                  className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-xs transition-all duration-300 ${
+                  className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-xs transition-all duration-200 ${
                     isDone
-                      ? 'border border-[rgba(196,168,108,0.15)] bg-[rgba(196,168,108,0.05)] text-[var(--dark-gold)]'
+                      ? 'bg-[var(--bg-elevated)] text-[var(--gold)]'
                       : isCurrent
-                        ? 'border border-[var(--border-hover)] bg-[var(--bg-elevated)] text-[var(--cream)]'
-                        : 'border border-transparent text-[var(--stone-dim)]'
+                        ? 'bg-[var(--bg-elevated)] text-white'
+                        : 'text-[var(--text-dim)]'
                   }`}
                 >
                   <div
                     className={`h-1.5 w-1.5 rounded-full ${
                       isDone
-                        ? 'bg-[var(--dark-gold)]'
+                        ? 'bg-[var(--gold)]'
                         : isCurrent
-                          ? 'animate-gentle-pulse bg-[var(--cream)]'
-                          : 'bg-[var(--stone-dim)]'
+                          ? 'bg-white'
+                          : 'bg-[var(--text-dim)]'
                     }`}
                   />
                   <span>{YAO_NAMES[index]}</span>
-                  {isDone && <span className="ml-auto text-[var(--dark-gold-dim)]">{CAST_LABELS[lines[index]]}</span>}
+                  {isDone && <span className="ml-auto text-[var(--text-dim)]">{CAST_LABELS[lines[index]]}</span>}
                 </div>
               );
             })}
           </div>
         </div>
 
-        <div className="text-[10px] text-[var(--stone-dim)]">会话：{trialState.id}</div>
+        <div className="text-[10px] text-[var(--text-dim)]">会话：{trialState.id}</div>
       </div>
 
       {/* Right — Ritual Stage */}
-      <div className="card-glass animate-fade-in-up delay-200 rounded-2xl p-10 md:p-12">
+      <div className="card-solid animate-fade-in-up delay-200 rounded-2xl p-10 md:p-12">
         <div className="mx-auto flex max-w-md flex-col items-center gap-12 text-center">
           {/* Copper Coins */}
           <div className="grid grid-cols-3 gap-10">
             {[1, 2, 3].map((coin) => (
               <div
                 key={`${coin}-${shakeKey}`}
-                className={`flex h-24 w-24 items-center justify-center rounded-full border border-[rgba(196,168,108,0.20)] bg-[radial-gradient(circle_at_30%_30%,rgba(196,168,108,0.12),rgba(196,168,108,0.02))] font-display text-xs tracking-widest text-[var(--dark-gold)] shadow-[0_0_20px_rgba(196,168,108,0.06)] ${
+                className={`flex h-24 w-24 items-center justify-center rounded-full border border-[rgba(184,160,112,0.20)] bg-[var(--bg-elevated)] font-display text-xs tracking-widest text-[var(--gold)] ${
                   isShaking ? 'animate-coin-shake' : ''
                 }`}
                 style={isShaking ? { animationDelay: `${coin * 60}ms` } : undefined}
@@ -166,10 +166,10 @@ export function RitualClient() {
 
           {/* Status */}
           <div className="space-y-3">
-            <div className="text-sm text-[var(--stone)]">
+            <div className="text-sm text-[var(--text-muted)]">
               {isShaking ? '正在摇卦…' : isComplete ? '六次摇卦完成，可以生成排盘了。' : '请专注你想问的事情，然后摇出这一爻。'}
             </div>
-            <div className={`font-display text-xs tracking-[0.3em] uppercase transition-all duration-300 ${lastLabel && !isShaking ? 'text-[var(--dark-gold)]' : 'text-[var(--stone-dim)]'}`}>
+            <div className={`font-display text-xs tracking-[0.3em] uppercase transition-all duration-200 ${lastLabel && !isShaking ? 'text-[var(--gold)]' : 'text-[var(--text-dim)]'}`}>
               {isShaking ? '…' : lastLabel || '少阳 / 少阴 / 老阳 / 老阴'}
             </div>
           </div>
@@ -194,14 +194,14 @@ export function RitualClient() {
           {/* Continue */}
           <button
             onClick={handleContinue}
-            className="text-sm text-[var(--stone)] underline-offset-4 transition-colors duration-300 hover:text-[var(--dark-gold)] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
+            className="text-sm text-[var(--text-muted)] underline-offset-4 transition-colors duration-200 hover:text-[var(--gold)] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
             disabled={isSubmitting}
           >
             {isSubmitting ? '正在生成排盘…' : '生成排盘与结果'}
           </button>
 
           {error ? (
-            <div className="rounded-xl border border-[rgba(158,107,107,0.20)] bg-[rgba(158,107,107,0.06)] px-5 py-3 text-sm text-[var(--error)]">
+            <div className="rounded-xl bg-[var(--bg-elevated)] px-5 py-3 text-sm text-[var(--error)]">
               {error}
             </div>
           ) : null}

@@ -52,13 +52,13 @@ export function AuthNav() {
   if (user) {
     return (
       <div className="flex items-center gap-3">
-        <span className="hidden max-w-[120px] truncate text-[10px] text-[var(--stone-dim)] sm:block">
+        <span className="hidden max-w-[120px] truncate text-[10px] text-[var(--text-dim)] sm:block">
           {user.email}
         </span>
         <button
           onClick={handleSignOut}
           disabled={signingOut}
-          className="text-xs text-[var(--stone)] transition-colors duration-300 hover:text-[var(--error)] disabled:opacity-50"
+          className="text-xs text-[var(--text-muted)] transition-colors duration-200 hover:text-[var(--error)] disabled:opacity-50"
         >
           {signingOut ? '登出中…' : '登出'}
         </button>
@@ -69,7 +69,7 @@ export function AuthNav() {
   return (
     <Link
       href={loginHref}
-      className="text-[var(--dark-gold-dim)] transition-colors duration-300 hover:text-[var(--dark-gold)]"
+      className="text-[var(--text-dim)] transition-colors duration-200 hover:text-[var(--gold)]"
     >
       登录
     </Link>

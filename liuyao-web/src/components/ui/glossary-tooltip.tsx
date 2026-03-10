@@ -30,11 +30,10 @@ export function Tooltip({ content, children }: TooltipProps) {
       {open && (
         <span
           role="tooltip"
-          className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[240px] -translate-x-1/2 rounded-xl border border-[rgba(122,173,160,0.22)] bg-[var(--panel-2)] px-4 py-3 text-xs leading-relaxed text-[var(--moon-silver)] shadow-lg backdrop-blur-md animate-fade-in"
+          className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[240px] -translate-x-1/2 rounded-xl bg-[var(--bg-card)] px-4 py-3 text-xs leading-relaxed text-white shadow-lg animate-fade-in"
         >
           {content}
-          {/* Arrow */}
-          <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-[var(--panel-2)]" />
+          <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-[var(--bg-card)]" />
         </span>
       )}
     </span>

@@ -25,7 +25,7 @@ export function AnnotatedText({ text, className }: AnnotatedTextProps) {
       {segments.map((seg, i) =>
         seg.term ? (
           <Tooltip key={i} content={glossary[seg.term].definition}>
-            <span className="cursor-help border-b border-dotted border-[var(--jade-cyan-soft)] text-[var(--jade-cyan)]">
+            <span className="cursor-help border-b border-dotted border-[var(--gold-dim)] text-[var(--gold)]">
               {seg.text}
             </span>
           </Tooltip>
