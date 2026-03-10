@@ -14,12 +14,58 @@ export interface AuthResult {
 }
 
 // ---------------------------------------------------------------------------
-// Magic Link（推荐首选方式）
+// OTP 验证码（推荐首选方式）
 // ---------------------------------------------------------------------------
 
 /**
- * 发送 Magic Link 到指定邮箱。
- * 用户点击邮件链接后回到 /login，由浏览器端 Supabase client 接管会话恢复。
+ * 发送 6 位数验证码到指定邮箱。
+ * 不需要跳转链接，用户在页面上直接输入验证码。
+ */
+export async function sendOtpCode(email: string): Promise<AuthResult> {
+  let client;
+  try {
+    client = getSupabaseBrowserClient();
+  } catch {
+    return { success: false, message: '账号系统暂未开放，请稍后再试。' };
+  }
+
+  const { error } = await client.auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: true },
+  });
+
+  if (error) return { success: false, message: translateAuthError(error.message) };
+  return { success: true, message: '验证码已发送，请查收邮件。' };
+}
+
+/**
+ * 验证 6 位数 OTP 验证码。
+ * 验证成功后 Supabase 会自动建立会话。
+ */
+export async function verifyOtpCode(email: string, token: string): Promise<AuthResult> {
+  let client;
+  try {
+    client = getSupabaseBrowserClient();
+  } catch {
+    return { success: false, message: '账号系统暂未开放，请稍后再试。' };
+  }
+
+  const { error } = await client.auth.verifyOtp({
+    email,
+    token,
+    type: 'email',
+  });
+
+  if (error) return { success: false, message: translateAuthError(error.message) };
+  return { success: true, message: null };
+}
+
+// ---------------------------------------------------------------------------
+// Magic Link（备用）
+// ---------------------------------------------------------------------------
+
+/**
+ * 发送 Magic Link 到指定邮箱（备用方式）。
  */
 export async function sendMagicLink(email: string, next?: string): Promise<AuthResult> {
   let client;
@@ -31,9 +77,9 @@ export async function sendMagicLink(email: string, next?: string): Promise<AuthR
 
   const redirectBase =
     typeof window !== 'undefined'
-      ? `${window.location.origin}/login`
+      ? `${window.location.origin}/api/auth/callback`
       : process.env.NEXT_PUBLIC_SITE_URL
-        ? `${process.env.NEXT_PUBLIC_SITE_URL}/login`
+        ? `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`
         : undefined;
 
   const redirectTo = redirectBase
