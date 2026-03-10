@@ -93,10 +93,10 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
             required
             autoFocus
             autoComplete="one-time-code"
-            placeholder="000000"
+            placeholder="00000000"
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 8))}
-            className="w-full rounded-lg border border-[rgba(255,255,255,0.06)] bg-[var(--bg-deep)] px-5 py-3.5 text-center font-mono text-2xl tracking-[0.5em] text-white placeholder-[var(--text-dim)] outline-none transition-colors focus:border-[rgba(255,255,255,0.15)]"
+            className="w-full rounded-lg border border-[rgba(255,255,255,0.06)] bg-[var(--bg-deep)] px-5 py-3.5 text-center font-mono text-2xl tracking-[0.3em] text-white placeholder-[var(--text-dim)] outline-none transition-colors focus:border-[rgba(255,255,255,0.15)]"
           />
         </div>
 
