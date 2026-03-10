@@ -4,7 +4,6 @@ import type { AnalysisInput, AnalysisResponse } from '@/lib/analysis';
 import { getRepository } from '@/lib/repository';
 import type { ApiResponse } from '@/lib/api/types';
 
-export const runtime = 'edge';
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
