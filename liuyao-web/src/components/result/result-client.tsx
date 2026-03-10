@@ -7,6 +7,7 @@ import { getMessages } from '@/lib/i18n';
 import { getSession, getUser } from '@/lib/supabase/auth';
 import { getDivinationResultFlow } from '@/services/divination-api';
 import { getDivinationApi, saveDivinationApi, shareDivinationApi } from '@/lib/api/client';
+import { AnnotatedText } from '@/components/ui/annotated-text';
 import type { MockResult } from '@/lib/types';
 
 const messages = getMessages();
@@ -238,7 +239,11 @@ export function ResultClient({ id }: { id: string }) {
         </div>
         <div className="card-glass animate-fade-in-up delay-500 rounded-[24px] p-7 lg:p-8">
           <div className="mb-5 text-xs tracking-[0.25em] text-[var(--jade-cyan-soft)] uppercase">{messages.result.professionalTitle}</div>
-          <p className="text-sm leading-9 text-[var(--moon-silver-soft)]">{result?.professionalAnalysis ?? '专业分析生成中…'}</p>
+          {result?.professionalAnalysis ? (
+            <AnnotatedText text={result.professionalAnalysis} className="text-sm leading-9 text-[var(--moon-silver-soft)]" />
+          ) : (
+            <p className="text-sm leading-9 text-[var(--moon-silver-soft)]">专业分析生成中…</p>
+          )}
         </div>
       </section>
 
