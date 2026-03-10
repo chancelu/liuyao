@@ -19,15 +19,15 @@ export default function HomePage() {
           <div className="hero-ring hero-ring-1" />
           <div className="hero-ring hero-ring-2" />
           <div className="hero-ring hero-ring-3" />
-          {/* Floating trigram symbols */}
-          <div className="hero-trigram animate-slow-float" style={{ top: '8%', left: '6%', fontSize: 140, animationDelay: '0s' }}>☰</div>
-          <div className="hero-trigram animate-slow-float" style={{ top: '14%', right: '5%', fontSize: 100, animationDelay: '2.5s' }}>☵</div>
-          <div className="hero-trigram animate-slow-float" style={{ bottom: '22%', left: '10%', fontSize: 80, animationDelay: '4s' }}>☲</div>
-          <div className="hero-trigram animate-slow-float" style={{ bottom: '12%', right: '12%', fontSize: 120, animationDelay: '1.5s' }}>☷</div>
-          <div className="hero-trigram animate-slow-float" style={{ top: '45%', left: '3%', fontSize: 60, animationDelay: '3s' }}>☳</div>
-          <div className="hero-trigram animate-slow-float" style={{ top: '38%', right: '3%', fontSize: 70, animationDelay: '5s' }}>☴</div>
-          {/* Central glow */}
-          <div className="absolute top-[45%] left-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(122,173,160,0.09),rgba(176,154,106,0.03)_40%,transparent_65%)] blur-3xl" />
+          {/* Floating trigram symbols — visible */}
+          <div className="hero-trigram animate-slow-float" style={{ top: '8%', left: '6%', fontSize: 140, opacity: 0.10, animationDelay: '0s' }}>☰</div>
+          <div className="hero-trigram animate-slow-float" style={{ top: '14%', right: '5%', fontSize: 100, opacity: 0.08, animationDelay: '2.5s' }}>☵</div>
+          <div className="hero-trigram animate-slow-float" style={{ bottom: '22%', left: '10%', fontSize: 80, opacity: 0.09, animationDelay: '4s' }}>☲</div>
+          <div className="hero-trigram animate-slow-float" style={{ bottom: '12%', right: '12%', fontSize: 120, opacity: 0.10, animationDelay: '1.5s' }}>☷</div>
+          <div className="hero-trigram animate-slow-float" style={{ top: '45%', left: '3%', fontSize: 60, opacity: 0.07, animationDelay: '3s' }}>☳</div>
+          <div className="hero-trigram animate-slow-float" style={{ top: '38%', right: '3%', fontSize: 70, opacity: 0.08, animationDelay: '5s' }}>☴</div>
+          {/* Central glow — prominent */}
+          <div className="absolute top-[45%] left-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(122,173,160,0.14),rgba(176,154,106,0.05)_40%,transparent_65%)] blur-2xl" />
         </div>
 
         {/* Content */}

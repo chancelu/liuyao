@@ -68,10 +68,10 @@ a { text-decoration: none; }
    ============================================ */
 .bg-atmosphere {
   background:
-    radial-gradient(ellipse 80% 45% at 50% -8%, rgba(122, 173, 160, 0.06), transparent 60%),
-    radial-gradient(ellipse 50% 50% at 90% 80%, rgba(176, 154, 106, 0.04), transparent 55%),
-    radial-gradient(ellipse 45% 45% at 5% 70%, rgba(100, 120, 180, 0.03), transparent 55%),
-    radial-gradient(ellipse 35% 35% at 50% 50%, rgba(122, 173, 160, 0.015), transparent 50%),
+    radial-gradient(ellipse 80% 45% at 50% -8%, rgba(122, 173, 160, 0.10), transparent 60%),
+    radial-gradient(ellipse 50% 50% at 90% 80%, rgba(176, 154, 106, 0.07), transparent 55%),
+    radial-gradient(ellipse 45% 45% at 5% 70%, rgba(100, 120, 180, 0.05), transparent 55%),
+    radial-gradient(ellipse 35% 35% at 50% 50%, rgba(122, 173, 160, 0.03), transparent 50%),
     linear-gradient(180deg, #0B0B12 0%, #0D0E18 40%, #0F1020 70%, #0B0B12 100%);
   position: relative;
 }
@@ -86,27 +86,31 @@ a { text-decoration: none; }
   z-index: 1;
 }
 
-/* Star-like particles */
+/* Star-like particles — visible */
 .bg-atmosphere::after {
   content: '';
   position: fixed;
   inset: 0;
   background-image:
-    radial-gradient(1px 1px at 15% 25%, rgba(200, 205, 216, 0.3), transparent),
-    radial-gradient(1px 1px at 45% 15%, rgba(200, 205, 216, 0.2), transparent),
-    radial-gradient(1.5px 1.5px at 72% 35%, rgba(122, 173, 160, 0.35), transparent),
-    radial-gradient(1px 1px at 88% 55%, rgba(200, 205, 216, 0.2), transparent),
-    radial-gradient(1px 1px at 25% 65%, rgba(200, 205, 216, 0.15), transparent),
-    radial-gradient(1.5px 1.5px at 55% 78%, rgba(176, 154, 106, 0.25), transparent),
-    radial-gradient(1px 1px at 35% 88%, rgba(200, 205, 216, 0.2), transparent),
-    radial-gradient(1px 1px at 78% 82%, rgba(122, 173, 160, 0.2), transparent),
-    radial-gradient(1px 1px at 8% 48%, rgba(200, 205, 216, 0.15), transparent),
-    radial-gradient(1px 1px at 62% 52%, rgba(200, 205, 216, 0.12), transparent),
-    radial-gradient(1.5px 1.5px at 92% 18%, rgba(122, 173, 160, 0.3), transparent),
-    radial-gradient(1px 1px at 42% 42%, rgba(176, 154, 106, 0.15), transparent);
+    radial-gradient(2px 2px at 15% 25%, rgba(200, 205, 216, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 45% 15%, rgba(200, 205, 216, 0.5), transparent),
+    radial-gradient(2.5px 2.5px at 72% 35%, rgba(122, 173, 160, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 88% 55%, rgba(200, 205, 216, 0.45), transparent),
+    radial-gradient(2px 2px at 25% 65%, rgba(200, 205, 216, 0.4), transparent),
+    radial-gradient(2.5px 2.5px at 55% 78%, rgba(176, 154, 106, 0.55), transparent),
+    radial-gradient(1.5px 1.5px at 35% 88%, rgba(200, 205, 216, 0.45), transparent),
+    radial-gradient(2px 2px at 78% 82%, rgba(122, 173, 160, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 8% 48%, rgba(200, 205, 216, 0.35), transparent),
+    radial-gradient(2px 2px at 62% 52%, rgba(200, 205, 216, 0.3), transparent),
+    radial-gradient(2.5px 2.5px at 92% 18%, rgba(122, 173, 160, 0.6), transparent),
+    radial-gradient(2px 2px at 42% 42%, rgba(176, 154, 106, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 18% 92%, rgba(200, 205, 216, 0.35), transparent),
+    radial-gradient(2px 2px at 82% 12%, rgba(122, 173, 160, 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 52% 32%, rgba(200, 205, 216, 0.3), transparent),
+    radial-gradient(2px 2px at 68% 68%, rgba(176, 154, 106, 0.35), transparent);
   pointer-events: none;
   z-index: 1;
-  animation: starTwinkle 12s ease-in-out infinite alternate;
+  animation: starTwinkle 10s ease-in-out infinite alternate;
 }
 
 @keyframes starTwinkle {
@@ -250,7 +254,6 @@ a { text-decoration: none; }
 .hero-ring {
   position: absolute;
   border-radius: 50%;
-  border: 1px solid rgba(122, 173, 160, 0.06);
   pointer-events: none;
 }
 
@@ -258,6 +261,8 @@ a { text-decoration: none; }
   width: 560px; height: 560px;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
+  border: 1px solid rgba(122, 173, 160, 0.15);
+  box-shadow: 0 0 60px rgba(122, 173, 160, 0.04), inset 0 0 60px rgba(122, 173, 160, 0.02);
   animation: breathe 10s ease-in-out infinite;
 }
 
@@ -265,20 +270,22 @@ a { text-decoration: none; }
   width: 380px; height: 380px;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  border-color: rgba(122, 173, 160, 0.10);
+  border: 1px solid rgba(122, 173, 160, 0.22);
+  box-shadow: 0 0 40px rgba(122, 173, 160, 0.06);
   animation: breathe 10s ease-in-out infinite 3s;
 }
 
 .hero-ring-3 {
   width: 200px; height: 200px;
   top: 50%; left: 50%;
-  border-color: rgba(176, 154, 106, 0.08);
+  border: 1px solid rgba(176, 154, 106, 0.18);
+  box-shadow: 0 0 30px rgba(176, 154, 106, 0.05);
   animation: slowSpin 180s linear infinite;
 }
 
 .hero-trigram {
   position: absolute;
-  color: rgba(122, 173, 160, 0.04);
+  color: rgba(122, 173, 160, 0.10);
   font-family: var(--font-noto-serif-sc), Georgia, serif;
   pointer-events: none;
   user-select: none;
