@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 
@@ -11,6 +11,10 @@ export function ProcessingClient() {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const [activeStep, setActiveStep] = useState(0);
+  const [error] = useState('');
+  const analysisStarted = useRef(false);
+  const analysisDone = useRef(false);
+  const animationDone = useRef(false);
 
   useEffect(() => {
     if (!id) {
@@ -18,18 +22,64 @@ export function ProcessingClient() {
       return;
     }
 
+    // Step animation
     const timers = messages.processing.steps.map((_, index) =>
       window.setTimeout(() => setActiveStep(index), 700 * (index + 1)),
     );
 
-    const redirect = window.setTimeout(() => {
+    // Mark animation as done after all steps shown + small buffer
+    const animTimer = window.setTimeout(() => {
+      animationDone.current = true;
+      // If analysis is already done, redirect immediately
+      if (analysisDone.current) {
+        router.replace(`/result/${id}`);
+      }
+    }, 700 * messages.processing.steps.length + 800);
+
+    // Safety: redirect after 30s no matter what (prevent infinite hang)
+    const safetyTimer = window.setTimeout(() => {
       router.replace(`/result/${id}`);
-    }, 3500);
+    }, 30000);
 
     return () => {
       timers.forEach((timer) => window.clearTimeout(timer));
-      window.clearTimeout(redirect);
+      window.clearTimeout(animTimer);
+      window.clearTimeout(safetyTimer);
     };
+  }, [id, router]);
+
+  // Trigger AI analysis
+  useEffect(() => {
+    if (!id || analysisStarted.current) return;
+    analysisStarted.current = true;
+
+    async function runAnalysis() {
+      try {
+        const response = await fetch('/api/analysis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ divinationId: id }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => null);
+          console.warn('[processing] Analysis API error:', data);
+          // Non-fatal: fallback mock result already exists from cast route
+        }
+      } catch (err) {
+        console.warn('[processing] Analysis fetch failed:', err);
+        // Non-fatal: fallback mock result already exists
+      }
+
+      analysisDone.current = true;
+
+      // If animation is already done, redirect now
+      if (animationDone.current) {
+        router.replace(`/result/${id}`);
+      }
+    }
+
+    void runAnalysis();
   }, [id, router]);
 
   return (
@@ -38,7 +88,7 @@ export function ProcessingClient() {
         <div className="text-xs tracking-[0.3em] text-stone-400 uppercase">Processing</div>
         <h1 className="text-4xl text-stone-50">{messages.processing.title}</h1>
         <p className="mx-auto max-w-2xl text-sm leading-7 text-stone-300/78">
-          现在这版会用前端状态流模拟真实的排盘与分析过程。后续这里会替换成真正的 chart/analyze 接口。
+          正在为你排盘并分析卦象，请稍候…
         </p>
       </div>
       <div className="mt-10 grid gap-4 text-left">
@@ -52,6 +102,11 @@ export function ProcessingClient() {
           </div>
         ))}
       </div>
+      {error && (
+        <div className="mt-6 rounded-xl border border-[rgba(139,74,74,0.20)] bg-[rgba(139,74,74,0.08)] px-4 py-3 text-sm text-red-300">
+          {error}
+        </div>
+      )}
     </div>
   );
 }
