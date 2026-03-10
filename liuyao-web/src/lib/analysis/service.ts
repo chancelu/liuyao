@@ -70,36 +70,61 @@ ${movingDesc}
 }
 
 // ---------------------------------------------------------------------------
-// Claude API 调用
+// OpenAI-compatible API 调用（支持中转站）
 // ---------------------------------------------------------------------------
 
-async function callClaudeAPI(input: AnalysisInput): Promise<AnalysisOutput> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+async function callLLMAPI(input: AnalysisInput): Promise<AnalysisOutput> {
+  const apiKey = process.env.LLM_API_KEY;
   if (!apiKey) {
-    throw new Error('ANTHROPIC_API_KEY not configured');
+    throw new Error('LLM_API_KEY not configured');
   }
 
-  const { default: Anthropic } = await import('@anthropic-ai/sdk');
-  const client = new Anthropic({ apiKey });
+  const baseUrl = (process.env.LLM_BASE_URL || 'https://api.openai.com').replace(/\/+$/, '');
+  const model = process.env.LLM_MODEL || 'gpt-4o';
 
   const userPrompt = buildUserPrompt(input);
 
-  const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 2000,
-    messages: [
-      { role: 'user', content: userPrompt },
-    ],
-    system: SYSTEM_PROMPT,
-  });
+  // Try baseUrl directly, then with /v1 suffix
+  let lastError: Error | null = null;
+  for (const url of [`${baseUrl}/v1/chat/completions`, `${baseUrl}/chat/completions`]) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            { role: 'user', content: userPrompt },
+          ],
+          max_tokens: 2000,
+          temperature: 0.7,
+        }),
+      });
 
-  // Extract text content
-  const textBlock = response.content.find((b) => b.type === 'text');
-  if (!textBlock || textBlock.type !== 'text') {
-    throw new Error('Claude API returned no text content');
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        lastError = new Error(`LLM API ${res.status}: ${errText.slice(0, 300)}`);
+        continue;
+      }
+
+      const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+      const content = data.choices?.[0]?.message?.content;
+      if (!content) {
+        throw new Error('LLM API returned no content');
+      }
+
+      return parseAnalysisOutput(content);
+    } catch (err) {
+      lastError = err as Error;
+      // Try next URL variant
+    }
   }
 
-  return parseAnalysisOutput(textBlock.text);
+  throw lastError ?? new Error('LLM API call failed');
 }
 
 // ---------------------------------------------------------------------------
@@ -145,18 +170,18 @@ export interface AnalysisResult {
  * 执行六爻分析。优先使用 Claude API，若不可用则降级为确定性 fallback。
  */
 export async function analyzeChart(input: AnalysisInput): Promise<AnalysisResult> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.LLM_API_KEY;
 
   if (!apiKey) {
-    console.info('[analysis] No ANTHROPIC_API_KEY, using deterministic fallback');
+    console.info('[analysis] No LLM_API_KEY, using deterministic fallback');
     return { analysis: buildFallbackAnalysis(input), isAI: false };
   }
 
   try {
-    const analysis = await callClaudeAPI(input);
+    const analysis = await callLLMAPI(input);
     return { analysis, isAI: true };
   } catch (err) {
-    console.error('[analysis] Claude API call failed, falling back to deterministic:', err);
+    console.error('[analysis] LLM API call failed, falling back to deterministic:', err);
     return { analysis: buildFallbackAnalysis(input), isAI: false };
   }
 }
