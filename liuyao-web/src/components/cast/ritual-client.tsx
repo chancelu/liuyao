@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { getCurrentDraft, getOrCreateGuestSession } from '@/lib/storage/draft-storage';
@@ -26,6 +26,8 @@ export function RitualClient() {
   const [lastLabel, setLastLabel] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
+  const [shakeKey, setShakeKey] = useState(0);
 
   const draft: DivinationDraft | null = useMemo(() => {
     const parsed = getCurrentDraft();
@@ -38,19 +40,26 @@ export function RitualClient() {
   const isComplete = lines.length === 6;
   const trialState = useMemo(() => getOrCreateGuestSession(), []);
 
-  const handleCast = () => {
+  const handleCast = useCallback(() => {
     if (!draft) {
       setError('没有找到当前问题，请先回到起卦页。');
       return;
     }
 
-    if (isComplete) return;
+    if (isComplete || isShaking) return;
 
-    const next = CAST_OPTIONS[Math.floor(Math.random() * CAST_OPTIONS.length)];
-    setLines((current) => [...current, next]);
-    setLastLabel(CAST_LABELS[next]);
-    setError('');
-  };
+    setIsShaking(true);
+    setShakeKey((k) => k + 1);
+    setLastLabel('');
+
+    setTimeout(() => {
+      const next = CAST_OPTIONS[Math.floor(Math.random() * CAST_OPTIONS.length)];
+      setLines((current) => [...current, next]);
+      setLastLabel(CAST_LABELS[next]);
+      setError('');
+      setIsShaking(false);
+    }, 900);
+  }, [draft, isComplete, isShaking]);
 
   const handleReset = () => {
     setLines([]);
@@ -141,22 +150,36 @@ export function RitualClient() {
           <div className="grid grid-cols-3 gap-8">
             {[1, 2, 3].map((coin) => (
               <div
-                key={coin}
-                className="animate-slow-float flex h-28 w-28 items-center justify-center rounded-full border border-[rgba(176,154,106,0.25)] bg-[radial-gradient(circle_at_30%_30%,rgba(176,154,106,0.15),rgba(200,205,216,0.04))] text-xs tracking-widest text-[var(--dark-gold)] shadow-[0_0_20px_rgba(176,154,106,0.08),0_4px_16px_rgba(0,0,0,0.20)]"
-                style={{ animationDelay: `${coin * 400}ms` }}
+                key={`${coin}-${shakeKey}`}
+                className={`flex h-28 w-28 items-center justify-center rounded-full border border-[rgba(176,154,106,0.25)] bg-[radial-gradient(circle_at_30%_30%,rgba(176,154,106,0.15),rgba(200,205,216,0.04))] text-xs tracking-widest text-[var(--dark-gold)] shadow-[0_0_20px_rgba(176,154,106,0.08),0_4px_16px_rgba(0,0,0,0.20)] ${isShaking ? 'animate-coin-shake' : 'animate-slow-float'}`}
+                style={{ animationDelay: isShaking ? `${(coin - 1) * 80}ms` : `${coin * 400}ms` }}
               >
                 铜钱 {coin}
               </div>
             ))}
           </div>
 
+          {/* Progress bar */}
+          <div className="w-full max-w-xs">
+            <div className="mb-2 flex justify-between text-xs text-[var(--text-dim)]">
+              <span>进度</span>
+              <span>{lines.length} / 6</span>
+            </div>
+            <div className="h-1 w-full overflow-hidden rounded-full bg-[rgba(200,205,216,0.08)]">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[var(--jade-cyan-soft)] to-[var(--jade-cyan)] transition-all duration-500 ease-out"
+                style={{ width: `${(lines.length / 6) * 100}%` }}
+              />
+            </div>
+          </div>
+
           {/* Status */}
           <div className="space-y-3">
             <div className="text-sm text-[var(--moon-silver-soft)]">
-              请专注你想问的事情，然后摇出这一爻。
+              {isShaking ? '正在摇卦…' : isComplete ? '六次摇卦完成，可以生成排盘了。' : '请专注你想问的事情，然后摇出这一爻。'}
             </div>
-            <div className="text-xs tracking-[0.3em] text-[var(--text-dim)] uppercase">
-              {lastLabel || '少阳 / 少阴 / 老阳 / 老阴'}
+            <div className={`text-xs tracking-[0.3em] uppercase transition-all duration-300 ${lastLabel && !isShaking ? 'text-[var(--jade-cyan)]' : 'text-[var(--text-dim)]'}`}>
+              {isShaking ? '…' : lastLabel || '少阳 / 少阴 / 老阳 / 老阴'}
             </div>
           </div>
 
@@ -165,9 +188,9 @@ export function RitualClient() {
             <button
               className="btn-primary rounded-full px-8 py-3.5 text-sm tracking-wide disabled:cursor-not-allowed disabled:opacity-40"
               onClick={handleCast}
-              disabled={isComplete || isSubmitting}
+              disabled={isComplete || isSubmitting || isShaking}
             >
-              {isComplete ? messages.cast.completed : messages.cast.cta}
+              {isShaking ? '摇卦中…' : isComplete ? messages.cast.completed : messages.cast.cta}
             </button>
             <button
               className="btn-secondary rounded-full px-8 py-3.5 text-sm tracking-wide"
