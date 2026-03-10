@@ -13,7 +13,7 @@ export default function LoginPage() {
           <h1 className="font-display text-2xl font-extralight text-white">登录 / 注册</h1>
           <div className="mx-auto h-px w-10 bg-[var(--gold-dim)]" />
           <p className="text-sm leading-7 text-[var(--text-muted)]">
-            输入邮箱，我们将发送 6 位数验证码到你的邮箱。
+            输入邮箱，我们将发送验证码到你的邮箱。
           </p>
         </div>
         <div className="card-solid rounded-xl p-8">

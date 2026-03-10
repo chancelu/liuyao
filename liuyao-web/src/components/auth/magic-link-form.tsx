@@ -37,7 +37,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
 
   async function handleVerifyCode(e: React.FormEvent) {
     e.preventDefault();
-    if (!code.trim() || code.trim().length !== 6) return;
+    if (!code.trim() || code.trim().length < 6) return;
     setBusy(true);
     setError(null);
 
@@ -76,7 +76,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
             验证码已发送至 <span className="text-white">{email}</span>
           </p>
           <p className="text-xs text-[var(--text-dim)]">
-            请查收邮件，输入 6 位数验证码。若未收到请检查垃圾邮件。
+            请查收邮件，输入验证码。若未收到请检查垃圾邮件。
           </p>
         </div>
 
@@ -88,14 +88,14 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
             id="otp-code"
             type="text"
             inputMode="numeric"
-            pattern="[0-9]{6}"
-            maxLength={6}
+            pattern="[0-9]{6,8}"
+            maxLength={8}
             required
             autoFocus
             autoComplete="one-time-code"
             placeholder="000000"
             value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 8))}
             className="w-full rounded-lg border border-[rgba(255,255,255,0.06)] bg-[var(--bg-deep)] px-5 py-3.5 text-center font-mono text-2xl tracking-[0.5em] text-white placeholder-[var(--text-dim)] outline-none transition-colors focus:border-[rgba(255,255,255,0.15)]"
           />
         </div>
@@ -108,7 +108,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
 
         <button
           type="submit"
-          disabled={busy || code.trim().length !== 6}
+          disabled={busy || code.trim().length < 6}
           className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40"
         >
           {busy ? '验证中…' : '验证并登录'}
