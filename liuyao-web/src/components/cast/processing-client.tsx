@@ -22,21 +22,17 @@ export function ProcessingClient() {
       return;
     }
 
-    // Step animation
     const timers = messages.processing.steps.map((_, index) =>
       window.setTimeout(() => setActiveStep(index), 700 * (index + 1)),
     );
 
-    // Mark animation as done after all steps shown + small buffer
     const animTimer = window.setTimeout(() => {
       animationDone.current = true;
-      // If analysis is already done, redirect immediately
       if (analysisDone.current) {
         router.replace(`/result/${id}`);
       }
     }, 700 * messages.processing.steps.length + 800);
 
-    // Safety: redirect after 30s no matter what (prevent infinite hang)
     const safetyTimer = window.setTimeout(() => {
       router.replace(`/result/${id}`);
     }, 30000);
@@ -48,7 +44,6 @@ export function ProcessingClient() {
     };
   }, [id, router]);
 
-  // Trigger AI analysis
   useEffect(() => {
     if (!id || analysisStarted.current) return;
     analysisStarted.current = true;
@@ -64,16 +59,12 @@ export function ProcessingClient() {
         if (!response.ok) {
           const data = await response.json().catch(() => null);
           console.warn('[processing] Analysis API error:', data);
-          // Non-fatal: fallback mock result already exists from cast route
         }
       } catch (err) {
         console.warn('[processing] Analysis fetch failed:', err);
-        // Non-fatal: fallback mock result already exists
       }
 
       analysisDone.current = true;
-
-      // If animation is already done, redirect now
       if (animationDone.current) {
         router.replace(`/result/${id}`);
       }
@@ -83,27 +74,32 @@ export function ProcessingClient() {
   }, [id, router]);
 
   return (
-    <div className="mx-auto max-w-4xl rounded-[36px] border border-white/10 bg-white/5 p-10 text-center backdrop-blur">
+    <div className="glow-center mx-auto max-w-2xl text-center">
       <div className="space-y-4">
-        <div className="text-xs tracking-[0.3em] text-stone-400 uppercase">Processing</div>
-        <h1 className="text-4xl text-stone-50">{messages.processing.title}</h1>
-        <p className="mx-auto max-w-2xl text-sm leading-7 text-stone-300/78">
+        <div className="text-[10px] tracking-[0.5em] text-[var(--gold-dim)] uppercase">Processing</div>
+        <h1 className="font-display text-3xl font-extralight tracking-wide text-[var(--cream)]">{messages.processing.title}</h1>
+        <div className="gold-divider mx-auto w-12" />
+        <p className="text-sm text-[var(--stone)]">
           正在为你排盘并分析卦象，请稍候…
         </p>
       </div>
-      <div className="mt-10 grid gap-4 text-left">
+      <div className="mt-12 grid gap-3 text-left">
         {messages.processing.steps.map((step, index) => (
           <div
             key={step}
-            className={`rounded-[22px] border px-5 py-4 transition ${index <= activeStep ? 'border-emerald-200/20 bg-emerald-100/8 text-stone-50' : 'border-white/8 bg-black/15 text-stone-300'}`}
+            className={`rounded-xl border px-6 py-4 transition-all duration-500 ${
+              index <= activeStep
+                ? 'border-[rgba(196,164,108,0.15)] bg-[rgba(196,164,108,0.04)] text-[var(--cream)]'
+                : 'border-[var(--border)] bg-[var(--bg-card)] text-[var(--stone-dim)]'
+            }`}
           >
-            <div className="text-xs tracking-[0.2em] text-stone-500 uppercase">Step 0{index + 1}</div>
-            <div className="mt-1">{step}</div>
+            <div className="text-[10px] tracking-[0.2em] text-[var(--gold-dim)] uppercase">Step 0{index + 1}</div>
+            <div className="font-display mt-1 text-sm">{step}</div>
           </div>
         ))}
       </div>
       {error && (
-        <div className="mt-6 rounded-xl border border-[rgba(139,74,74,0.20)] bg-[rgba(139,74,74,0.08)] px-4 py-3 text-sm text-red-300">
+        <div className="mt-6 rounded-xl border border-[rgba(158,107,107,0.20)] bg-[rgba(158,107,107,0.06)] px-5 py-3 text-sm text-[var(--error)]">
           {error}
         </div>
       )}

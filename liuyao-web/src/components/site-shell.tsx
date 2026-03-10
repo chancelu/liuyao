@@ -8,26 +8,38 @@ const messages = getMessages();
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-atmosphere relative min-h-screen text-[var(--foreground)]">
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-8 sm:px-12">
-        <header className="mb-14 flex items-center justify-between border-b border-[rgba(200,205,216,0.12)] pb-6">
-          <Link href="/" className="group flex items-center gap-3">
-            <div className="h-9 w-9 rounded-full border border-[rgba(122,173,160,0.20)] bg-[rgba(122,173,160,0.06)] transition-colors duration-200 group-hover:border-[rgba(122,173,160,0.35)]" />
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-10 sm:px-16">
+        {/* Header — Cartier-style minimal */}
+        <header className="mb-20 flex items-center justify-between">
+          <Link href="/" className="group flex items-center gap-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--gold-dim)]/30 text-sm text-[var(--gold)]">
+              爻
+            </div>
             <div>
-              <div className="text-sm tracking-[0.35em] text-[var(--moon-silver)] uppercase">{messages.brand.name}</div>
-              <div className="text-xs text-[var(--text-dim)]">{messages.brand.tagline}</div>
+              <div className="font-display text-base tracking-[0.4em] text-[var(--cream)] uppercase">{messages.brand.name}</div>
+              <div className="text-[10px] tracking-[0.2em] text-[var(--stone)]">YAOJING</div>
             </div>
           </Link>
-          <nav className="flex items-center gap-4 text-sm text-[var(--moon-silver-soft)]">
-            <Link href="/cast" className="btn-secondary rounded-full px-4 py-2">
+          <nav className="flex items-center gap-6 text-xs tracking-[0.15em] text-[var(--stone)]">
+            <Link href="/cast" className="transition-colors duration-300 hover:text-[var(--gold)]">
               {messages.home.primaryCta}
             </Link>
-            <Link href="/history" className="transition-colors duration-200 hover:text-[var(--foreground)]">历史记录</Link>
-            <Suspense fallback={<Link href="/login" className="btn-secondary rounded-full px-4 py-2 text-sm">登录</Link>}>
+            <Link href="/history" className="transition-colors duration-300 hover:text-[var(--gold)]">
+              历史
+            </Link>
+            <Suspense fallback={<Link href="/login" className="text-[var(--gold-dim)] transition-colors duration-300 hover:text-[var(--gold)]">登录</Link>}>
               <AuthNav />
             </Suspense>
           </nav>
         </header>
         <main className="flex-1">{children}</main>
+        {/* Footer */}
+        <footer className="mt-24 border-t border-[var(--border)] pt-8 pb-4">
+          <div className="flex items-center justify-between text-[10px] tracking-[0.15em] text-[var(--stone-dim)]">
+            <span>© 2025 爻镜 YAOJING</span>
+            <span>六爻在线占卦</span>
+          </div>
+        </footer>
       </div>
     </div>
   );

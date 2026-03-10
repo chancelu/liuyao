@@ -4,13 +4,9 @@ import { useState } from 'react';
 import { sendMagicLink } from '@/lib/supabase/auth';
 
 interface Props {
-  /** 登录成功后的回调（可选，默认刷新页面） */
   onSuccess?: () => void;
-  /** 预设错误信息（如来自 URL query） */
   initialError?: string;
-  /** 登录成功后的返回路径 */
   initialNext?: string;
-  /** 返回路径的人类可读说明 */
   nextLabel?: string;
 }
 
@@ -41,23 +37,23 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
 
   if (step === 'sent') {
     return (
-      <div className="space-y-4 rounded-2xl border border-emerald-100/15 bg-emerald-100/5 p-6 text-center">
-        <div className="text-2xl">📬</div>
-        <p className="text-sm leading-7 text-stone-200">
-          验证邮件已发送至 <span className="text-emerald-300">{email}</span>
+      <div className="space-y-4 text-center">
+        <div className="font-display text-2xl">📬</div>
+        <p className="text-sm leading-7 text-[var(--cream-soft)]">
+          验证邮件已发送至 <span className="text-[var(--gold)]">{email}</span>
         </p>
-        <p className="text-xs text-stone-400">
+        <p className="text-xs text-[var(--stone)]">
           请查收邮件并点击登录链接。链接 10 分钟内有效，若未收到请检查垃圾邮件文件夹。
         </p>
         {initialNext ? (
-          <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-left text-xs leading-6 text-stone-300">
-            登录完成后会自动返回：<span className="text-stone-100">{nextLabel ?? initialNext}</span>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)] px-4 py-3 text-left text-xs leading-6 text-[var(--stone)]">
+            登录完成后会自动返回：<span className="text-[var(--cream)]">{nextLabel ?? initialNext}</span>
           </div>
         ) : null}
         <button
           type="button"
           onClick={() => { setStep('input'); setError(null); }}
-          className="mt-2 text-xs text-stone-400 underline underline-offset-2 hover:text-stone-200"
+          className="mt-2 text-xs text-[var(--stone)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]"
         >
           重新输入邮箱
         </button>
@@ -66,9 +62,9 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-2">
-        <label htmlFor="magic-email" className="block text-sm text-stone-300">
+        <label htmlFor="magic-email" className="block text-[10px] tracking-[0.2em] text-[var(--gold-dim)] uppercase">
           邮箱地址
         </label>
         <input
@@ -79,31 +75,31 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
           placeholder="your@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-stone-100 placeholder-stone-500 outline-none transition focus:border-emerald-200/40 focus:ring-1 focus:ring-emerald-200/20"
+          className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-deep)] px-5 py-3.5 text-sm text-[var(--cream)] placeholder-[var(--stone-dim)] outline-none transition-colors focus:border-[var(--border-hover)]"
         />
       </div>
 
       {error && (
-        <p className="rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3 text-xs text-red-300">
+        <p className="rounded-lg border border-[rgba(158,107,107,0.20)] bg-[rgba(158,107,107,0.06)] px-4 py-3 text-xs text-[var(--error)]">
           {error}
         </p>
       )}
 
       {initialNext ? (
-        <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-6 text-stone-300">
-          登录后会自动返回：<span className="text-stone-100">{nextLabel ?? initialNext}</span>
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-deep)] px-4 py-3 text-xs leading-6 text-[var(--stone)]">
+          登录后会自动返回：<span className="text-[var(--cream)]">{nextLabel ?? initialNext}</span>
         </div>
       ) : null}
 
       <button
         type="submit"
         disabled={busy || !email.trim()}
-        className="w-full rounded-full border border-emerald-100/25 bg-emerald-100/10 px-6 py-3 text-sm text-stone-50 transition hover:border-emerald-100/40 hover:bg-emerald-100/15 disabled:cursor-not-allowed disabled:opacity-50"
+        className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40"
       >
         {busy ? '发送中…' : '发送登录链接'}
       </button>
 
-      <p className="text-center text-xs text-stone-500">
+      <p className="text-center text-xs text-[var(--stone-dim)]">
         无需密码，点击邮件链接即可登录 / 注册。
       </p>
     </form>
