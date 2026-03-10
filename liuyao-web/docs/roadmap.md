@@ -1,120 +1,93 @@
 # 六爻网站开发路线图（2026-03-10 校准版）
 
 ## 1. 开发总原则
-- 先做主链路：首页 → 提问 → 摇卦 → 排盘 → **真实 AI 分析** → 结果 → 注册保存
-- **不允许在 P0 未完成时做视觉打磨**
+- 先做主链路：首页 → 提问 → 摇卦 → 排盘 → AI 分析 → 结果 → 注册保存
 - 排盘与分析严格分层
 - 有卡点立刻反馈，不空转
-- 每次开发前先对照本文档确认当前任务
 
 ## 2. 当前方向锚点
-后续开发必须遵守以下已确认内容：
 - 邮箱注册 / 登录（已实现 magic link）
 - 游客先体验，后注册保存
 - 游客 1 次，注册后更多
 - 高级模式第一版不做
 - 中文优先，预埋 i18n
-- MVP 必须包含：示例问题、tooltip 术语解释、分享链接、分享图片、重新起卦
-- 结果页顺序固定：先排盘 → 再初步结论 → 再具体分析
 
-## 3. 里程碑（以代码现状为准）
+## 3. 里程碑
 
 ### Milestone 0：项目底座 ✅
-- Next.js + TypeScript + Tailwind
-- i18n 预埋（next-intl）
-- 路由骨架
-- Supabase client / env 骨架
+Next.js + TypeScript + Tailwind + i18n 预埋 + 路由骨架 + Supabase client
 
 ### Milestone 1：主流程前端闭环 ✅
-- 首页、起卦问题页、摇卦页、生成页、结果页、登录页、历史页
-- 全流程可走通（mock 数据）
+首页、起卦问题页、摇卦页、生成页、结果页、登录页、历史页
 
 ### Milestone 2：排盘引擎 ✅
-- 完整京房纳甲体系
-- 主卦/变卦、动爻、世应、纳甲、六亲、六神
-- 月建/日辰/旬空（lunar-javascript）
-- 标准 ChartData JSON
-- 测试样例
+完整京房纳甲体系（主卦/变卦/动爻/世应/纳甲/六亲/六神/旬空）
 
-### Milestone 3：AI 分析链路 ⬅️ **当前阶段，最高优先级**
-- [ ] 定义 analysis input/output schema
-- [ ] 建立 analysis service（API route）
-- [ ] 对接大模型调用（Claude API）
-- [ ] 排盘 JSON → 分析 prompt 转换
-- [ ] 结构化输出：初步结论 / 白话分析 / 专业分析
-- [ ] 替换 buildMockResult() 为真实分析
-- [ ] 错误处理与降级
+### Milestone 3：AI 分析链路 ✅
+- Analysis input/output schema ✅
+- Analysis service（OpenAI 兼容 API + 确定性 fallback）✅
+- System prompt + user prompt 构建 ✅
+- `/api/analysis` route ✅
+- Processing 页面调用分析 API 并等待 ✅
+- 结构化输出解析 ✅
+- 结果持久化到 repository ✅
+- 错误处理与降级 ✅
 
-### Milestone 4：账户 / 保存 / 历史 / 分享 ✅（基础版）
-已完成：
-- Supabase magic link 登录
-- 游客 1 次体验机制
-- 结果保存
-- 历史记录页
-- 分享链接
+### Milestone 4：账户 / 保存 / 历史 / 分享 ✅
+- Supabase magic link 登录 ✅
+- 游客 1 次体验机制 ✅
+- 结果保存 ✅
+- 历史记录页 ✅
+- 分享链接 ✅
 
-未完成（移至 M5）：
-- 分享图片生成
+### Milestone 5：体验补完与打磨 ✅
+- Tooltip 术语解释 ✅
+- 分享图片生成（html2canvas-pro）✅
+- 分类示例问题 + FAQ ✅
+- 摇卦页动画 / 进度 / 反馈优化 ✅
+- 结果页视觉打磨 ✅
 
-### Milestone 5：体验补完与打磨
-前置条件：**M3 必须完成后才进入**
-- [ ] Tooltip 术语解释
-- [ ] 分享图片生成
-- [ ] 示例问题引导优化
-- [ ] 视觉/动效最终打磨
-- [ ] 结果页视觉升级（此时有真实内容可打磨）
+### Milestone 6：埋点 + 上线准备 ⚠️ 部分完成
+- 轻量级前端埋点（console + localStorage）✅
+- 漏斗报表 ❌
+- 错误监控 ❌
+- 上线 checklist ❌
 
-### Milestone 6：埋点 / 报表 / 上线准备
-- [ ] 埋点系统
-- [ ] 漏斗报表
-- [ ] 错误监控
-- [ ] 上线 checklist
+## 4. 优先级规则
 
-## 4. 优先级规则（强制执行）
+### P0：必须做（MVP）— 全部完成 ✅
+- 工程骨架 ✅
+- 排盘引擎 ✅
+- 前端全页面 ✅
+- 认证与保存 ✅
+- AI 分析服务 ✅
 
-### 🔴 铁律
-1. **P0 未全部完成前，禁止做 P1/P2 的视觉打磨**
-2. **每次 session 开头必须检查：当前最高优先级任务是什么**
-3. **视觉迭代不超过 1 轮，除非用户主动要求**
+### P1：强烈建议首版做 — 全部完成 ✅
+- Tooltip 术语解释 ✅
+- 分享图片 ✅
+- 示例问题优化 ✅
+- 视觉打磨 ✅
+- 埋点系统 ✅
 
-### P0：必须做（不做就没有 MVP）
-- ~~工程骨架~~ ✅
-- ~~排盘引擎~~ ✅
-- ~~前端全页面~~ ✅
-- ~~认证与保存~~ ✅
-- **AI 分析服务** ← 唯一剩余 P0
-
-### P1：强烈建议首版做
-- Tooltip 术语解释
-- 分享图片
-- 示例问题优化
-- 视觉最终打磨
-- 埋点系统
-
-### P2：后续优化
+### P2：后续优化（未开始）
 - 高保真品牌打磨
 - 更多分享策略
 - 分析质量回溯
 - 用户反馈机制
 - 多语言上线
+- 漏斗报表
+- 错误监控
 
 ## 5. 核心数据与系统结构
 
 ### 确定性排盘层 ✅
 输入：6 次摇卦结果（old_yin / young_yin / young_yang / old_yang）
-输出：ChartData JSON（主卦/变卦/动爻/世应/纳甲/六亲/六神/旬空）
+输出：ChartData JSON
 
-### 分析层 ← 待实现
+### 分析层 ✅
 输入：ChartData JSON + 用户问题 + 分类
-输出：初步结论 / 白话分析 / 专业分析（结构化 JSON）
+输出：summary / plainAnalysis / professionalAnalysis（结构化 JSON）
+实现：OpenAI 兼容 API（LLM_API_KEY / LLM_BASE_URL / LLM_MODEL）+ 确定性 fallback
 
-### 展示层 ✅（等真实分析数据接入）
-前端结果页已有完整渲染结构，当前使用 mock 数据
-
-## 6. 开发时文档沉淀规则
-- 产品规划 → `docs/PRD.md`
-- 设计方向 → `docs/design-direction.md`
-- 开发路线 / 优先级 → `docs/roadmap.md`（本文件）
-- 里程碑状态 → `docs/milestones.md`
-- 待办跟踪 → `docs/backlog.md`
-- 新的重要决策 → 追加到相应 docs
+### 展示层 ✅
+前端结果页完整渲染，支持真实 AI 分析数据
