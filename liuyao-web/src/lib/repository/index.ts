@@ -54,8 +54,14 @@ class ResilientRepository implements IDivinationRepository {
     try {
       return await this.primary.saveDraft(draft);
     } catch (err) {
-      console.warn('[repository] saveDraft fallback to mock:', (err as Error).message);
-      return this.fallback.saveDraft(draft);
+      console.error('[repository] saveDraft PRIMARY FAILED:', (err as Error).message);
+      // Retry once
+      try {
+        return await this.primary.saveDraft(draft);
+      } catch (retryErr) {
+        console.error('[repository] saveDraft RETRY FAILED, using fallback:', (retryErr as Error).message);
+        return this.fallback.saveDraft(draft);
+      }
     }
   }
 
@@ -67,14 +73,23 @@ class ResilientRepository implements IDivinationRepository {
     try {
       return await this.primary.saveCast(divinationId, cast, result);
     } catch (err) {
-      console.warn('[repository] saveCast fallback to mock:', (err as Error).message);
-      return this.fallback.saveCast(divinationId, cast, result);
+      console.error('[repository] saveCast PRIMARY FAILED:', (err as Error).message);
+      // Retry once
+      try {
+        return await this.primary.saveCast(divinationId, cast, result);
+      } catch (retryErr) {
+        console.error('[repository] saveCast RETRY FAILED, using fallback:', (retryErr as Error).message);
+        return this.fallback.saveCast(divinationId, cast, result);
+      }
     }
   }
 
   async getById(id: string): Promise<DivinationRecord | null> {
     try {
-      return await this.primary.getById(id);
+      const result = await this.primary.getById(id);
+      if (result) return result;
+      // Primary returned null — try fallback in case data was saved there
+      return await this.fallback.getById(id);
     } catch (err) {
       console.warn('[repository] getById fallback to mock:', (err as Error).message);
       return this.fallback.getById(id);
