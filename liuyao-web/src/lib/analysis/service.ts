@@ -118,6 +118,10 @@ async function callLLMAPI(input: AnalysisInput): Promise<AnalysisOutput> {
   let lastError: Error | null = null;
   for (const url of [`${baseUrl}/v1/chat/completions`, `${baseUrl}/chat/completions`]) {
     try {
+      console.info(`[analysis] Calling LLM API: ${url} model=${model}`);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 55000); // 55s timeout (Vercel limit is 60s)
+
       const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -133,22 +137,28 @@ async function callLLMAPI(input: AnalysisInput): Promise<AnalysisOutput> {
           max_tokens: 4096,
           temperature: 0.7,
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeout);
 
       if (!res.ok) {
         const errText = await res.text().catch(() => '');
+        console.error(`[analysis] LLM API error ${res.status}: ${errText.slice(0, 300)}`);
         lastError = new Error(`LLM API ${res.status}: ${errText.slice(0, 300)}`);
         continue;
       }
 
       const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
       const content = data.choices?.[0]?.message?.content;
+      console.info(`[analysis] LLM API response received, content length: ${content?.length ?? 0}`);
       if (!content) {
         throw new Error('LLM API returned no content');
       }
 
       return parseAnalysisOutput(content);
     } catch (err) {
+      console.error(`[analysis] LLM API call to ${url} failed:`, (err as Error).message);
       lastError = err as Error;
       // Try next URL variant
     }
