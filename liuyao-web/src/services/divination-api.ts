@@ -57,13 +57,15 @@ export async function getDivinationResultFlow(id: string): Promise<MockResult | 
   if (response.success && response.data.result) {
     setCurrentDraft(response.data.draft);
 
-    // Merge: keep AI analysis fields from localStorage if server doesn't have them
     const serverResult = response.data.result;
+    // Prefer localStorage AI analysis over server fallback analysis.
+    // The processing page writes these fields only after a successful LLM call,
+    // so if localStorage has them, they're the real AI output.
     const merged: MockResult = {
       ...serverResult,
-      summary: serverResult.summary || localResult?.summary || '',
-      plainAnalysis: serverResult.plainAnalysis || localResult?.plainAnalysis || '',
-      professionalAnalysis: serverResult.professionalAnalysis || localResult?.professionalAnalysis || '',
+      summary: localResult?.summary || serverResult.summary,
+      plainAnalysis: localResult?.plainAnalysis || serverResult.plainAnalysis,
+      professionalAnalysis: localResult?.professionalAnalysis || serverResult.professionalAnalysis,
     };
 
     setResultById(id, merged);
