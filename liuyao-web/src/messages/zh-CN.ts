@@ -64,9 +64,9 @@ export const zhCN = {
   result: {
     title: '本次结果',
     chartTitle: '排盘总览',
-    summaryTitle: '初步结论',
-    plainTitle: '白话分析',
-    professionalTitle: '专业分析',
+    summaryTitle: '基础结论',
+    plainTitle: '卦象解读',
+    professionalTitle: '断卦释义',
     save: '保存这次结果',
     share: '分享结果',
     restart: '重新起卦',

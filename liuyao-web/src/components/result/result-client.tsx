@@ -11,6 +11,7 @@ import { setResultById } from '@/lib/storage/draft-storage';
 import { buildPromptFromResult } from '@/lib/analysis/build-prompt';
 import { callLLMStream } from '@/lib/api/llm-stream';
 import { AnnotatedText } from '@/components/ui/annotated-text';
+import { StructuredText, SummaryPoints } from '@/components/ui/structured-text';
 import { ShareCard } from '@/components/result/share-card';
 import { track } from '@/lib/analytics';
 import type { MockResult } from '@/lib/types';
@@ -341,12 +342,14 @@ export function ResultClient({ id }: { id: string }) {
         <div className="card-gold animate-fade-in-up delay-300 flex flex-col rounded-2xl p-7 lg:p-8">
           <div className="mb-6 text-[10px] tracking-[0.25em] text-[var(--gold)] uppercase">{messages.result.summaryTitle}</div>
           <div className="flex flex-1 flex-col justify-center space-y-5">
-            <div className="border-l-2 border-[var(--gold-dim)] pl-5 font-display text-xl leading-relaxed font-light text-white">
+            <div className="border-l-2 border-[var(--gold-dim)] pl-5">
               {result && !result.isAI && result.chart && !aiFailed
-                ? <span className="animate-pulse text-[var(--text-dim)]">AI 正在分析卦象…</span>
+                ? <span className="animate-pulse font-display text-xl font-light text-[var(--text-dim)]">AI 正在分析卦象…</span>
                 : aiFailed && !result?.isAI
-                  ? <span className="text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</span>
-                  : (result?.summary ?? '正在等待分析结果。')}
+                  ? <span className="font-display text-xl font-light text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</span>
+                  : result?.summary
+                    ? <SummaryPoints text={result.summary} />
+                    : <span className="font-display text-xl font-light text-white">正在等待分析结果。</span>}
             </div>
             <div className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3">
               <div className="mb-1 text-[10px] tracking-widest text-[var(--text-dim)] uppercase">所问</div>
@@ -368,10 +371,12 @@ export function ResultClient({ id }: { id: string }) {
           </button>
           {showPlainAnalysis && (
             result && !result.isAI && result.chart && !aiFailed
-              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成白话分析，请稍候…</p>
+              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成卦象解读，请稍候…</p>
               : aiFailed && !result?.isAI
                 ? <p className="text-sm leading-9 text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</p>
-                : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">{result?.plainAnalysis ?? '解读生成中…'}</p>
+                : result?.plainAnalysis
+                  ? <StructuredText text={result.plainAnalysis} className="animate-fade-in" />
+                  : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">解读生成中…</p>
           )}
         </div>
         <div className="card-solid animate-fade-in-up delay-500 rounded-2xl p-7 lg:p-8">
@@ -384,14 +389,12 @@ export function ResultClient({ id }: { id: string }) {
           </button>
           {showProAnalysis && (
             result && !result.isAI && result.chart && !aiFailed
-              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成专业分析，请稍候…</p>
+              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成断卦释义，请稍候…</p>
               : aiFailed && !result?.isAI
                 ? <p className="text-sm leading-9 text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</p>
-                : result?.professionalAnalysis ? (
-              <AnnotatedText text={result.professionalAnalysis} className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]" />
-            ) : (
-              <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">专业分析生成中…</p>
-            )
+                : result?.professionalAnalysis
+                  ? <StructuredText text={result.professionalAnalysis} className="animate-fade-in" />
+                  : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">断卦释义生成中…</p>
           )}
         </div>
       </section>
