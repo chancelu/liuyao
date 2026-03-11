@@ -120,7 +120,7 @@ async function callLLMAPI(input: AnalysisInput): Promise<AnalysisOutput> {
     try {
       console.info(`[analysis] Calling LLM API: ${url} model=${model}`);
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 55000); // 55s timeout (Vercel limit is 60s)
+      const timeout = setTimeout(() => controller.abort(), 25000); // 25s timeout (Edge Runtime limit is 30s)
 
       const res = await fetch(url, {
         method: 'POST',

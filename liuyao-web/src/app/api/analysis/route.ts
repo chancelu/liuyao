@@ -4,7 +4,8 @@ import type { AnalysisInput, AnalysisResponse } from '@/lib/analysis';
 import { getRepository } from '@/lib/repository';
 import type { ApiResponse } from '@/lib/api/types';
 
-export const maxDuration = 60;
+export const runtime = 'edge';
+export const maxDuration = 30;
 
 export async function POST(request: Request) {
   let body: { divinationId?: string };
