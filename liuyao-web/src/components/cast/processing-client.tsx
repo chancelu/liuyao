@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { getResultById, setResultById } from '@/lib/storage/draft-storage';
 import { buildPromptFromResult } from '@/lib/analysis/build-prompt';
+import { callLLMStream } from '@/lib/api/llm-stream';
 import type { MockResult } from '@/lib/types';
 
 const messages = getMessages();
@@ -115,44 +116,28 @@ export function ProcessingClient() {
           return;
         }
 
-        // Call lightweight LLM proxy (edge runtime, no DB)
-        const llmRes = await fetch('/api/llm', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt }),
-        });
+        // Call lightweight LLM proxy (edge runtime, streaming)
+        const llmData = await callLLMStream(prompt);
 
-        if (llmRes.ok) {
-          const llmData = await llmRes.json() as {
-            success: boolean;
-            data?: { summary: string; plainAnalysis: string; professionalAnalysis: string };
+        if (llmData) {
+          // Update local result with AI analysis
+          const updatedResult = {
+            ...result,
+            summary: llmData.summary,
+            plainAnalysis: llmData.plainAnalysis,
+            professionalAnalysis: llmData.professionalAnalysis,
+            isAI: true,
           };
+          setResultById(id!, updatedResult);
 
-          if (llmData.success && llmData.data) {
-            // Update local result with AI analysis
-            const updatedResult = {
-              ...result,
-              summary: llmData.data.summary,
-              plainAnalysis: llmData.data.plainAnalysis,
-              professionalAnalysis: llmData.data.professionalAnalysis,
-              isAI: true,
-            };
-            setResultById(id!, updatedResult);
-
-            // Also persist to server (fire and forget)
-            fetch('/api/analysis', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ divinationId: id }),
-            }).catch(() => {});
-          }
-        } else {
-          console.warn('[processing] LLM proxy failed, trying server analysis');
-          await fetch('/api/analysis', {
+          // Also persist to server (fire and forget)
+          fetch('/api/analysis', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ divinationId: id }),
           }).catch(() => {});
+        } else {
+          console.warn('[processing] LLM stream returned no data');
         }
       } catch (err) {
         console.warn('[processing] Analysis failed:', err);

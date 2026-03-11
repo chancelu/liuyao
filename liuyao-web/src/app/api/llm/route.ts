@@ -22,20 +22,12 @@ const SYSTEM_PROMPT = `你是一位精通京房纳甲六爻体系的资深命理
 }
 \`\`\``;
 
-// Model configs: primary (Claude) and fallback (GPT)
-function getModelConfigs() {
-  const primaryKey = process.env.LLM_API_KEY_PRIMARY || process.env.LLM_API_KEY;
-  const primaryUrl = (process.env.LLM_BASE_URL_PRIMARY || process.env.LLM_BASE_URL || 'https://api.openai.com').replace(/\/+$/, '');
-  const primaryModel = process.env.LLM_MODEL_PRIMARY || process.env.LLM_MODEL || 'claude-sonnet-4-6';
-
-  const fallbackKey = process.env.LLM_API_KEY_FALLBACK || process.env.LLM_API_KEY;
-  const fallbackUrl = (process.env.LLM_BASE_URL_FALLBACK || process.env.LLM_BASE_URL || 'https://api.openai.com').replace(/\/+$/, '');
-  const fallbackModel = process.env.LLM_MODEL_FALLBACK || process.env.LLM_MODEL || 'gpt-4o';
-
-  return [
-    { key: primaryKey, url: primaryUrl, model: primaryModel, label: 'primary' },
-    { key: fallbackKey, url: fallbackUrl, model: fallbackModel, label: 'fallback' },
-  ].filter(c => c.key);
+// Model config
+function getModelConfig() {
+  const key = process.env.LLM_API_KEY;
+  const baseUrl = (process.env.LLM_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3').replace(/\/+$/, '');
+  const model = process.env.LLM_MODEL || 'doubao-seed-2-0-code-preview-260215';
+  return { key, url: baseUrl, model };
 }
 
 /** Read an SSE stream and accumulate the content */
@@ -96,8 +88,8 @@ async function readStream(response: Response): Promise<string> {
 }
 
 export async function POST(request: Request) {
-  const configs = getModelConfigs();
-  if (configs.length === 0) {
+  const config = getModelConfig();
+  if (!config.key) {
     return NextResponse.json({ success: false, error: 'LLM not configured' }, { status: 500 });
   }
 
@@ -112,92 +104,99 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: 'Missing prompt' }, { status: 400 });
   }
 
+  // Try both URL patterns: /chat/completions and /v1/chat/completions
+  const urls = [`${config.url}/chat/completions`, `${config.url}/v1/chat/completions`];
   let lastError = '';
 
-  for (const config of configs) {
-    const urls = [`${config.url}/v1/chat/completions`, `${config.url}/chat/completions`];
+  for (const url of urls) {
+    try {
+      console.info(`[llm-proxy] Calling ${url} model=${config.model} stream=true`);
 
-    for (const url of urls) {
-      try {
-        console.info(`[llm-proxy] Calling ${config.label}: ${url} model=${config.model}`);
-        
-        // Try streaming first
-        let content = '';
-        try {
-          const streamRes = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${config.key}`,
-            },
-            body: JSON.stringify({
-              model: config.model,
-              messages: [
-                { role: 'system', content: SYSTEM_PROMPT },
-                { role: 'user', content: body.prompt },
-              ],
-              max_tokens: 4096,
-              temperature: 0.7,
-              stream: true,
-            }),
-          });
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${config.key}`,
+        },
+        body: JSON.stringify({
+          model: config.model,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            { role: 'user', content: body.prompt },
+          ],
+          max_tokens: 4096,
+          temperature: 0.7,
+          stream: true,
+        }),
+      });
 
-          if (streamRes.ok) {
-            content = await readStream(streamRes);
-          }
-        } catch (streamErr) {
-          console.warn(`[llm-proxy] ${config.label} stream failed, trying non-stream:`, (streamErr as Error).message);
-        }
-
-        // Fallback to non-streaming if stream returned no content
-        if (!content) {
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${config.key}`,
-            },
-            body: JSON.stringify({
-              model: config.model,
-              messages: [
-                { role: 'system', content: SYSTEM_PROMPT },
-                { role: 'user', content: body.prompt },
-              ],
-              max_tokens: 4096,
-              temperature: 0.7,
-            }),
-          });
-
-          if (!res.ok) {
-            const errText = await res.text().catch(() => '');
-            console.error(`[llm-proxy] ${config.label} API error ${res.status}: ${errText.slice(0, 200)}`);
-            lastError = `${config.label} API ${res.status}`;
-            continue;
-          }
-
-          const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
-          content = data.choices?.[0]?.message?.content || '';
-        }
-
-        if (!content) {
-          lastError = `${config.label}: No content in stream`;
-          continue;
-        }
-
-        // Parse JSON from response
-        let jsonStr = content;
-        const codeBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-        if (codeBlockMatch) {
-          jsonStr = codeBlockMatch[1].trim();
-        }
-
-        const parsed = JSON.parse(jsonStr);
-        console.info(`[llm-proxy] ${config.label} success`);
-        return NextResponse.json({ success: true, data: parsed });
-      } catch (err) {
-        lastError = `${config.label}: ${(err as Error).message}`;
-        console.error(`[llm-proxy] Error with ${config.label} ${url}:`, lastError);
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        console.error(`[llm-proxy] API error ${res.status}: ${errText.slice(0, 200)}`);
+        lastError = `API ${res.status}: ${errText.slice(0, 100)}`;
+        continue;
       }
+
+      if (!res.body) {
+        lastError = 'No response body';
+        continue;
+      }
+
+      // Pass-through stream to client — keeps the connection alive and avoids Edge timeout
+      const { readable, writable } = new TransformStream();
+      const writer = writable.getWriter();
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+
+      (async () => {
+        const encoder = new TextEncoder();
+        let buffer = '';
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed.startsWith('data: ')) continue;
+              const data = trimmed.slice(6);
+              if (data === '[DONE]') continue;
+
+              try {
+                const parsed = JSON.parse(data) as {
+                  choices?: Array<{ delta?: { content?: string } }>;
+                };
+                const delta = parsed.choices?.[0]?.delta?.content;
+                if (delta) {
+                  await writer.write(encoder.encode(`data: ${JSON.stringify({ content: delta })}\n\n`));
+                }
+              } catch {
+                // skip malformed
+              }
+            }
+          }
+          await writer.write(encoder.encode('data: [DONE]\n\n'));
+        } catch (err) {
+          console.error('[llm-proxy] Stream error:', (err as Error).message);
+        } finally {
+          await writer.close();
+        }
+      })();
+
+      return new Response(readable, {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        },
+      });
+    } catch (err) {
+      lastError = (err as Error).message;
+      console.error(`[llm-proxy] Error with ${url}:`, lastError);
     }
   }
 

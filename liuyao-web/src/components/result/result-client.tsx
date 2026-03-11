@@ -9,6 +9,7 @@ import { getDivinationResultFlow } from '@/services/divination-api';
 import { getDivinationApi, saveDivinationApi, shareDivinationApi } from '@/lib/api/client';
 import { setResultById } from '@/lib/storage/draft-storage';
 import { buildPromptFromResult } from '@/lib/analysis/build-prompt';
+import { callLLMStream } from '@/lib/api/llm-stream';
 import { AnnotatedText } from '@/components/ui/annotated-text';
 import { ShareCard } from '@/components/result/share-card';
 import { track } from '@/lib/analytics';
@@ -136,37 +137,24 @@ export function ResultClient({ id }: { id: string }) {
         const prompt = buildPromptFromResult(result!);
         if (!prompt) { setAiLoading(false); return; }
 
-        const res = await fetch('/api/llm', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt }),
-        });
+        const data = await callLLMStream(prompt);
 
-        if (!res.ok) {
-          console.warn('[result] LLM API returned', res.status);
-          setAiFailed(true);
-          setAiLoading(false);
-          return;
-        }
-
-        const data = await res.json() as {
-          success: boolean;
-          data?: { summary: string; plainAnalysis: string; professionalAnalysis: string };
-        };
-
-        if (data.success && data.data) {
+        if (data) {
           const updated: MockResult = {
             ...result!,
-            summary: data.data.summary,
-            plainAnalysis: data.data.plainAnalysis,
-            professionalAnalysis: data.data.professionalAnalysis,
+            summary: data.summary,
+            plainAnalysis: data.plainAnalysis,
+            professionalAnalysis: data.professionalAnalysis,
             isAI: true,
           };
           setResultById(id, updated);
           setResult(updated);
+        } else {
+          setAiFailed(true);
         }
       } catch (err) {
         console.warn('[result] AI analysis fallback failed:', err);
+        setAiFailed(true);
       } finally {
         setAiLoading(false);
       }
@@ -276,89 +264,69 @@ export function ResultClient({ id }: { id: string }) {
               </div>
 
               {/* Visual Yao Lines — Primary & Changed side by side */}
-              <div className="grid grid-cols-2 gap-4">
-                {/* Primary Hexagram Lines */}
+              <div className="grid grid-cols-2 gap-6">
+                {/* Primary Hexagram */}
                 <div>
                   <div className="mb-3 text-[10px] tracking-[0.2em] text-[var(--text-dim)] uppercase">本卦 · {result.chart.primary.name}</div>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5">
                     {[...result.chart.lines].reverse().map((line) => (
                       <div
                         key={line.position}
-                        className={`grid grid-cols-[2rem_1fr_auto] items-center gap-3 rounded-lg px-3 py-3 ${
-                          line.moving
-                            ? 'border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]'
-                            : 'bg-[var(--bg-elevated)]'
+                        className={`flex h-14 items-center gap-3 rounded-lg px-3 ${
+                          line.moving ? 'border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
                         }`}
                       >
-                        <div className="text-center">
-                          <div className="text-[11px] font-medium text-white">{YAO_POS[line.position - 1]}爻</div>
-                          <div className="mt-0.5 text-[9px] text-[var(--text-dim)]">{line.spirit}</div>
+                        <span className="w-8 shrink-0 text-center text-[11px] text-white">{YAO_POS[line.position - 1]}爻</span>
+                        <div className="w-14 shrink-0">
+                          {line.yinYang === '阳' ? (
+                            <div className="h-[3px] w-full rounded-full bg-white" />
+                          ) : (
+                            <div className="flex gap-2">
+                              <div className="h-[3px] flex-1 rounded-full bg-[var(--text-muted)]" />
+                              <div className="h-[3px] flex-1 rounded-full bg-[var(--text-muted)]" />
+                            </div>
+                          )}
+                          {line.moving && <div className="mt-0.5 text-center text-[9px] text-[var(--gold)]">{line.yinYang === '阳' ? '○' : '×'}</div>}
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-16 shrink-0">
-                            {line.yinYang === '阳' ? (
-                              <div className="h-[4px] w-full rounded-full bg-white" />
-                            ) : (
-                              <div className="flex gap-2">
-                                <div className="h-[4px] flex-1 rounded-full bg-[var(--text-muted)]" />
-                                <div className="h-[4px] flex-1 rounded-full bg-[var(--text-muted)]" />
-                              </div>
-                            )}
-                            {line.moving && (
-                              <div className="mt-0.5 text-center text-[10px] text-[var(--gold)]">
-                                {line.yinYang === '阳' ? '○' : '×'}
-                              </div>
-                            )}
-                          </div>
-                          <span className="text-xs text-white">{line.relative}</span>
-                          <span className="text-[10px] text-[var(--text-dim)]">{line.branch}{line.branchElement}</span>
-                        </div>
-                        <div className="w-6 text-center">
-                          {line.isShi && <span className="text-[11px] text-[var(--gold)]">世</span>}
-                          {line.isYing && <span className="text-[11px] text-[var(--blue)]">应</span>}
-                        </div>
+                        <span className="text-xs text-white">{line.relative}</span>
+                        <span className="text-[10px] text-[var(--text-dim)]">{line.branch}</span>
+                        {line.isShi && <span className="ml-auto text-[10px] text-[var(--gold)]">世</span>}
+                        {line.isYing && <span className="ml-auto text-[10px] text-[var(--blue)]">应</span>}
                       </div>
                     ))}
                   </div>
                 </div>
-                {/* Changed Hexagram Lines */}
+                {/* Changed Hexagram */}
                 <div>
                   <div className="mb-3 text-[10px] tracking-[0.2em] text-[var(--text-dim)] uppercase">变卦 · {result.chart.changed.name}</div>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5">
                     {[...result.chart.lines].reverse().map((line) => {
                       const isChanged = line.moving;
                       const changedYinYang = isChanged ? (line.yinYang === '阳' ? '阴' : '阳') : line.yinYang;
                       return (
                         <div
                           key={line.position}
-                          className={`grid grid-cols-[2rem_1fr_auto] items-center gap-3 rounded-lg px-3 py-3 ${
-                            isChanged
-                              ? 'border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]'
-                              : 'bg-[var(--bg-elevated)]'
+                          className={`flex h-14 items-center gap-3 rounded-lg px-3 ${
+                            isChanged ? 'border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
                           }`}
                         >
-                          <div className="text-center">
-                            <div className="text-[11px] font-medium text-white">{YAO_POS[line.position - 1]}爻</div>
+                          <span className="w-8 shrink-0 text-center text-[11px] text-white">{YAO_POS[line.position - 1]}爻</span>
+                          <div className="w-14 shrink-0">
+                            {changedYinYang === '阳' ? (
+                              <div className="h-[3px] w-full rounded-full bg-white" />
+                            ) : (
+                              <div className="flex gap-2">
+                                <div className="h-[3px] flex-1 rounded-full bg-[var(--text-muted)]" />
+                                <div className="h-[3px] flex-1 rounded-full bg-[var(--text-muted)]" />
+                              </div>
+                            )}
                           </div>
-                          <div className="flex items-center gap-3">
-                            <div className="w-16 shrink-0">
-                              {changedYinYang === '阳' ? (
-                                <div className="h-[4px] w-full rounded-full bg-white" />
-                              ) : (
-                                <div className="flex gap-2">
-                                  <div className="h-[4px] flex-1 rounded-full bg-[var(--text-muted)]" />
-                                  <div className="h-[4px] flex-1 rounded-full bg-[var(--text-muted)]" />
-                                </div>
-                              )}
-                            </div>
-                            <span className="text-xs text-[var(--text-muted)]">
-                              {line.changedRelative && isChanged ? line.changedRelative : line.relative}
-                            </span>
-                            <span className="text-[10px] text-[var(--text-dim)]">
-                              {line.changedBranch ?? line.branch}
-                            </span>
-                          </div>
-                          <div className="w-6" />
+                          <span className="text-xs text-[var(--text-muted)]">
+                            {isChanged ? (line.changedRelative ?? line.relative) : line.relative}
+                          </span>
+                          <span className="text-[10px] text-[var(--text-dim)]">
+                            {isChanged ? (line.changedBranch ?? line.branch) : line.branch}
+                          </span>
                         </div>
                       );
                     })}
