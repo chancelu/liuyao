@@ -8,34 +8,27 @@
  */
 export function StructuredText({ text, className }: { text: string; className?: string }) {
   // Strip markdown artifacts
-  let clean = text
+  const clean = text
     .replace(/\*\*/g, '')
     .replace(/^#{1,6}\s+/gm, '')
     .replace(/^[-*]\s+/gm, '')
     .replace(/`/g, '');
 
   // Split by 【】 sections
-  const sectionRegex = /【([^】]+)】/g;
+  const segments = clean.split(/【([^】]+)】/);
+  // segments: [before, title1, content1, title2, content2, ...]
   const parts: Array<{ title?: string; content: string }> = [];
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
 
-  while ((match = sectionRegex.exec(clean)) !== null) {
-    // Content before this section header
-    if (match.index > lastIndex) {
-      const before = clean.slice(lastIndex, match.index).trim();
-      if (before) parts.push({ content: before });
+  if (segments[0]?.trim()) {
+    parts.push({ content: segments[0].trim() });
+  }
+
+  for (let i = 1; i < segments.length; i += 2) {
+    const title = segments[i];
+    const content = (segments[i + 1] || '').trim();
+    if (title && content) {
+      parts.push({ title, content });
     }
-    // Find content until next section or end
-    const contentStart = match.index + match[0].length;
-    const nextMatch = sectionRegex.exec(clean);
-    const contentEnd = nextMatch ? nextMatch.index : clean.length;
-    // Reset regex position for next iteration
-    if (nextMatch) sectionRegex.lastIndex = nextMatch.index;
-
-    const sectionContent = clean.slice(contentStart, contentEnd).trim();
-    parts.push({ title: match[1], content: sectionContent });
-    lastIndex = contentEnd;
   }
 
   // If no sections found, treat as plain text
@@ -62,22 +55,18 @@ export function StructuredText({ text, className }: { text: string; className?: 
 /** Renders content, detecting numbered lists */
 function ContentBlock({ text }: { text: string }) {
   // Check if content has numbered points (1. xxx 2. xxx or 1、xxx)
-  const numberedRegex = /(?:^|\n)\s*(\d+)[.、．]\s*/;
-  if (numberedRegex.test(text)) {
-    // Split into numbered items
-    const items = text.split(/(?:^|\n)\s*\d+[.、．]\s*/).filter(Boolean);
-    if (items.length > 1) {
-      return (
-        <ol className="list-none space-y-2">
-          {items.map((item, i) => (
-            <li key={i} className="flex gap-2 text-sm leading-8 text-[var(--text-muted)]">
-              <span className="shrink-0 text-[var(--gold-dim)]">{i + 1}.</span>
-              <span>{item.trim()}</span>
-            </li>
-          ))}
-        </ol>
-      );
-    }
+  const items = text.split(/(?:^|\n)\s*\d+[.、．]\s*/).filter(Boolean);
+  if (items.length > 1) {
+    return (
+      <ol className="list-none space-y-2">
+        {items.map((item, i) => (
+          <li key={i} className="flex gap-2 text-sm leading-8 text-[var(--text-muted)]">
+            <span className="shrink-0 text-[var(--gold-dim)]">{i + 1}.</span>
+            <span>{item.trim()}</span>
+          </li>
+        ))}
+      </ol>
+    );
   }
 
   return <p className="text-sm leading-8 text-[var(--text-muted)]">{text}</p>;
@@ -85,10 +74,7 @@ function ContentBlock({ text }: { text: string }) {
 
 /** Renders summary as numbered points */
 export function SummaryPoints({ text, className }: { text: string; className?: string }) {
-  // Strip markdown
   const clean = text.replace(/\*\*/g, '').replace(/`/g, '');
-
-  // Try to split by numbered pattern
   const items = clean.split(/\s*\d+[.、．]\s*/).filter(Boolean);
 
   if (items.length > 1) {
@@ -104,6 +90,5 @@ export function SummaryPoints({ text, className }: { text: string; className?: s
     );
   }
 
-  // Fallback: just show as text
   return <p className={`text-base leading-8 text-white ${className ?? ''}`}>{clean}</p>;
 }

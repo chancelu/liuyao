@@ -348,7 +348,7 @@ export function ResultClient({ id }: { id: string }) {
                 : aiFailed && !result?.isAI
                   ? <span className="font-display text-xl font-light text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</span>
                   : result?.summary
-                    ? <SummaryPoints text={result.summary} />
+                    ? <SummaryPoints text={String(result.summary)} />
                     : <span className="font-display text-xl font-light text-white">正在等待分析结果。</span>}
             </div>
             <div className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3">
@@ -375,7 +375,7 @@ export function ResultClient({ id }: { id: string }) {
               : aiFailed && !result?.isAI
                 ? <p className="text-sm leading-9 text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</p>
                 : result?.plainAnalysis
-                  ? <StructuredText text={result.plainAnalysis} className="animate-fade-in" />
+                  ? <StructuredText text={String(result.plainAnalysis)} className="animate-fade-in" />
                   : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">解读生成中…</p>
           )}
         </div>
@@ -393,7 +393,7 @@ export function ResultClient({ id }: { id: string }) {
               : aiFailed && !result?.isAI
                 ? <p className="text-sm leading-9 text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</p>
                 : result?.professionalAnalysis
-                  ? <StructuredText text={result.professionalAnalysis} className="animate-fade-in" />
+                  ? <StructuredText text={String(result.professionalAnalysis)} className="animate-fade-in" />
                   : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">断卦释义生成中…</p>
           )}
         </div>
