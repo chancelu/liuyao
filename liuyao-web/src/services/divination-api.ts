@@ -50,16 +50,27 @@ export async function submitCastFlow(lines: CastLine[]) {
 }
 
 export async function getDivinationResultFlow(id: string): Promise<MockResult | null> {
+  // Load localStorage result first (may contain AI analysis from processing page)
+  const localResult = getResultById(id);
+
   const response = await getDivinationApi(id);
   if (response.success && response.data.result) {
     setCurrentDraft(response.data.draft);
-    if (response.data.result) {
-      setResultById(id, response.data.result);
-    }
-    return response.data.result;
+
+    // Merge: keep AI analysis fields from localStorage if server doesn't have them
+    const serverResult = response.data.result;
+    const merged: MockResult = {
+      ...serverResult,
+      summary: serverResult.summary || localResult?.summary || '',
+      plainAnalysis: serverResult.plainAnalysis || localResult?.plainAnalysis || '',
+      professionalAnalysis: serverResult.professionalAnalysis || localResult?.professionalAnalysis || '',
+    };
+
+    setResultById(id, merged);
+    return merged;
   }
 
-  return getResultById(id);
+  return localResult;
 }
 
 export function buildCreateDivinationPayload(input: Omit<DivinationDraft, 'createdAt'>): CreateDivinationRequest {
