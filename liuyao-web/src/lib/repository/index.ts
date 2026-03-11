@@ -55,12 +55,12 @@ class ResilientRepository implements IDivinationRepository {
       return await this.primary.saveDraft(draft);
     } catch (err) {
       console.error('[repository] saveDraft PRIMARY FAILED:', (err as Error).message);
-      // Retry once
+      // Retry once — do NOT fall back to mock (useless on serverless)
       try {
         return await this.primary.saveDraft(draft);
       } catch (retryErr) {
-        console.error('[repository] saveDraft RETRY FAILED, using fallback:', (retryErr as Error).message);
-        return this.fallback.saveDraft(draft);
+        console.error('[repository] saveDraft RETRY FAILED:', (retryErr as Error).message);
+        throw retryErr;
       }
     }
   }
@@ -74,12 +74,12 @@ class ResilientRepository implements IDivinationRepository {
       return await this.primary.saveCast(divinationId, cast, result);
     } catch (err) {
       console.error('[repository] saveCast PRIMARY FAILED:', (err as Error).message);
-      // Retry once
+      // Retry once — do NOT fall back to mock (useless on serverless)
       try {
         return await this.primary.saveCast(divinationId, cast, result);
       } catch (retryErr) {
-        console.error('[repository] saveCast RETRY FAILED, using fallback:', (retryErr as Error).message);
-        return this.fallback.saveCast(divinationId, cast, result);
+        console.error('[repository] saveCast RETRY FAILED:', (retryErr as Error).message);
+        throw retryErr;
       }
     }
   }
