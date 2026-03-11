@@ -205,8 +205,8 @@ export function ResultClient({ id }: { id: string }) {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="text-[10px] tracking-[0.4em] text-[var(--text-dim)] uppercase">Result #{id}</div>
-            <h1 className="font-display text-4xl font-extralight tracking-[0.02em] text-white">{messages.result.title}</h1>
-            <p className="max-w-2xl text-sm leading-8 text-[var(--text-muted)]">先看卦象结构，再看一句话结论，最后展开白话与专业分析。</p>
+            <h1 className="font-display text-2xl font-extralight tracking-[0.02em] text-white sm:text-4xl">{messages.result.title}</h1>
+            <p className="max-w-2xl text-sm leading-8 text-[var(--text-muted)]">先看卦象结构，再看基础结论，最后展开卦象解读与断卦释义。</p>
           </div>
         </div>
         <div className="mt-8 h-px w-full bg-[rgba(255,255,255,0.06)]" />
@@ -215,20 +215,20 @@ export function ResultClient({ id }: { id: string }) {
       {/* Main Grid: Chart + Summary */}
       <section className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
         {/* Hexagram Chart */}
-        <div className="card-solid animate-fade-in-up delay-100 rounded-2xl p-7 lg:p-8">
+        <div className="card-solid animate-fade-in-up delay-100 rounded-2xl p-5 sm:p-7 lg:p-8">
           <div className="mb-6 text-[10px] tracking-[0.25em] text-[var(--gold)] uppercase">{messages.result.chartTitle}</div>
 
           {/* Primary & Changed Hexagram Names */}
-          <div className="mb-6 grid grid-cols-2 gap-4">
-            <div className="rounded-xl bg-[var(--bg-elevated)] p-5">
+          <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4">
+            <div className="rounded-xl bg-[var(--bg-elevated)] p-3 sm:p-5">
               <div className="text-[10px] text-[var(--text-dim)]">本卦</div>
-              <div className="mt-2 font-display text-2xl font-light text-white">
+              <div className="mt-1 font-display text-lg font-light text-white sm:mt-2 sm:text-2xl">
                 {result?.primaryHexagram ?? '待生成'}
               </div>
             </div>
-            <div className="rounded-xl bg-[var(--bg-elevated)] p-5">
+            <div className="rounded-xl bg-[var(--bg-elevated)] p-3 sm:p-5">
               <div className="text-[10px] text-[var(--text-dim)]">变卦</div>
-              <div className="mt-2 font-display text-2xl font-light text-white">
+              <div className="mt-1 font-display text-lg font-light text-white sm:mt-2 sm:text-2xl">
                 {result?.changedHexagram ?? '待生成'}
               </div>
             </div>
@@ -265,7 +265,7 @@ export function ResultClient({ id }: { id: string }) {
               </div>
 
               {/* Visual Yao Lines — Primary & Changed side by side */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 gap-2 sm:gap-6">
                 {/* Primary Hexagram */}
                 <div>
                   <div className="mb-3 text-[10px] tracking-[0.2em] text-[var(--text-dim)] uppercase">本卦 · {result.chart.primary.name}</div>
@@ -273,26 +273,26 @@ export function ResultClient({ id }: { id: string }) {
                     {[...result.chart.lines].reverse().map((line) => (
                       <div
                         key={line.position}
-                        className={`flex h-14 items-center gap-3 rounded-lg px-3 ${
+                        className={`flex h-10 items-center gap-1.5 rounded-lg px-2 sm:h-14 sm:gap-3 sm:px-3 ${
                           line.moving ? 'border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
                         }`}
                       >
-                        <span className="w-8 shrink-0 text-center text-[11px] text-white">{YAO_POS[line.position - 1]}爻</span>
-                        <div className="w-14 shrink-0">
+                        <span className="shrink-0 text-center text-[10px] text-white sm:w-8 sm:text-[11px]">{YAO_POS[line.position - 1]}</span>
+                        <div className="w-8 shrink-0 sm:w-14">
                           {line.yinYang === '阳' ? (
                             <div className="h-[3px] w-full rounded-full bg-white" />
                           ) : (
-                            <div className="flex gap-2">
+                            <div className="flex gap-1 sm:gap-2">
                               <div className="h-[3px] flex-1 rounded-full bg-[var(--text-muted)]" />
                               <div className="h-[3px] flex-1 rounded-full bg-[var(--text-muted)]" />
                             </div>
                           )}
-                          {line.moving && <div className="mt-0.5 text-center text-[9px] text-[var(--gold)]">{line.yinYang === '阳' ? '○' : '×'}</div>}
+                          {line.moving && <div className="mt-0.5 text-center text-[8px] text-[var(--gold)] sm:text-[9px]">{line.yinYang === '阳' ? '○' : '×'}</div>}
                         </div>
-                        <span className="text-xs text-white">{line.relative}</span>
-                        <span className="text-[10px] text-[var(--text-dim)]">{line.branch}</span>
-                        {line.isShi && <span className="ml-auto text-[10px] text-[var(--gold)]">世</span>}
-                        {line.isYing && <span className="ml-auto text-[10px] text-[var(--blue)]">应</span>}
+                        <span className="hidden text-xs text-white sm:inline">{line.relative}</span>
+                        <span className="text-[9px] text-[var(--text-dim)] sm:text-[10px]">{line.branch}</span>
+                        {line.isShi && <span className="ml-auto text-[9px] text-[var(--gold)] sm:text-[10px]">世</span>}
+                        {line.isYing && <span className="ml-auto text-[9px] text-[var(--blue)] sm:text-[10px]">应</span>}
                       </div>
                     ))}
                   </div>
@@ -307,25 +307,25 @@ export function ResultClient({ id }: { id: string }) {
                       return (
                         <div
                           key={line.position}
-                          className={`flex h-14 items-center gap-3 rounded-lg px-3 ${
+                          className={`flex h-10 items-center gap-1.5 rounded-lg px-2 sm:h-14 sm:gap-3 sm:px-3 ${
                             isChanged ? 'border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
                           }`}
                         >
-                          <span className="w-8 shrink-0 text-center text-[11px] text-white">{YAO_POS[line.position - 1]}爻</span>
-                          <div className="w-14 shrink-0">
+                          <span className="shrink-0 text-center text-[10px] text-white sm:w-8 sm:text-[11px]">{YAO_POS[line.position - 1]}</span>
+                          <div className="w-8 shrink-0 sm:w-14">
                             {changedYinYang === '阳' ? (
                               <div className="h-[3px] w-full rounded-full bg-white" />
                             ) : (
-                              <div className="flex gap-2">
+                              <div className="flex gap-1 sm:gap-2">
                                 <div className="h-[3px] flex-1 rounded-full bg-[var(--text-muted)]" />
                                 <div className="h-[3px] flex-1 rounded-full bg-[var(--text-muted)]" />
                               </div>
                             )}
                           </div>
-                          <span className="text-xs text-[var(--text-muted)]">
+                          <span className="hidden text-xs text-[var(--text-muted)] sm:inline">
                             {isChanged ? (line.changedRelative ?? line.relative) : line.relative}
                           </span>
-                          <span className="text-[10px] text-[var(--text-dim)]">
+                          <span className="text-[9px] text-[var(--text-dim)] sm:text-[10px]">
                             {isChanged ? (line.changedBranch ?? line.branch) : line.branch}
                           </span>
                         </div>
@@ -339,7 +339,7 @@ export function ResultClient({ id }: { id: string }) {
         </div>
 
         {/* Summary Card */}
-        <div className="card-gold animate-fade-in-up delay-300 flex flex-col rounded-2xl p-7 lg:p-8">
+        <div className="card-gold animate-fade-in-up delay-300 flex flex-col rounded-2xl p-5 sm:p-7 lg:p-8">
           <div className="mb-6 text-[10px] tracking-[0.25em] text-[var(--gold)] uppercase">{messages.result.summaryTitle}</div>
           <div className="flex flex-1 flex-col justify-center space-y-5">
             <div className="border-l-2 border-[var(--gold-dim)] pl-5">
@@ -361,7 +361,7 @@ export function ResultClient({ id }: { id: string }) {
 
       {/* Analysis Cards */}
       <section className="grid gap-6 lg:grid-cols-2">
-        <div className="card-solid animate-fade-in-up delay-400 rounded-2xl p-7 lg:p-8">
+        <div className="card-solid animate-fade-in-up delay-400 rounded-2xl p-5 sm:p-7 lg:p-8">
           <button
             onClick={() => setShowPlainAnalysis((v) => !v)}
             className="mb-5 flex w-full items-center justify-between"
@@ -379,7 +379,7 @@ export function ResultClient({ id }: { id: string }) {
                   : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">解读生成中…</p>
           )}
         </div>
-        <div className="card-solid animate-fade-in-up delay-500 rounded-2xl p-7 lg:p-8">
+        <div className="card-solid animate-fade-in-up delay-500 rounded-2xl p-5 sm:p-7 lg:p-8">
           <button
             onClick={() => setShowProAnalysis((v) => !v)}
             className="mb-5 flex w-full items-center justify-between"
@@ -443,7 +443,7 @@ export function ResultClient({ id }: { id: string }) {
           </div>
         ) : null}
 
-        <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
           {isAuthenticated ? (
             <button
               onClick={handleSave}
