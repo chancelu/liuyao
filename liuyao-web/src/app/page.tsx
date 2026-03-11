@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { SiteShell } from '@/components/site-shell';
 import { HomeTracker } from '@/components/home-tracker';
+import { ParticleBackground } from '@/components/ui/particle-background';
 import { getMessages } from '@/lib/i18n';
 
 const messages = getMessages();
@@ -14,26 +15,34 @@ export default function HomePage() {
           HERO — Full screen, centered, maximum whitespace
           ═══════════════════════════════════════════ */}
       <section className="hexagram-bg relative -mx-6 mb-48 flex min-h-[88vh] flex-col items-center justify-center px-6 text-center sm:-mx-12 sm:px-12 lg:-mx-16 lg:px-16">
+        {/* Particle effect */}
+        <ParticleBackground />
+
+        {/* Ambient glow blurs */}
+        <div className="pointer-events-none absolute left-1/4 top-1/4 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgba(184,160,112,0.04)] blur-[100px]" />
+        <div className="pointer-events-none absolute right-1/4 bottom-1/3 h-[300px] w-[300px] translate-x-1/2 rounded-full bg-[rgba(122,158,192,0.03)] blur-[80px]" />
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgba(184,160,112,0.03)] blur-[120px]" />
+
         {/* Label */}
-        <div className="animate-fade-in-up mb-12">
+        <div className="animate-fade-in-up relative z-10 mb-12">
           <span className="shimmer-gold text-[10px] tracking-[0.5em] uppercase">六爻在线占卦</span>
         </div>
 
         {/* Main title — huge, light weight */}
-        <h1 className="animate-fade-in-up delay-100 max-w-4xl font-display text-[3rem] leading-[1.12] font-extralight tracking-[0.02em] text-white sm:text-[4rem] lg:text-[5.5rem] lg:leading-[1.08]">
+        <h1 className="animate-fade-in-up delay-100 relative z-10 max-w-4xl font-display text-[3rem] leading-[1.12] font-extralight tracking-[0.02em] text-white sm:text-[4rem] lg:text-[5.5rem] lg:leading-[1.08]">
           {messages.home.heroTitle}
         </h1>
 
         {/* Thin gold rule */}
-        <div className="animate-fade-in-up delay-200 mt-12 h-px w-16 bg-[var(--gold-dim)]" />
+        <div className="animate-fade-in-up delay-200 relative z-10 mt-12 h-px w-16 bg-[var(--gold-dim)]" />
 
         {/* Subtitle */}
-        <p className="animate-fade-in-up delay-300 mx-auto mt-10 max-w-md text-[15px] leading-[2] text-[var(--text-muted)]">
+        <p className="animate-fade-in-up delay-300 relative z-10 mx-auto mt-10 max-w-md text-[15px] leading-[2] text-[var(--text-muted)]">
           {messages.home.heroDescription}
         </p>
 
         {/* Single CTA */}
-        <div className="animate-fade-in-up delay-400 mt-16">
+        <div className="animate-fade-in-up delay-400 relative z-10 mt-16">
           <Link href="/cast" className="btn-primary inline-block rounded-full px-14 py-4.5 text-sm">
             {messages.home.primaryCta}
           </Link>

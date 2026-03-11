@@ -6,6 +6,7 @@ import { getMessages } from '@/lib/i18n';
 import { getCurrentDraft, getOrCreateGuestSession } from '@/lib/storage/draft-storage';
 import { submitCastFlow } from '@/services/divination-api';
 import { track } from '@/lib/analytics';
+import { playCoinSound } from '@/lib/audio/coin-sound';
 import type { CastLine, DivinationDraft } from '@/lib/types';
 
 const messages = getMessages();
@@ -52,6 +53,7 @@ export function RitualClient() {
     setIsShaking(true);
     setShakeKey((k) => k + 1);
     setLastLabel('');
+    playCoinSound();
 
     setTimeout(() => {
       const next = CAST_OPTIONS[Math.floor(Math.random() * CAST_OPTIONS.length)];
