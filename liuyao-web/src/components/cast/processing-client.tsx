@@ -40,10 +40,19 @@ export function ProcessingClient() {
 
     function tick() {
       const elapsed = Date.now() - startTime;
-      // Logarithmic curve: fast at start, slows down, caps at 92%
-      // Reaches ~50% at 8s, ~75% at 20s, ~88% at 45s, ~92% at 90s
       const t = elapsed / 1000;
-      const rawProgress = Math.min(92, 30 * Math.log(1 + t / 3));
+      // Two-phase curve for natural feel:
+      // Phase 1 (0-3s): quick ramp to ~40% — feels responsive
+      // Phase 2 (3s+): slow crawl toward 92% — waiting for AI
+      let rawProgress: number;
+      if (t < 3) {
+        // Fast ease-out: 0 → 40% in 3 seconds
+        rawProgress = 40 * (1 - Math.pow(1 - t / 3, 3));
+      } else {
+        // Slow asymptotic approach: 40% → 92%
+        rawProgress = 40 + 52 * (1 - Math.exp(-(t - 3) / 20));
+      }
+      rawProgress = Math.min(92, rawProgress);
       setProgress(rawProgress);
 
       // Update stage based on progress thresholds
@@ -175,7 +184,7 @@ export function ProcessingClient() {
       <div className="mt-16 space-y-4">
         <div className="relative h-1 w-full overflow-hidden rounded-full bg-[rgba(255,255,255,0.06)]">
           <div
-            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--gold-dim)] to-[var(--gold)] transition-all duration-500 ease-out"
+            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--gold-dim)] to-[var(--gold)]"
             style={{ width: `${progress}%` }}
           />
         </div>
