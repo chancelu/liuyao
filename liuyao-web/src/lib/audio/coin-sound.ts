@@ -1,60 +1,52 @@
 /**
- * Play a metallic coin shake sound using Web Audio API.
- * No external audio files needed.
+ * Play a pleasant metallic coin jingling sound — 叮铃铃
+ * Uses Web Audio API, no external files.
  */
 export function playCoinSound() {
   try {
     const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const now = ctx.currentTime;
 
-    // Metallic click/clink
-    const osc1 = ctx.createOscillator();
-    const gain1 = ctx.createGain();
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(2400, ctx.currentTime);
-    osc1.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.08);
-    gain1.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-    osc1.connect(gain1);
-    gain1.connect(ctx.destination);
-    osc1.start(ctx.currentTime);
-    osc1.stop(ctx.currentTime + 0.15);
+    // Master gain
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.25, now);
+    master.connect(ctx.destination);
 
-    // Secondary ring
-    const osc2 = ctx.createOscillator();
-    const gain2 = ctx.createGain();
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(3200, ctx.currentTime + 0.02);
-    osc2.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.12);
-    gain2.gain.setValueAtTime(0.08, ctx.currentTime + 0.02);
-    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-    osc2.connect(gain2);
-    gain2.connect(ctx.destination);
-    osc2.start(ctx.currentTime + 0.02);
-    osc2.stop(ctx.currentTime + 0.2);
-
-    // Noise burst for the "shake" texture
-    const bufferSize = ctx.sampleRate * 0.06;
-    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * 0.3;
+    // Helper: create a bell-like tone
+    function bell(freq: number, startTime: number, duration: number, vol: number) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(vol, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
     }
-    const noise = ctx.createBufferSource();
-    const noiseGain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 4000;
-    filter.Q.value = 2;
-    noise.buffer = noiseBuffer;
-    noiseGain.gain.setValueAtTime(0.06, ctx.currentTime);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-    noise.connect(filter);
-    filter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
-    noise.start(ctx.currentTime);
+
+    // Three coin clinks in quick succession — 叮铃铃
+    // First clink
+    bell(4200, now, 0.4, 0.3);
+    bell(6300, now, 0.25, 0.12);
+    bell(2100, now, 0.5, 0.08);
+
+    // Second clink (slightly delayed)
+    bell(3800, now + 0.08, 0.35, 0.25);
+    bell(5700, now + 0.08, 0.2, 0.1);
+
+    // Third clink
+    bell(4500, now + 0.18, 0.45, 0.2);
+    bell(6800, now + 0.18, 0.3, 0.08);
+    bell(2250, now + 0.18, 0.5, 0.06);
+
+    // Gentle shimmer tail
+    bell(3400, now + 0.3, 0.6, 0.06);
+    bell(5100, now + 0.35, 0.5, 0.04);
 
     // Clean up
-    setTimeout(() => ctx.close(), 500);
+    setTimeout(() => ctx.close(), 1500);
   } catch {
     // Audio not available, silently skip
   }

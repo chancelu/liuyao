@@ -18,10 +18,21 @@ export default function HomePage() {
         {/* Particle effect */}
         <ParticleBackground />
 
-        {/* Ambient glow blurs */}
-        <div className="pointer-events-none absolute left-1/4 top-1/4 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgba(184,160,112,0.04)] blur-[100px]" />
-        <div className="pointer-events-none absolute right-1/4 bottom-1/3 h-[300px] w-[300px] translate-x-1/2 rounded-full bg-[rgba(122,158,192,0.03)] blur-[80px]" />
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgba(184,160,112,0.03)] blur-[120px]" />
+        {/* Ambient glow blurs — multiple layers for depth */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          {/* Large warm center glow */}
+          <div className="absolute left-1/2 top-1/3 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 animate-slow-drift rounded-full bg-[rgba(184,160,112,0.05)] blur-[120px]" />
+          {/* Top-left gold accent */}
+          <div className="absolute -left-20 -top-20 h-[400px] w-[400px] rounded-full bg-[rgba(184,160,112,0.04)] blur-[100px]" style={{ animation: 'slowDrift 12s ease-in-out infinite' }} />
+          {/* Bottom-right cool blue */}
+          <div className="absolute -bottom-10 -right-10 h-[350px] w-[350px] rounded-full bg-[rgba(122,158,192,0.04)] blur-[90px]" style={{ animation: 'slowDrift 15s ease-in-out infinite reverse' }} />
+          {/* Mid-left subtle purple */}
+          <div className="absolute left-[10%] top-[60%] h-[300px] w-[300px] rounded-full bg-[rgba(160,130,200,0.03)] blur-[80px]" style={{ animation: 'slowDrift 10s ease-in-out infinite 2s' }} />
+          {/* Top-right warm glow */}
+          <div className="absolute right-[15%] top-[20%] h-[250px] w-[250px] rounded-full bg-[rgba(200,170,100,0.035)] blur-[70px]" style={{ animation: 'slowDrift 14s ease-in-out infinite 4s' }} />
+          {/* Center-bottom deep gold */}
+          <div className="absolute bottom-[20%] left-[40%] h-[500px] w-[500px] rounded-full bg-[rgba(184,160,112,0.03)] blur-[140px]" style={{ animation: 'slowDrift 18s ease-in-out infinite 1s' }} />
+        </div>
 
         {/* Label */}
         <div className="animate-fade-in-up relative z-10 mb-12">
