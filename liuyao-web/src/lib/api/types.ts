@@ -31,6 +31,8 @@ export interface CreateDivinationResponse {
 
 export interface SubmitCastRequest {
   lines: CastLine[];
+  /** Optional draft data for fallback when DB is unavailable */
+  draft?: DivinationDraft;
 }
 
 export interface SubmitCastResponse {

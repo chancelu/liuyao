@@ -37,7 +37,7 @@ export async function submitCastFlow(lines: CastLine[]) {
     return { ok: false as const, error: '没有找到当前问题，请先回到起卦页。' };
   }
 
-  const response = await submitCastApi(draft.id, { lines });
+  const response = await submitCastApi(draft.id, { lines, draft });
   if (!response.success) {
     return { ok: false as const, error: response.error };
   }

@@ -79,8 +79,26 @@ export async function POST(request: Request) {
     createdAt: new Date().toISOString(),
   };
 
-  const repo = await getRepository();
-  await repo.saveDraft(draft);
+  let repo;
+  try {
+    repo = await getRepository();
+  } catch (err) {
+    console.error('[api/divinations] getRepository failed:', err);
+    return NextResponse.json<ApiResponse<CreateDivinationResponse>>(
+      { success: false, data: null, error: '数据库连接失败，请稍后重试。' },
+      { status: 500 },
+    );
+  }
+
+  try {
+    await repo.saveDraft(draft);
+  } catch (err) {
+    console.error('[api/divinations] saveDraft failed:', err);
+    return NextResponse.json<ApiResponse<CreateDivinationResponse>>(
+      { success: false, data: null, error: '保存失败，请稍后重试。' },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json<ApiResponse<CreateDivinationResponse>>({
     success: true,
