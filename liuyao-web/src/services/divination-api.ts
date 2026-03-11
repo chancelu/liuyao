@@ -61,11 +61,14 @@ export async function getDivinationResultFlow(id: string): Promise<MockResult | 
     // Prefer localStorage AI analysis over server fallback analysis.
     // The processing page writes these fields only after a successful LLM call,
     // so if localStorage has them, they're the real AI output.
+    // Also preserve chart and isAI which are not stored in Supabase.
     const merged: MockResult = {
       ...serverResult,
       summary: localResult?.summary || serverResult.summary,
       plainAnalysis: localResult?.plainAnalysis || serverResult.plainAnalysis,
       professionalAnalysis: localResult?.professionalAnalysis || serverResult.professionalAnalysis,
+      isAI: localResult?.isAI ?? false,
+      chart: localResult?.chart ?? serverResult.chart,
     };
 
     setResultById(id, merged);

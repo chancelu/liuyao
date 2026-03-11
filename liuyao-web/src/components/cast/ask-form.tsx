@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { buildCreateDivinationPayload, createDivinationFlow } from '@/services/divination-api';
@@ -38,10 +38,14 @@ export function AskForm() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const canSubmit = useMemo(() => question.trim().length >= 4, [question]);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const fillExample = (example: string) => {
     setQuestion(example);
     setError('');
+    // Scroll to textarea and focus it
+    textareaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => textareaRef.current?.focus(), 400);
   };
 
   const onSubmit = async () => {
@@ -82,6 +86,7 @@ export function AskForm() {
       <section className="space-y-3">
         <label className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.ask.questionLabel}</label>
         <textarea
+          ref={textareaRef}
           className="font-display min-h-36 w-full rounded-xl border border-[rgba(255,255,255,0.06)] bg-[var(--bg-card)] px-6 py-5 text-base leading-8 text-white outline-none placeholder:text-[var(--text-dim)] transition-colors focus:border-[rgba(255,255,255,0.15)]"
           placeholder={messages.ask.questionPlaceholder}
           value={question}
@@ -145,6 +150,24 @@ export function AskForm() {
         />
       </section>
 
+      {/* Submit Button — above examples */}
+      <div className="flex justify-center pt-4">
+        <button
+          type="button"
+          onClick={onSubmit}
+          className="btn-primary w-full max-w-md rounded-full px-12 py-5 text-base font-medium disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto"
+          disabled={!canSubmit || isSubmitting}
+        >
+          {isSubmitting ? '正在进入摇卦…' : messages.ask.submit}
+        </button>
+      </div>
+
+      {error ? (
+        <div className="rounded-xl bg-[var(--bg-card)] px-5 py-3 text-sm text-[var(--error)]">
+          {error}
+        </div>
+      ) : null}
+
       {/* Example Questions */}
       <section className="space-y-4">
         <div className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">示例问题</div>
@@ -168,23 +191,6 @@ export function AskForm() {
           ))}
         </div>
       </section>
-
-      {error ? (
-        <div className="rounded-xl bg-[var(--bg-card)] px-5 py-3 text-sm text-[var(--error)]">
-          {error}
-        </div>
-      ) : null}
-
-      <div className="pt-4">
-        <button
-          type="button"
-          onClick={onSubmit}
-          className="btn-primary rounded-full px-10 py-4 text-sm disabled:cursor-not-allowed disabled:opacity-40"
-          disabled={!canSubmit || isSubmitting}
-        >
-          {isSubmitting ? '正在进入摇卦…' : messages.ask.submit}
-        </button>
-      </div>
     </div>
   );
 }

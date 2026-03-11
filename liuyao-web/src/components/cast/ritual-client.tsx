@@ -149,17 +149,39 @@ export function RitualClient() {
       {/* Right — Ritual Stage */}
       <div className="card-solid animate-fade-in-up delay-200 rounded-2xl p-10 md:p-12">
         <div className="mx-auto flex max-w-md flex-col items-center gap-12 text-center">
-          {/* Copper Coins */}
+          {/* Copper Coins — traditional Chinese coin style */}
           <div className="grid grid-cols-3 gap-10">
             {[1, 2, 3].map((coin) => (
               <div
                 key={`${coin}-${shakeKey}`}
-                className={`flex h-24 w-24 items-center justify-center rounded-full border border-[rgba(184,160,112,0.20)] bg-[var(--bg-elevated)] font-display text-xs tracking-widest text-[var(--gold)] ${
+                className={`relative flex h-24 w-24 items-center justify-center rounded-full ${
                   isShaking ? 'animate-coin-shake' : ''
                 }`}
-                style={isShaking ? { animationDelay: `${coin * 60}ms` } : undefined}
+                style={{
+                  background: 'linear-gradient(145deg, #c9a84c, #a07830)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,220,130,0.3)',
+                  animationDelay: isShaking ? `${coin * 60}ms` : undefined,
+                }}
               >
-                {isShaking ? '' : '爻'}
+                {/* Square hole in center */}
+                <div
+                  className="flex h-7 w-7 items-center justify-center rounded-sm"
+                  style={{
+                    background: 'var(--bg-card)',
+                    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
+                  }}
+                />
+                {/* Coin text around the hole */}
+                {!isShaking && (
+                  <>
+                    <span className="absolute top-2.5 text-[10px] font-bold text-[#2a1f0e]">通</span>
+                    <span className="absolute bottom-2.5 text-[10px] font-bold text-[#2a1f0e]">宝</span>
+                    <span className="absolute left-3 text-[10px] font-bold text-[#2a1f0e]">开</span>
+                    <span className="absolute right-3 text-[10px] font-bold text-[#2a1f0e]">元</span>
+                  </>
+                )}
+                {/* Rim */}
+                <div className="pointer-events-none absolute inset-0 rounded-full border-2 border-[rgba(255,220,130,0.25)]" />
               </div>
             ))}
           </div>
@@ -176,13 +198,23 @@ export function RitualClient() {
 
           {/* Actions */}
           <div className="flex flex-col gap-3 sm:flex-row">
-            <button
-              className="btn-primary rounded-full px-10 py-4 text-sm disabled:cursor-not-allowed disabled:opacity-40"
-              onClick={handleCast}
-              disabled={isComplete || isSubmitting || isShaking}
-            >
-              {isShaking ? '摇卦中…' : isComplete ? messages.cast.completed : messages.cast.cta}
-            </button>
+            {isComplete ? (
+              <button
+                className="btn-primary rounded-full px-10 py-4 text-sm disabled:cursor-not-allowed disabled:opacity-40"
+                onClick={handleContinue}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? '正在生成排盘…' : '六次已完成，生成排盘与结果'}
+              </button>
+            ) : (
+              <button
+                className="btn-primary rounded-full px-10 py-4 text-sm disabled:cursor-not-allowed disabled:opacity-40"
+                onClick={handleCast}
+                disabled={isSubmitting || isShaking}
+              >
+                {isShaking ? '摇卦中…' : messages.cast.cta}
+              </button>
+            )}
             <button
               className="btn-secondary rounded-full px-8 py-4 text-sm"
               onClick={handleReset}
@@ -190,15 +222,6 @@ export function RitualClient() {
               {messages.cast.reset}
             </button>
           </div>
-
-          {/* Continue */}
-          <button
-            onClick={handleContinue}
-            className="text-sm text-[var(--text-muted)] underline-offset-4 transition-colors duration-200 hover:text-[var(--gold)] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? '正在生成排盘…' : '生成排盘与结果'}
-          </button>
 
           {error ? (
             <div className="rounded-xl bg-[var(--bg-elevated)] px-5 py-3 text-sm text-[var(--error)]">

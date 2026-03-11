@@ -40,7 +40,7 @@ export default function HomePage() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="animate-fade-in delay-600 absolute bottom-10 flex flex-col items-center gap-3">
+        <div className="animate-fade-in delay-600 absolute bottom-10 hidden flex-col items-center gap-3 lg:flex">
           <span className="text-[9px] tracking-[0.4em] text-[var(--text-dim)] uppercase">Scroll</span>
           <div className="h-8 w-px bg-gradient-to-b from-[var(--gold-dim)] to-transparent" />
         </div>

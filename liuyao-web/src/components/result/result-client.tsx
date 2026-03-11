@@ -268,11 +268,55 @@ export function ResultClient({ id }: { id: string }) {
                 </div>
               </div>
 
-              {/* Visual Yao Lines */}
-              <div className="flex flex-col gap-2">
-                {[...result.chart.lines].reverse().map((line) => (
-                  <YaoLine key={line.position} line={line} />
-                ))}
+              {/* Visual Yao Lines — Primary & Changed side by side */}
+              <div className="grid gap-4 lg:grid-cols-2">
+                {/* Primary Hexagram Lines */}
+                <div>
+                  <div className="mb-3 text-[10px] tracking-[0.2em] text-[var(--text-dim)] uppercase">本卦 · {result.chart.primary.name}</div>
+                  <div className="flex flex-col gap-2">
+                    {[...result.chart.lines].reverse().map((line) => (
+                      <YaoLine key={line.position} line={line} />
+                    ))}
+                  </div>
+                </div>
+                {/* Changed Hexagram Lines */}
+                <div>
+                  <div className="mb-3 text-[10px] tracking-[0.2em] text-[var(--text-dim)] uppercase">变卦 · {result.chart.changed.name}</div>
+                  <div className="flex flex-col gap-2">
+                    {[...result.chart.lines].reverse().map((line) => {
+                      const isChanged = line.moving;
+                      const changedYinYang = isChanged ? (line.yinYang === '阳' ? '阴' : '阳') : line.yinYang;
+                      return (
+                        <div
+                          key={line.position}
+                          className={`flex items-center gap-4 rounded-xl px-5 py-4 bg-[var(--bg-elevated)] ${isChanged ? 'border border-[rgba(184,160,112,0.15)]' : ''}`}
+                        >
+                          <div className="w-10 text-center">
+                            <div className="text-xs font-medium text-white">{YAO_POS[line.position - 1]}爻</div>
+                          </div>
+                          <div className="flex items-center gap-5">
+                            <div className="w-20 shrink-0">
+                              {changedYinYang === '阳' ? (
+                                <div className="h-[4px] w-full rounded-full bg-white" />
+                              ) : (
+                                <div className="flex gap-2.5">
+                                  <div className="h-[4px] flex-1 rounded-full bg-[var(--text-muted)]" />
+                                  <div className="h-[4px] flex-1 rounded-full bg-[var(--text-muted)]" />
+                                </div>
+                              )}
+                            </div>
+                            <span className="text-xs text-[var(--text-dim)]">
+                              {line.changedBranch ?? line.branch}{isChanged ? '' : line.branchElement}
+                            </span>
+                            {line.changedRelative && isChanged && (
+                              <span className="text-sm text-[var(--text-muted)]">{line.changedRelative}</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
           ) : null}
@@ -283,7 +327,9 @@ export function ResultClient({ id }: { id: string }) {
           <div className="mb-6 text-[10px] tracking-[0.25em] text-[var(--gold)] uppercase">{messages.result.summaryTitle}</div>
           <div className="flex flex-1 flex-col justify-center space-y-5">
             <div className="border-l-2 border-[var(--gold-dim)] pl-5 font-display text-xl leading-relaxed font-light text-white">
-              {aiLoading ? <span className="animate-pulse text-[var(--text-dim)]">AI 正在分析…</span> : (result?.summary ?? '正在等待分析结果。')}
+              {result && !result.isAI && result.chart
+                ? <span className="animate-pulse text-[var(--text-dim)]">AI 正在分析卦象…</span>
+                : (result?.summary ?? '正在等待分析结果。')}
             </div>
             <div className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3">
               <div className="mb-1 text-[10px] tracking-widest text-[var(--text-dim)] uppercase">所问</div>
@@ -304,8 +350,8 @@ export function ResultClient({ id }: { id: string }) {
             <span className="text-xs text-[var(--text-dim)] transition-transform duration-200" style={{ transform: showPlainAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
           </button>
           {showPlainAnalysis && (
-            aiLoading
-              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成白话分析…</p>
+            result && !result.isAI && result.chart
+              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成白话分析，请稍候…</p>
               : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">{result?.plainAnalysis ?? '解读生成中…'}</p>
           )}
         </div>
@@ -318,8 +364,8 @@ export function ResultClient({ id }: { id: string }) {
             <span className="text-xs text-[var(--text-dim)] transition-transform duration-200" style={{ transform: showProAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
           </button>
           {showProAnalysis && (
-            aiLoading
-              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成专业分析…</p>
+            result && !result.isAI && result.chart
+              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成专业分析，请稍候…</p>
               : result?.professionalAnalysis ? (
               <AnnotatedText text={result.professionalAnalysis} className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]" />
             ) : (
