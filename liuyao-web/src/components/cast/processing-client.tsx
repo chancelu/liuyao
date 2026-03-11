@@ -173,8 +173,8 @@ export function ProcessingClient() {
   const currentStage = PROGRESS_STAGES[stageIndex];
 
   return (
-    <div className="mx-auto max-w-lg text-center py-20">
-      <div className="space-y-4">
+    <div className="hexagram-bg mx-auto max-w-lg text-center py-20">
+      <div className="relative z-10 space-y-4">
         <div className="text-[10px] tracking-[0.4em] text-[var(--text-dim)] uppercase">Processing</div>
         <h1 className="font-display text-3xl font-extralight text-white">{messages.processing.title}</h1>
         <div className="mx-auto h-px w-12 bg-[var(--gold-dim)]" />

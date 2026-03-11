@@ -199,7 +199,7 @@ export function ResultClient({ id }: { id: string }) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-10">
+    <div className="glow-top mx-auto max-w-6xl space-y-12">
       {/* Page header */}
       <div className="animate-fade-in-up">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -274,7 +274,7 @@ export function ResultClient({ id }: { id: string }) {
                       <div
                         key={line.position}
                         className={`flex h-10 items-center gap-1.5 rounded-lg px-2 sm:h-14 sm:gap-3 sm:px-3 ${
-                          line.moving ? 'border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
+                          line.moving ? 'animate-pulse-glow border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
                         }`}
                       >
                         <span className="shrink-0 text-center text-[10px] text-white sm:w-8 sm:text-[11px]">{YAO_POS[line.position - 1]}</span>
@@ -308,7 +308,7 @@ export function ResultClient({ id }: { id: string }) {
                         <div
                           key={line.position}
                           className={`flex h-10 items-center gap-1.5 rounded-lg px-2 sm:h-14 sm:gap-3 sm:px-3 ${
-                            isChanged ? 'border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
+                            isChanged ? 'animate-pulse-glow border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
                           }`}
                         >
                           <span className="shrink-0 text-center text-[10px] text-white sm:w-8 sm:text-[11px]">{YAO_POS[line.position - 1]}</span>
@@ -488,6 +488,9 @@ export function ResultClient({ id }: { id: string }) {
       {showShareCard && result && (
         <ShareCard result={result} onClose={() => setShowShareCard(false)} />
       )}
+
+      {/* Decorative footer */}
+      <div className="footer-decoration">☰</div>
     </div>
   );
 }

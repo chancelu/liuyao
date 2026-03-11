@@ -13,10 +13,10 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════════
           HERO — Full screen, centered, maximum whitespace
           ═══════════════════════════════════════════ */}
-      <section className="relative -mx-6 mb-48 flex min-h-[88vh] flex-col items-center justify-center px-6 text-center sm:-mx-12 sm:px-12 lg:-mx-16 lg:px-16">
+      <section className="hexagram-bg relative -mx-6 mb-48 flex min-h-[88vh] flex-col items-center justify-center px-6 text-center sm:-mx-12 sm:px-12 lg:-mx-16 lg:px-16">
         {/* Label */}
         <div className="animate-fade-in-up mb-12">
-          <span className="text-[10px] tracking-[0.5em] text-[var(--gold)] uppercase">六爻在线占卦</span>
+          <span className="shimmer-gold text-[10px] tracking-[0.5em] uppercase">六爻在线占卦</span>
         </div>
 
         {/* Main title — huge, light weight */}
@@ -119,6 +119,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Decorative footer */}
+      <div className="footer-decoration">☰</div>
     </SiteShell>
   );
 }

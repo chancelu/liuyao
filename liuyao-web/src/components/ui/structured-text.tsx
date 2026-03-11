@@ -39,9 +39,9 @@ export function StructuredText({ text, className }: { text: string; className?: 
   return (
     <div className={className}>
       {parts.map((part, i) => (
-        <div key={i} className={i > 0 ? 'mt-5' : ''}>
+        <div key={i} className={i > 0 ? 'mt-6' : ''}>
           {part.title && (
-            <div className="mb-2 text-xs font-medium text-[var(--gold)]">
+            <div className="mb-3 flex items-center gap-2 border-l-2 border-[var(--gold)] pl-3 text-xs font-medium text-[var(--gold)]">
               {part.title}
             </div>
           )}
@@ -58,9 +58,9 @@ function ContentBlock({ text }: { text: string }) {
   const items = text.split(/(?:^|\n)\s*\d+[.、．]\s*/).filter(Boolean);
   if (items.length > 1) {
     return (
-      <ol className="list-none space-y-2">
+      <ol className="list-none space-y-2.5">
         {items.map((item, i) => (
-          <li key={i} className="flex gap-2 text-sm leading-8 text-[var(--text-muted)]">
+          <li key={i} className="flex gap-2 text-sm leading-[2.2] text-[var(--text-muted)]">
             <span className="shrink-0 text-[var(--gold-dim)]">{i + 1}.</span>
             <span>{item.trim()}</span>
           </li>
@@ -69,7 +69,7 @@ function ContentBlock({ text }: { text: string }) {
     );
   }
 
-  return <p className="text-sm leading-8 text-[var(--text-muted)]">{text}</p>;
+  return <p className="text-sm leading-[2.2] text-[var(--text-muted)]">{text}</p>;
 }
 
 /** Renders summary as numbered points */
