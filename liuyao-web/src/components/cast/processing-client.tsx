@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { getResultById, setResultById } from '@/lib/storage/draft-storage';
+import { buildPromptFromResult } from '@/lib/analysis/build-prompt';
+import type { MockResult } from '@/lib/types';
 
 const messages = getMessages();
 
@@ -14,45 +16,6 @@ const PROGRESS_STAGES = [
   { label: '综合分析中…', duration: 10000 },
   { label: '生成解读报告…', duration: 15000 },
 ];
-
-function buildPromptFromResult(result: Record<string, unknown>): string {
-  const chart = result.chart as Record<string, unknown> | undefined;
-  if (!chart) return '';
-
-  const primary = chart.primary as Record<string, string> | undefined;
-  const changed = chart.changed as Record<string, string> | undefined;
-  const lines = chart.lines as Array<Record<string, unknown>> | undefined;
-
-  let prompt = `## 用户问题\n问题：${result.question ?? ''}\n分类：${result.category ?? ''}\n时间范围：${result.timeScope ?? ''}\n`;
-  if (result.background) prompt += `背景：${result.background}\n`;
-
-  prompt += `\n## 排盘数据\n`;
-  if (primary) prompt += `本卦：${primary.name}（${primary.palace}宫，${primary.palaceElement}）\n`;
-  if (changed) prompt += `变卦：${changed.name}（${changed.palace}宫，${changed.palaceElement}）\n`;
-
-  const movingLines = chart.movingLines as number[] | undefined;
-  prompt += `动爻：${movingLines && movingLines.length > 0 ? `第 ${movingLines.join('、')} 爻` : '无（静卦）'}\n`;
-  prompt += `世爻：第${chart.shiPosition}爻   应爻：第${chart.yingPosition}爻\n`;
-  prompt += `月建：${chart.monthBranch}   日辰：${chart.dayStem}${chart.dayBranch}\n`;
-
-  const xunkong = chart.xunkong as string[] | undefined;
-  if (xunkong) prompt += `旬空：${xunkong[0]}${xunkong[1]}\n`;
-  if (chart.castTime) prompt += `排盘时间：${chart.castTime}\n`;
-
-  if (lines && lines.length > 0) {
-    prompt += `\n## 六爻详情\n`;
-    for (const l of lines) {
-      let desc = `第${l.position}爻：${l.yinYang}（${l.branch}${l.branchElement}）六亲=${l.relative} 六神=${l.spirit}`;
-      if (l.isShi) desc += ' [世]';
-      if (l.isYing) desc += ' [应]';
-      if (l.moving) desc += ` 【动】→ ${l.changedBranch ?? '?'} ${l.changedRelative ?? '?'}`;
-      prompt += desc + '\n';
-    }
-  }
-
-  prompt += `\n请根据以上排盘数据和用户问题，给出结构化分析结果。严格按 JSON 格式输出。`;
-  return prompt;
-}
 
 export function ProcessingClient() {
   const router = useRouter();
@@ -132,7 +95,7 @@ export function ProcessingClient() {
         }
 
         // Build prompt from local data
-        const prompt = buildPromptFromResult(result as unknown as Record<string, unknown>);
+        const prompt = buildPromptFromResult(result as MockResult);
         if (!prompt) {
           console.warn('[processing] Could not build prompt');
           setAnalysisComplete(true);
@@ -159,6 +122,7 @@ export function ProcessingClient() {
               summary: llmData.data.summary,
               plainAnalysis: llmData.data.plainAnalysis,
               professionalAnalysis: llmData.data.professionalAnalysis,
+              isAI: true,
             };
             setResultById(id!, updatedResult);
 

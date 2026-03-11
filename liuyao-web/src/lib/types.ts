@@ -40,6 +40,8 @@ export interface MockResult {
   plainAnalysis: string;
   professionalAnalysis: string;
   createdAt: string;
+  /** 是否为 AI 生成的分析（false = 确定性 fallback） */
+  isAI?: boolean;
   /** 真实排盘数据（v1 引擎生成） */
   chart?: import('@/lib/liuyao/chart').ChartData;
 }

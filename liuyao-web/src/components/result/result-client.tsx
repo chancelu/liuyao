@@ -7,6 +7,8 @@ import { getMessages } from '@/lib/i18n';
 import { getSession, getUser } from '@/lib/supabase/auth';
 import { getDivinationResultFlow } from '@/services/divination-api';
 import { getDivinationApi, saveDivinationApi, shareDivinationApi } from '@/lib/api/client';
+import { setResultById } from '@/lib/storage/draft-storage';
+import { buildPromptFromResult } from '@/lib/analysis/build-prompt';
 import { AnnotatedText } from '@/components/ui/annotated-text';
 import { ShareCard } from '@/components/result/share-card';
 import { track } from '@/lib/analytics';
@@ -85,6 +87,7 @@ export function ResultClient({ id }: { id: string }) {
   const [showShareCard, setShowShareCard] = useState(false);
   const [showPlainAnalysis, setShowPlainAnalysis] = useState(true);
   const [showProAnalysis, setShowProAnalysis] = useState(true);
+  const [aiLoading, setAiLoading] = useState(false);
   const loginHref = useMemo(() => `/login?next=${encodeURIComponent(`/result/${id}`)}`, [id]);
 
   useEffect(() => {
@@ -121,6 +124,50 @@ export function ResultClient({ id }: { id: string }) {
       cancelled = true;
     };
   }, [id]);
+
+  // If result is loaded but not AI-generated, call LLM to get real analysis
+  useEffect(() => {
+    if (!result || result.isAI || aiLoading || !result.chart) return;
+    setAiLoading(true);
+
+    async function fetchAIAnalysis() {
+      try {
+        const prompt = buildPromptFromResult(result!);
+        if (!prompt) return;
+
+        const res = await fetch('/api/llm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt }),
+        });
+
+        if (!res.ok) return;
+
+        const data = await res.json() as {
+          success: boolean;
+          data?: { summary: string; plainAnalysis: string; professionalAnalysis: string };
+        };
+
+        if (data.success && data.data) {
+          const updated = {
+            ...result!,
+            summary: data.data.summary,
+            plainAnalysis: data.data.plainAnalysis,
+            professionalAnalysis: data.data.professionalAnalysis,
+            isAI: true,
+          };
+          setResultById(id, updated);
+          setResult(updated);
+        }
+      } catch (err) {
+        console.warn('[result] AI analysis fallback failed:', err);
+      } finally {
+        setAiLoading(false);
+      }
+    }
+
+    void fetchAIAnalysis();
+  }, [result?.isAI, result?.id]);
 
   async function handleSave() {
     if (!accessToken) return;
@@ -236,7 +283,7 @@ export function ResultClient({ id }: { id: string }) {
           <div className="mb-6 text-[10px] tracking-[0.25em] text-[var(--gold)] uppercase">{messages.result.summaryTitle}</div>
           <div className="flex flex-1 flex-col justify-center space-y-5">
             <div className="border-l-2 border-[var(--gold-dim)] pl-5 font-display text-xl leading-relaxed font-light text-white">
-              {result?.summary ?? '正在等待分析结果。'}
+              {aiLoading ? <span className="animate-pulse text-[var(--text-dim)]">AI 正在分析…</span> : (result?.summary ?? '正在等待分析结果。')}
             </div>
             <div className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3">
               <div className="mb-1 text-[10px] tracking-widest text-[var(--text-dim)] uppercase">所问</div>
@@ -257,7 +304,9 @@ export function ResultClient({ id }: { id: string }) {
             <span className="text-xs text-[var(--text-dim)] transition-transform duration-200" style={{ transform: showPlainAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
           </button>
           {showPlainAnalysis && (
-            <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">{result?.plainAnalysis ?? '解读生成中…'}</p>
+            aiLoading
+              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成白话分析…</p>
+              : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">{result?.plainAnalysis ?? '解读生成中…'}</p>
           )}
         </div>
         <div className="card-solid animate-fade-in-up delay-500 rounded-2xl p-7 lg:p-8">
@@ -269,7 +318,9 @@ export function ResultClient({ id }: { id: string }) {
             <span className="text-xs text-[var(--text-dim)] transition-transform duration-200" style={{ transform: showProAnalysis ? 'rotate(0)' : 'rotate(-90deg)' }}>▼</span>
           </button>
           {showProAnalysis && (
-            result?.professionalAnalysis ? (
+            aiLoading
+              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成专业分析…</p>
+              : result?.professionalAnalysis ? (
               <AnnotatedText text={result.professionalAnalysis} className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]" />
             ) : (
               <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">专业分析生成中…</p>

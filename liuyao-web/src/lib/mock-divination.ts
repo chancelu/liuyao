@@ -60,5 +60,6 @@ export function buildMockResult(params: {
     professionalAnalysis: getProfessional(movingLines),
     createdAt: new Date().toISOString(),
     chart,
+    isAI: false,
   };
 }
