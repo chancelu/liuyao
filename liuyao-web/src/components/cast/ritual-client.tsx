@@ -29,6 +29,7 @@ export function RitualClient() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
   const [shakeKey, setShakeKey] = useState(0);
+  const [coinFaces, setCoinFaces] = useState<boolean[]>([false, false, false]); // true = back (面), false = front (字)
 
   const draft: DivinationDraft | null = useMemo(() => {
     const parsed = getCurrentDraft();
@@ -54,6 +55,23 @@ export function RitualClient() {
 
     setTimeout(() => {
       const next = CAST_OPTIONS[Math.floor(Math.random() * CAST_OPTIONS.length)];
+      // Generate coin faces matching the result
+      // 字(front/false)=3, 面(back/true)=2
+      // old_yang(9)=字字字, old_yin(6)=面面面, young_yang(7)=2字1面, young_yin(8)=1字2面
+      let faces: boolean[];
+      if (next === 'old_yang') {
+        faces = [false, false, false];
+      } else if (next === 'old_yin') {
+        faces = [true, true, true];
+      } else if (next === 'young_yang') {
+        faces = [false, false, true];
+        // shuffle
+        faces.sort(() => Math.random() - 0.5);
+      } else {
+        faces = [true, true, false];
+        faces.sort(() => Math.random() - 0.5);
+      }
+      setCoinFaces(faces);
       setLines((current) => [...current, next]);
       setLastLabel(CAST_LABELS[next]);
       setError('');
@@ -149,41 +167,62 @@ export function RitualClient() {
       {/* Right — Ritual Stage */}
       <div className="card-solid animate-fade-in-up delay-200 rounded-2xl p-10 md:p-12">
         <div className="mx-auto flex max-w-md flex-col items-center gap-12 text-center">
-          {/* Copper Coins — traditional Chinese coin style */}
+          {/* Copper Coins — front (字/开元通宝) vs back (面/blank with lines) */}
           <div className="grid grid-cols-3 gap-10">
-            {[1, 2, 3].map((coin) => (
-              <div
-                key={`${coin}-${shakeKey}`}
-                className={`relative flex h-24 w-24 items-center justify-center rounded-full ${
-                  isShaking ? 'animate-coin-shake' : ''
-                }`}
-                style={{
-                  background: 'linear-gradient(145deg, #c9a84c, #a07830)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,220,130,0.3)',
-                  animationDelay: isShaking ? `${coin * 60}ms` : undefined,
-                }}
-              >
-                {/* Square hole in center */}
+            {[1, 2, 3].map((coin) => {
+              // After shaking, show random face per coin based on last cast result
+              const showBack = !isShaking && lines.length > 0 && coinFaces[coin - 1];
+              return (
                 <div
-                  className="flex h-7 w-7 items-center justify-center rounded-sm"
+                  key={`${coin}-${shakeKey}`}
+                  className={`relative flex h-24 w-24 items-center justify-center rounded-full ${
+                    isShaking ? 'animate-coin-shake' : ''
+                  }`}
                   style={{
-                    background: 'var(--bg-card)',
-                    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
+                    background: showBack
+                      ? 'linear-gradient(145deg, #b8943e, #8a6828)'
+                      : 'linear-gradient(145deg, #c9a84c, #a07830)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,220,130,0.3)',
+                    animationDelay: isShaking ? `${coin * 60}ms` : undefined,
                   }}
-                />
-                {/* Coin text around the hole */}
-                {!isShaking && (
-                  <>
-                    <span className="absolute top-2.5 text-[10px] font-bold text-[#2a1f0e]">通</span>
-                    <span className="absolute bottom-2.5 text-[10px] font-bold text-[#2a1f0e]">宝</span>
-                    <span className="absolute left-3 text-[10px] font-bold text-[#2a1f0e]">开</span>
-                    <span className="absolute right-3 text-[10px] font-bold text-[#2a1f0e]">元</span>
-                  </>
-                )}
-                {/* Rim */}
-                <div className="pointer-events-none absolute inset-0 rounded-full border-2 border-[rgba(255,220,130,0.25)]" />
-              </div>
-            ))}
+                >
+                  {/* Square hole in center */}
+                  <div
+                    className="flex h-7 w-7 items-center justify-center rounded-sm"
+                    style={{
+                      background: 'var(--bg-card)',
+                      boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
+                    }}
+                  />
+                  {/* Front face: 开元通宝 text */}
+                  {!isShaking && !showBack && (
+                    <>
+                      <span className="absolute top-2 text-[11px] font-bold text-[#2a1f0e]">开</span>
+                      <span className="absolute bottom-2 text-[11px] font-bold text-[#2a1f0e]">元</span>
+                      <span className="absolute left-2.5 text-[11px] font-bold text-[#2a1f0e]">通</span>
+                      <span className="absolute right-2.5 text-[11px] font-bold text-[#2a1f0e]">宝</span>
+                    </>
+                  )}
+                  {/* Back face: decorative lines (no text) */}
+                  {!isShaking && showBack && (
+                    <>
+                      <div className="absolute top-3.5 h-px w-8 bg-[rgba(42,31,14,0.4)]" />
+                      <div className="absolute bottom-3.5 h-px w-8 bg-[rgba(42,31,14,0.4)]" />
+                      <div className="absolute left-3.5 h-8 w-px bg-[rgba(42,31,14,0.4)]" />
+                      <div className="absolute right-3.5 h-8 w-px bg-[rgba(42,31,14,0.4)]" />
+                    </>
+                  )}
+                  {/* Rim */}
+                  <div className="pointer-events-none absolute inset-0 rounded-full border-2 border-[rgba(255,220,130,0.25)]" />
+                  {/* Face label */}
+                  {!isShaking && lines.length > 0 && (
+                    <span className="absolute -bottom-6 text-[10px] text-[var(--text-dim)]">
+                      {showBack ? '面' : '字'}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Status */}

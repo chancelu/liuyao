@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { buildCreateDivinationPayload, createDivinationFlow } from '@/services/divination-api';
@@ -38,15 +38,6 @@ export function AskForm() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const canSubmit = useMemo(() => question.trim().length >= 4, [question]);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const fillExample = (example: string) => {
-    setQuestion(example);
-    setError('');
-    // Scroll to textarea and focus it
-    textareaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(() => textareaRef.current?.focus(), 400);
-  };
 
   const onSubmit = async () => {
     if (!canSubmit) {
@@ -86,7 +77,6 @@ export function AskForm() {
       <section className="space-y-3">
         <label className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.ask.questionLabel}</label>
         <textarea
-          ref={textareaRef}
           className="font-display min-h-36 w-full rounded-xl border border-[rgba(255,255,255,0.06)] bg-[var(--bg-card)] px-6 py-5 text-base leading-8 text-white outline-none placeholder:text-[var(--text-dim)] transition-colors focus:border-[rgba(255,255,255,0.15)]"
           placeholder={messages.ask.questionPlaceholder}
           value={question}
@@ -168,29 +158,6 @@ export function AskForm() {
         </div>
       ) : null}
 
-      {/* Example Questions */}
-      <section className="space-y-4">
-        <div className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">示例问题</div>
-        <div className="space-y-5">
-          {messages.home.categorizedExamples.map((group) => (
-            <div key={group.category}>
-              <div className="mb-2 text-xs text-[var(--text-dim)]">{group.category}</div>
-              <div className="flex flex-wrap gap-2">
-                {group.items.map((example) => (
-                  <button
-                    key={example}
-                    type="button"
-                    onClick={() => fillExample(example)}
-                    className="rounded-lg bg-[var(--bg-card)] px-4 py-2 text-left text-sm text-[var(--text-muted)] transition-all duration-200 hover:bg-[var(--bg-card-hover)] hover:text-white"
-                  >
-                    {example}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }

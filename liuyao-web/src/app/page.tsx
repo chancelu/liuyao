@@ -39,11 +39,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="animate-fade-in delay-600 absolute bottom-10 hidden flex-col items-center gap-3 lg:flex">
-          <span className="text-[9px] tracking-[0.4em] text-[var(--text-dim)] uppercase">Scroll</span>
-          <div className="h-8 w-px bg-gradient-to-b from-[var(--gold-dim)] to-transparent" />
-        </div>
+
       </section>
 
       {/* ═══════════════════════════════════════════
@@ -102,35 +98,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════
-          EXAMPLES — Clean, categorized
-          ═══════════════════════════════════════════ */}
-      <section className="mb-48">
-        <div className="mb-20 text-center">
-          <h2 className="font-display text-3xl font-extralight tracking-[0.04em] text-white lg:text-4xl">{messages.home.examplesTitle}</h2>
-          <p className="mx-auto mt-5 max-w-md text-sm leading-7 text-[var(--text-muted)]">
-            不用先懂术语，也可以先从一个具体的问题开始。
-          </p>
-        </div>
-        <div className="mx-auto grid max-w-4xl gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {messages.home.categorizedExamples.map((group) => (
-            <div key={group.category} className="space-y-4">
-              <div className="text-[11px] tracking-[0.3em] text-[var(--gold)] uppercase">{group.category}</div>
-              <div className="flex flex-col gap-2">
-                {group.items.map((example) => (
-                  <Link
-                    key={example}
-                    href={`/cast?prefill=${encodeURIComponent(example)}`}
-                    className="rounded-lg bg-[var(--bg-card)] px-5 py-3.5 text-sm text-[var(--text-muted)] transition-all duration-200 hover:bg-[var(--bg-card-hover)] hover:text-white"
-                  >
-                    {example}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+
 
       {/* ═══════════════════════════════════════════
           FAQ — Two-column, clean

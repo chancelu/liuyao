@@ -27,7 +27,7 @@ export function ProcessingClient() {
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const analysisStarted = useRef(false);
 
-  // Smooth progress animation
+  // Smooth progress animation — slow easing that never stalls visually
   useEffect(() => {
     if (!id) {
       router.replace('/cast');
@@ -36,25 +36,23 @@ export function ProcessingClient() {
 
     let animFrame: number;
     const startTime = Date.now();
-    const maxFakeTime = 90000;
 
     function tick() {
       const elapsed = Date.now() - startTime;
-      const rawProgress = Math.min(95, (elapsed / maxFakeTime) * 100);
-      const easedProgress = 95 * (1 - Math.pow(1 - rawProgress / 95, 2.5));
-      setProgress(Math.min(95, easedProgress));
+      // Logarithmic curve: fast at start, slows down, caps at 92%
+      // Reaches ~50% at 8s, ~75% at 20s, ~88% at 45s, ~92% at 90s
+      const t = elapsed / 1000;
+      const rawProgress = Math.min(92, 30 * Math.log(1 + t / 3));
+      setProgress(rawProgress);
 
-      let accumulated = 0;
-      for (let i = 0; i < PROGRESS_STAGES.length; i++) {
-        accumulated += PROGRESS_STAGES[i].duration;
-        if (elapsed < accumulated) {
-          setStageIndex(i);
-          break;
-        }
-        if (i === PROGRESS_STAGES.length - 1) setStageIndex(i);
-      }
+      // Update stage based on progress thresholds
+      if (rawProgress < 10) setStageIndex(0);
+      else if (rawProgress < 30) setStageIndex(1);
+      else if (rawProgress < 55) setStageIndex(2);
+      else if (rawProgress < 80) setStageIndex(3);
+      else setStageIndex(4);
 
-      if (!analysisComplete && elapsed < maxFakeTime) {
+      if (!analysisComplete) {
         animFrame = requestAnimationFrame(tick);
       }
     }
@@ -66,11 +64,26 @@ export function ProcessingClient() {
   // When analysis completes, animate to 100% and navigate
   useEffect(() => {
     if (!analysisComplete || !id) return;
-    setProgress(100);
-    const timer = setTimeout(() => {
-      router.replace(`/result/${id}`);
-    }, 600);
-    return () => clearTimeout(timer);
+
+    // Animate from current progress to 100%
+    let animFrame: number;
+    const startVal = progress;
+    const startTime = Date.now();
+    const duration = 500;
+
+    function animate() {
+      const elapsed = Date.now() - startTime;
+      const t = Math.min(1, elapsed / duration);
+      setProgress(startVal + (100 - startVal) * t);
+      if (t < 1) {
+        animFrame = requestAnimationFrame(animate);
+      } else {
+        setTimeout(() => router.replace(`/result/${id}`), 300);
+      }
+    }
+
+    animFrame = requestAnimationFrame(animate);
+    return () => { if (animFrame) cancelAnimationFrame(animFrame); };
   }, [analysisComplete, id, router]);
 
   // Call LLM via lightweight proxy, then save result
