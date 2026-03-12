@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { getMessages } from '@/lib/i18n';
 import { AuthNav } from '@/components/auth/auth-nav';
+import { AutoCheckin } from '@/components/auto-checkin';
 
 const messages = getMessages();
 
@@ -25,12 +26,16 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <Link href="/history" className="transition-colors duration-200 hover:text-white">
               历史记录
             </Link>
+            <Link href="/profile" className="transition-colors duration-200 hover:text-white">
+              我的
+            </Link>
             <Suspense fallback={<Link href="/login" className="text-[var(--text-dim)] transition-colors duration-200 hover:text-white">登录</Link>}>
               <AuthNav />
             </Suspense>
           </nav>
         </header>
         <main className="flex-1">{children}</main>
+        <AutoCheckin />
         {/* Footer */}
         <footer className="mt-32 border-t border-[rgba(255,255,255,0.06)] pt-8 pb-4">
           <div className="flex items-center justify-between text-[10px] tracking-[0.12em] text-[var(--text-dim)]">

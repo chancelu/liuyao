@@ -87,6 +87,7 @@ export function ResultClient({ id }: { id: string }) {
   const [shareState, setShareState] = useState<'idle' | 'sharing' | 'copied' | 'error'>('idle');
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [showShareCard, setShowShareCard] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
   const [showPlainAnalysis, setShowPlainAnalysis] = useState(true);
   const [showProAnalysis, setShowProAnalysis] = useState(true);
   const [aiLoading, setAiLoading] = useState(false);
@@ -192,10 +193,25 @@ export function ResultClient({ id }: { id: string }) {
       } catch {
         setShareState('idle');
       }
+      // Trigger share reward
+      if (accessToken) {
+        fetch('/api/user/share-reward', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }).catch(() => {});
+      }
     } else {
       setShareState('error');
       setTimeout(() => setShareState('idle'), 3000);
     }
+  }
+
+  function handleCopyUrl() {
+    const url = shareUrl || `${window.location.origin}/share/${id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedUrl(true);
+      setTimeout(() => setCopiedUrl(false), 2000);
+    }).catch(() => {});
   }
 
   return (
@@ -482,11 +498,19 @@ export function ResultClient({ id }: { id: string }) {
               生成分享图
             </button>
           )}
+          {result && (
+            <button
+              className="btn-secondary rounded-full px-8 py-3.5 text-sm"
+              onClick={handleCopyUrl}
+            >
+              {copiedUrl ? '已复制链接' : '复制分享链接'}
+            </button>
+          )}
         </div>
       </section>
 
       {showShareCard && result && (
-        <ShareCard result={result} onClose={() => setShowShareCard(false)} />
+        <ShareCard result={result} onClose={() => setShowShareCard(false)} accessToken={accessToken} />
       )}
 
       {/* Decorative footer */}
