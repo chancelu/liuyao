@@ -1,52 +1,93 @@
 /**
- * Play a pleasant metallic coin jingling sound — 叮铃铃
+ * Play a short, crisp metallic coin collision.
  * Uses Web Audio API, no external files.
  */
 export function playCoinSound() {
   try {
-    const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = new AudioCtx();
     const now = ctx.currentTime;
 
-    // Master gain
     const master = ctx.createGain();
-    master.gain.setValueAtTime(0.25, now);
+    master.gain.setValueAtTime(0.22, now);
     master.connect(ctx.destination);
 
-    // Helper: create a bell-like tone
-    function bell(freq: number, startTime: number, duration: number, vol: number) {
+    function partial(
+      type: OscillatorType,
+      freq: number,
+      startTime: number,
+      attack: number,
+      decay: number,
+      volume: number,
+      detune = 0,
+      sweepTo?: number,
+    ) {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = 'sine';
+
+      osc.type = type;
       osc.frequency.setValueAtTime(freq, startTime);
-      gain.gain.setValueAtTime(vol, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      if (sweepTo) {
+        osc.frequency.exponentialRampToValueAtTime(sweepTo, startTime + decay);
+      }
+      osc.detune.setValueAtTime(detune, startTime);
+
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.exponentialRampToValueAtTime(volume, startTime + attack);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + decay);
+
       osc.connect(gain);
       gain.connect(master);
       osc.start(startTime);
-      osc.stop(startTime + duration);
+      osc.stop(startTime + decay + 0.02);
     }
 
-    // Three coin clinks in quick succession — 叮铃铃
-    // First clink
-    bell(4200, now, 0.4, 0.3);
-    bell(6300, now, 0.25, 0.12);
-    bell(2100, now, 0.5, 0.08);
+    function noiseBurst(startTime: number, duration: number, volume: number) {
+      const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * duration));
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i += 1) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+      }
 
-    // Second clink (slightly delayed)
-    bell(3800, now + 0.08, 0.35, 0.25);
-    bell(5700, now + 0.08, 0.2, 0.1);
+      const source = ctx.createBufferSource();
+      const bandpass = ctx.createBiquadFilter();
+      const highpass = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
 
-    // Third clink
-    bell(4500, now + 0.18, 0.45, 0.2);
-    bell(6800, now + 0.18, 0.3, 0.08);
-    bell(2250, now + 0.18, 0.5, 0.06);
+      source.buffer = buffer;
+      bandpass.type = 'bandpass';
+      bandpass.frequency.setValueAtTime(5200, startTime);
+      bandpass.Q.setValueAtTime(1.6, startTime);
 
-    // Gentle shimmer tail
-    bell(3400, now + 0.3, 0.6, 0.06);
-    bell(5100, now + 0.35, 0.5, 0.04);
+      highpass.type = 'highpass';
+      highpass.frequency.setValueAtTime(2600, startTime);
 
-    // Clean up
-    setTimeout(() => ctx.close(), 1500);
+      gain.gain.setValueAtTime(volume, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+      source.connect(bandpass);
+      bandpass.connect(highpass);
+      highpass.connect(gain);
+      gain.connect(master);
+
+      source.start(startTime);
+      source.stop(startTime + duration);
+    }
+
+    // Main impact: short, bright, metallic. Avoid the old "叮铃铃" tail.
+    noiseBurst(now, 0.028, 0.16);
+    partial('triangle', 4100, now, 0.001, 0.09, 0.19, 0, 3650);
+    partial('square', 6100, now + 0.001, 0.001, 0.055, 0.06, 4, 5600);
+    partial('triangle', 2550, now + 0.002, 0.001, 0.12, 0.05, -3, 2300);
+
+    // Tiny secondary contact, like one coin lightly tapping after impact.
+    const second = now + 0.045;
+    noiseBurst(second, 0.018, 0.05);
+    partial('triangle', 3600, second, 0.001, 0.05, 0.08, 2, 3300);
+    partial('triangle', 2200, second + 0.001, 0.001, 0.07, 0.025, -2, 2050);
+
+    setTimeout(() => ctx.close(), 500);
   } catch {
     // Audio not available, silently skip
   }
