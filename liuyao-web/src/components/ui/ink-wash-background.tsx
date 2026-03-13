@@ -27,7 +27,7 @@ export function InkWashBackground() {
 
     // Load background image
     const img = new Image();
-    img.src = '/images/bg-golden-v3.png';
+    img.src = '/images/bg-golden-landscape-2.png';
     img.onload = () => { imgRef.current = img; };
 
     // ── Stars ──
