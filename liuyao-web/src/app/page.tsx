@@ -25,41 +25,41 @@ export default function HomePage() {
         {/* ── Content ── */}
         <div className="relative z-10 flex flex-col items-center">
 
-          {/* Brand — YARROW with ink wash effect */}
+          {/* Brand — YARROW with metallic shimmer + decorative strokes */}
           <div className="animate-fade-in mb-4">
-            {/* SVG filter for ink wash / brush stroke texture */}
-            <svg className="absolute h-0 w-0" aria-hidden="true">
-              <defs>
-                <filter id="ink-wash">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="2" result="noise" />
-                  <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" result="displaced" />
-                  <feGaussianBlur in="displaced" stdDeviation="0.5" result="blurred" />
-                  <feComposite in="blurred" in2="SourceGraphic" operator="atop" />
-                </filter>
-                <filter id="ink-glow">
-                  <feGaussianBlur stdDeviation="8" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-              </defs>
-            </svg>
-            <div className="relative">
-              {/* Glow layer behind text */}
+            <div className="relative flex flex-col items-center">
+              {/* Decorative brush stroke above */}
+              <div className="mb-5 flex items-center gap-2">
+                <div className="h-px w-10 bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-40" />
+                <div className="h-[3px] w-[3px] rotate-45 bg-[var(--gold)] opacity-50" />
+                <div className="h-px w-10 bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-40" />
+              </div>
+
+              {/* Glow layer */}
               <span
-                className="absolute inset-0 flex items-center justify-center text-[28px] font-extralight tracking-[0.5em] uppercase sm:text-[36px] lg:text-[48px]"
+                className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[28px] font-extralight tracking-[0.5em] uppercase sm:text-[36px] lg:text-[48px]"
                 style={{
-                  color: 'rgba(196,149,107,0.3)',
-                  filter: 'blur(12px)',
+                  color: 'rgba(196,149,107,0.15)',
+                  filter: 'blur(20px)',
                 }}
                 aria-hidden="true"
               >
                 YARROW
               </span>
-              {/* Main text with ink texture */}
-              <span
-                className="ink-wash-text relative block text-[28px] font-extralight tracking-[0.5em] uppercase sm:text-[36px] lg:text-[48px]"
+
+              {/* Main text — strong metallic gradient */}
+              <h1
+                className="shimmer-gold-strong relative text-[28px] font-extralight tracking-[0.5em] uppercase sm:text-[36px] lg:text-[48px]"
               >
                 YARROW
-              </span>
+              </h1>
+
+              {/* Decorative brush stroke below */}
+              <div className="mt-5 flex items-center gap-2">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-[var(--gold)] opacity-30" />
+                <div className="h-[3px] w-[3px] rotate-45 bg-[var(--gold)] opacity-50" />
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-[var(--gold)] opacity-30" />
+              </div>
             </div>
           </div>
 

@@ -399,6 +399,33 @@ a { text-decoration: none; }
 }
 
 /* ════════════════════════════════════════════════
+   SHIMMER GOLD STRONG — More visible metallic effect
+   ════════════════════════════════════════════════ */
+.shimmer-gold-strong {
+  background: linear-gradient(
+    90deg,
+    #8A7558 0%,
+    #C4956B 15%,
+    #F0EBE3 30%,
+    #D4A87B 45%,
+    #C4956B 55%,
+    #F0EBE3 70%,
+    #C4956B 85%,
+    #8A7558 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerStrong 4s linear infinite;
+}
+
+@keyframes shimmerStrong {
+  0% { background-position: 300% center; }
+  100% { background-position: 0% center; }
+}
+
+/* ════════════════════════════════════════════════
    INK WASH BACKGROUND — Visible, atmospheric
    ════════════════════════════════════════════════ */
 .ink-wash-bg {

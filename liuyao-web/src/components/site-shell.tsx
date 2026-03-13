@@ -18,7 +18,15 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         {/* ── Header ── */}
         <header className="relative z-50 mb-16 flex items-center justify-between">
           <Link href="/" className="group flex items-center gap-3 transition-opacity duration-300 hover:opacity-80">
-            <img src="/images/logo-simple.png" alt="Yarrow" className="h-7 w-7" style={{ filter: 'drop-shadow(0 0 6px rgba(196,149,107,0.25))' }} />
+            {/* CSS hexagram lines logo */}
+            <div className="flex flex-col items-center gap-[3px]">
+              <div className="h-[2px] w-5 bg-[var(--gold)] opacity-70" />
+              <div className="flex gap-[4px]">
+                <div className="h-[2px] w-[8px] bg-[var(--gold)] opacity-70" />
+                <div className="h-[2px] w-[8px] bg-[var(--gold)] opacity-70" />
+              </div>
+              <div className="h-[2px] w-5 bg-[var(--gold)] opacity-70" />
+            </div>
             <span className="text-[12px] font-medium tracking-[0.35em] text-[var(--text-muted)] uppercase">Yarrow</span>
           </Link>
           <nav className="flex items-center gap-6 text-xs tracking-[0.1em] text-[var(--text-muted)]">
@@ -48,7 +56,14 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex flex-col items-center gap-3">
             <div className="flex items-center gap-2">
-              <img src="/images/logo-simple.png" alt="" className="h-4 w-4 opacity-40" />
+              <div className="flex flex-col items-center gap-[2px] opacity-40">
+                <div className="h-[1.5px] w-3.5 bg-[var(--gold)]" />
+                <div className="flex gap-[3px]">
+                  <div className="h-[1.5px] w-[6px] bg-[var(--gold)]" />
+                  <div className="h-[1.5px] w-[6px] bg-[var(--gold)]" />
+                </div>
+                <div className="h-[1.5px] w-3.5 bg-[var(--gold)]" />
+              </div>
               <span className="text-[10px] tracking-[0.3em] text-[var(--text-dim)] uppercase">Yarrow</span>
             </div>
             <span className="text-[9px] tracking-[0.15em] text-[var(--text-dim)]">
