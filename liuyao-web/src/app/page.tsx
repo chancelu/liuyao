@@ -25,48 +25,23 @@ export default function HomePage() {
         {/* ── Content ── */}
         <div className="relative z-10 flex flex-col items-center">
 
-          {/* Brand — YARROW with metallic shimmer + decorative strokes */}
-          <div className="animate-fade-in mb-4">
-            <div className="relative flex flex-col items-center">
-              {/* Decorative brush stroke above */}
-              <div className="mb-5 flex items-center gap-2">
-                <div className="h-px w-10 bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-40" />
-                <div className="h-[3px] w-[3px] rotate-45 bg-[var(--gold)] opacity-50" />
-                <div className="h-px w-10 bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-40" />
-              </div>
-
-              {/* Glow layer */}
-              <span
-                className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[22px] font-extralight tracking-[0.35em] uppercase sm:text-[36px] sm:tracking-[0.5em] lg:text-[48px]"
-                style={{
-                  color: 'rgba(196,149,107,0.15)',
-                  filter: 'blur(20px)',
-                }}
-                aria-hidden="true"
-              >
-                YARROW
-              </span>
-
-              {/* Main text — strong metallic gradient */}
-              <h1
-                className="shimmer-gold-strong relative text-[22px] font-extralight tracking-[0.35em] uppercase sm:text-[36px] sm:tracking-[0.5em] lg:text-[48px]"
-              >
-                YARROW
-              </h1>
-
-              {/* Decorative brush stroke below */}
-              <div className="mt-5 flex items-center gap-2">
-                <div className="h-px w-16 bg-gradient-to-r from-transparent to-[var(--gold)] opacity-30" />
-                <div className="h-[3px] w-[3px] rotate-45 bg-[var(--gold)] opacity-50" />
-                <div className="h-px w-16 bg-gradient-to-l from-transparent to-[var(--gold)] opacity-30" />
-              </div>
-            </div>
+          {/* Hero image — mystical yarrow stalks */}
+          <div className="animate-fade-in mb-6">
+            <img
+              src="/images/hero-mystical-2.png"
+              alt="Yarrow"
+              className="mx-auto h-[220px] w-auto sm:h-[300px] lg:h-[380px]"
+              style={{
+                mixBlendMode: 'screen',
+                filter: 'drop-shadow(0 0 30px rgba(196,149,107,0.15))',
+              }}
+            />
           </div>
 
-          {/* Tagline */}
+          {/* Brand name — small text below image */}
           <div className="animate-fade-in delay-200 mb-8 sm:mb-14">
-            <span className="text-[12px] tracking-[0.2em] text-[var(--text-muted)]">
-              六爻在线占卦
+            <span className="text-[11px] tracking-[0.4em] text-[var(--text-muted)] uppercase">
+              Yarrow
             </span>
           </div>
 
