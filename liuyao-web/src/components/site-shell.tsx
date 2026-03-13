@@ -11,7 +11,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         {/* ── Header ── */}
         <header className="relative z-50 mb-16 flex items-center justify-between">
           <Link href="/" className="group flex items-center gap-3 transition-opacity duration-300 hover:opacity-80">
-            <span className="char-glow font-display text-2xl text-[var(--gold)]">爻</span>
+            <img src="/images/logo-yao.png" alt="Yarrow" className="h-8 w-8" style={{ filter: 'drop-shadow(0 0 6px rgba(196,149,107,0.25))' }} />
             <div className="flex flex-col">
               <span className="text-[11px] tracking-[0.3em] text-[var(--text-muted)] uppercase">Yarrow</span>
               <span className="text-[8px] tracking-[0.15em] text-[var(--text-dim)]">雅若</span>

@@ -10,16 +10,15 @@ export default function HomePage() {
       {/* ═══ HERO — Immersive dark room with golden light ═══ */}
       <section className="relative -mx-6 flex min-h-[94vh] flex-col items-center justify-center overflow-hidden px-6 text-center sm:-mx-10 sm:px-10">
 
-        {/* Layer 1: Unsplash smoke/ink texture */}
+        {/* Layer 1: Ink wash background texture */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1518562180175-34a163b1a9a6?w=1920&q=80&auto=format&fit=crop"
+            src="/images/bg-inkwash.png"
             alt=""
-            className="h-full w-full object-cover opacity-[0.08]"
-            style={{ filter: 'sepia(0.3) saturate(0.6)' }}
+            className="h-full w-full object-cover opacity-[0.35]"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0D0B08] via-[rgba(13,11,8,0.5)] to-[#0D0B08]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0D0B08] via-[rgba(13,11,8,0.4)] to-[#0D0B08]" />
         </div>
 
         {/* Layer 2: Multiple warm radial glows */}
@@ -87,18 +86,17 @@ export default function HomePage() {
         {/* ── Main Content ── */}
         <div className="relative z-10 flex flex-col items-center">
 
-          {/* The character — visual anchor with rich glow */}
+          {/* The character — artistic generated image with glow */}
           <div className="animate-fade-in mb-4">
-            <span
-              className="font-display text-[110px] leading-none font-extralight sm:text-[150px] lg:text-[200px]"
+            <img
+              src="/images/hero-yao.png"
+              alt="爻"
+              className="mx-auto h-[140px] w-[140px] sm:h-[200px] sm:w-[200px] lg:h-[280px] lg:w-[280px]"
               style={{
-                color: '#F0EBE3',
-                textShadow: '0 0 40px rgba(196,149,107,0.25), 0 0 80px rgba(196,149,107,0.12), 0 0 120px rgba(196,149,107,0.06)',
-                animation: 'textGlow 5s ease-in-out infinite',
+                filter: 'drop-shadow(0 0 40px rgba(196,149,107,0.30)) drop-shadow(0 0 80px rgba(196,149,107,0.15))',
+                animation: 'breathe 5s ease-in-out infinite',
               }}
-            >
-              爻
-            </span>
+            />
           </div>
 
           {/* Decorative line under character */}
@@ -215,10 +213,9 @@ export default function HomePage() {
       {/* ═══ ATMOSPHERE QUOTE ═══ */}
       <section className="relative -mx-6 mb-32 overflow-hidden sm:-mx-10" style={{ height: '320px' }}>
         <img
-          src="https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=1920&q=80&auto=format&fit=crop"
+          src="/images/bg-inkwash.png"
           alt=""
-          className="h-full w-full object-cover"
-          style={{ filter: 'sepia(0.2) saturate(0.5) brightness(0.4)' }}
+          className="h-full w-full object-cover opacity-50"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-deep)] via-transparent to-[var(--bg-deep)]" />
