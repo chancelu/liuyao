@@ -1,20 +1,19 @@
 @import "tailwindcss";
 
 /* ════════════════════════════════════════════════
-   雅若 YARROW — Design System v2
-   Eastern Mysticism · Minimalist Restraint · Modern Cosmic
-   "让用户忘记自己在用网站"
+   雅若 YARROW — Design System v2.1
+   Eastern Mysticism · Rich Atmosphere · Professional Polish
    ════════════════════════════════════════════════ */
 
 :root {
-  /* ═══ Background tiers — warm near-black, like night on rice paper ═══ */
+  /* ═══ Background tiers — warm, layered depth ═══ */
   --bg-deep:       #0D0B08;
-  --bg-mid:        #11100C;
-  --bg-elevated:   #16140F;
-  --bg-card:       rgba(196, 149, 107, 0.02);
-  --bg-card-hover: rgba(196, 149, 107, 0.04);
+  --bg-mid:        #13110D;
+  --bg-elevated:   #1A1710;
+  --bg-card:       #1E1B14;
+  --bg-card-hover: #252117;
 
-  /* ═══ Text tiers — warm white, never pure white ═══ */
+  /* ═══ Text tiers — warm white hierarchy ═══ */
   --text-primary:   #F0EBE3;
   --text-secondary: #D4CFC6;
   --text-muted:     #8A8070;
@@ -24,9 +23,16 @@
   --gold:          #C4956B;
   --gold-light:    #D4A87B;
   --gold-dim:      rgba(196, 149, 107, 0.30);
+  --gold-glow:     rgba(196, 149, 107, 0.15);
 
-  /* ═══ Accent 2: Cinnabar — used sparingly ═══ */
+  /* ═══ Accent 2: Cinnabar ═══ */
   --cinnabar:      #8B3A3A;
+  --cinnabar-glow: rgba(139, 58, 58, 0.10);
+
+  /* ═══ Gradient accents ═══ */
+  --gradient-gold: linear-gradient(135deg, #C4956B, #D4A87B, #B8845A);
+  --gradient-warm: linear-gradient(135deg, #1E1B14, #252117);
+  --gradient-border: linear-gradient(135deg, rgba(196,149,107,0.3), rgba(196,149,107,0.05), rgba(196,149,107,0.3));
 
   /* ═══ Functional ═══ */
   --success: #7AB88A;
@@ -35,8 +41,8 @@
   /* ═══ Semantic tokens ═══ */
   --foreground:    var(--text-primary);
   --background:    var(--bg-deep);
-  --border:        rgba(196, 149, 107, 0.06);
-  --border-hover:  rgba(196, 149, 107, 0.12);
+  --border:        rgba(196, 149, 107, 0.08);
+  --border-hover:  rgba(196, 149, 107, 0.18);
 }
 
 @theme inline {
@@ -66,48 +72,74 @@ a { text-decoration: none; }
 }
 
 /* ════════════════════════════════════════════════
-   CARD SYSTEM — Barely there, warm gold tint
+   CARD SYSTEM — Rich depth, warm glow on hover
    ════════════════════════════════════════════════ */
 .card-solid {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  transition: border-color 600ms ease, box-shadow 600ms ease;
+  border-radius: 16px;
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-solid:hover {
   border-color: var(--border-hover);
-  box-shadow: 0 0 24px rgba(196, 149, 107, 0.04);
+  background: var(--bg-card-hover);
+  box-shadow: 
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(196, 149, 107, 0.06);
+  transform: translateY(-2px);
 }
 
 .card-gold {
   background: var(--bg-card);
-  border: 1px solid rgba(196, 149, 107, 0.08);
-  border-radius: 12px;
-  transition: border-color 600ms ease, box-shadow 600ms ease;
+  border: 1px solid rgba(196, 149, 107, 0.10);
+  border-radius: 16px;
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-gold:hover {
-  border-color: rgba(196, 149, 107, 0.18);
-  box-shadow: 0 0 32px rgba(196, 149, 107, 0.06);
+  border-color: rgba(196, 149, 107, 0.25);
+  background: var(--bg-card-hover);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 48px rgba(196, 149, 107, 0.08),
+    inset 0 1px 0 rgba(196, 149, 107, 0.06);
+  transform: translateY(-3px);
 }
 
 /* ════════════════════════════════════════════════
-   BUTTON SYSTEM — Refined, weighted
+   BUTTON SYSTEM — Scale on hover, gold glow
    ════════════════════════════════════════════════ */
 .btn-primary {
-  background: var(--gold);
+  background: var(--gradient-gold);
   color: var(--bg-deep);
   font-family: var(--font-noto-serif-sc), Georgia, serif;
-  font-weight: 400;
-  letter-spacing: 0.15em;
+  font-weight: 500;
+  letter-spacing: 0.2em;
   border-radius: 9999px;
-  transition: background 400ms ease, box-shadow 400ms ease, transform 200ms ease;
+  position: relative;
+  overflow: hidden;
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 400ms ease;
 }
 
 .btn-primary:hover {
-  background: var(--gold-light);
-  box-shadow: 0 0 20px rgba(196, 149, 107, 0.20);
+  transform: scale(1.05);
+  box-shadow: 
+    0 4px 20px rgba(196, 149, 107, 0.30),
+    0 0 40px rgba(196, 149, 107, 0.15);
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
 }
 
 .btn-primary:active {
@@ -120,76 +152,118 @@ a { text-decoration: none; }
   color: var(--text-muted);
   letter-spacing: 0.08em;
   border-radius: 9999px;
-  transition: all 400ms ease;
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-secondary:hover {
   border-color: var(--border-hover);
   color: var(--text-primary);
+  transform: scale(1.03);
+  box-shadow: 0 0 20px rgba(196, 149, 107, 0.06);
 }
 
 /* ════════════════════════════════════════════════
-   INPUT — Borderless, bottom line only
+   INPUT — Gradient border on focus
    ════════════════════════════════════════════════ */
-.input-ritual {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(196, 149, 107, 0.12);
-  border-radius: 0;
+.input-field {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   color: var(--text-primary);
   font-family: var(--font-noto-serif-sc), Georgia, serif;
-  font-size: 16px;
-  line-height: 2;
-  padding: 12px 0;
+  font-size: 15px;
+  line-height: 1.8;
+  padding: 14px 20px;
   outline: none;
   width: 100%;
-  transition: border-color 400ms ease;
+  transition: all 400ms ease;
 }
 
-.input-ritual::placeholder {
+.input-field::placeholder {
   color: var(--text-dim);
 }
 
-.input-ritual:focus {
-  border-bottom-color: var(--gold);
+.input-field:focus {
+  border-color: var(--gold);
+  box-shadow: 
+    0 0 0 3px rgba(196, 149, 107, 0.10),
+    0 0 20px rgba(196, 149, 107, 0.05);
+}
+
+/* Gradient border input wrapper */
+.input-gradient-wrap {
+  position: relative;
+  border-radius: 12px;
+  padding: 1px;
+  background: var(--border);
+  transition: all 400ms ease;
+}
+
+.input-gradient-wrap:focus-within {
+  background: var(--gradient-border);
+  box-shadow: 0 0 24px rgba(196, 149, 107, 0.08);
+}
+
+.input-gradient-wrap input,
+.input-gradient-wrap textarea {
+  background: var(--bg-elevated);
+  border: none;
+  border-radius: 11px;
+  color: var(--text-primary);
+  font-family: var(--font-noto-serif-sc), Georgia, serif;
+  font-size: 15px;
+  line-height: 1.8;
+  padding: 14px 20px;
+  outline: none;
+  width: 100%;
+}
+
+.input-gradient-wrap input::placeholder,
+.input-gradient-wrap textarea::placeholder {
+  color: var(--text-dim);
 }
 
 /* ════════════════════════════════════════════════
-   ANIMATIONS — Slow, purposeful, like breathing
+   ANIMATIONS
    ════════════════════════════════════════════════ */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes fadeInSlow {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes breathe {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.7; }
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
 }
 
 @keyframes breatheSubtle {
-  0%, 100% { opacity: 0.02; }
-  50% { opacity: 0.05; }
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.30; }
 }
 
 @keyframes inkWash {
   0%, 100% { 
     transform: scale(1) translate(0, 0);
-    opacity: 0.03;
+    opacity: 0.6;
   }
   33% { 
-    transform: scale(1.05) translate(2%, -1%);
-    opacity: 0.05;
+    transform: scale(1.08) translate(2%, -1%);
+    opacity: 0.8;
   }
   66% { 
-    transform: scale(0.98) translate(-1%, 1%);
-    opacity: 0.035;
+    transform: scale(0.95) translate(-1%, 1%);
+    opacity: 0.5;
   }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
 }
 
 @keyframes coinShake {
@@ -207,22 +281,31 @@ a { text-decoration: none; }
   100% { background-position: 200% center; }
 }
 
-@keyframes brushStroke {
-  from { width: 0; opacity: 0; }
-  to { width: 100%; opacity: 1; }
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(196, 149, 107, 0.05); }
+  50% { box-shadow: 0 0 40px rgba(196, 149, 107, 0.15); }
 }
 
-@keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 0 rgba(196, 149, 107, 0); }
-  50% { box-shadow: 0 0 16px rgba(196, 149, 107, 0.12); }
+@keyframes textGlow {
+  0%, 100% { text-shadow: 0 0 20px rgba(196, 149, 107, 0.1); }
+  50% { text-shadow: 0 0 40px rgba(196, 149, 107, 0.3), 0 0 80px rgba(196, 149, 107, 0.1); }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(196, 149, 107, 0.08); }
+  50% { border-color: rgba(196, 149, 107, 0.20); }
 }
 
 .animate-fade-in {
   animation: fadeIn 800ms ease-out both;
 }
 
+.animate-fade-in-up {
+  animation: fadeInUp 800ms ease-out both;
+}
+
 .animate-fade-in-slow {
-  animation: fadeInSlow 1200ms ease-out both;
+  animation: fadeIn 1500ms ease-out both;
 }
 
 .animate-breathe {
@@ -237,12 +320,24 @@ a { text-decoration: none; }
   animation: inkWash 20s ease-in-out infinite;
 }
 
+.animate-float-slow {
+  animation: floatSlow 8s ease-in-out infinite;
+}
+
 .animate-coin-shake {
   animation: coinShake 0.8s cubic-bezier(0.36, 0, 0.66, 1) both;
 }
 
 .animate-glow-pulse {
   animation: glowPulse 4s ease-in-out infinite;
+}
+
+.animate-text-glow {
+  animation: textGlow 4s ease-in-out infinite;
+}
+
+.animate-border-glow {
+  animation: borderGlow 4s ease-in-out infinite;
 }
 
 /* Stagger delays */
@@ -254,6 +349,7 @@ a { text-decoration: none; }
 .delay-600 { animation-delay: 600ms; }
 .delay-800 { animation-delay: 800ms; }
 .delay-1000 { animation-delay: 1000ms; }
+.delay-1200 { animation-delay: 1200ms; }
 
 /* ════════════════════════════════════════════════
    SHIMMER GOLD TEXT
@@ -271,11 +367,11 @@ a { text-decoration: none; }
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmerGold 8s linear infinite;
+  animation: shimmerGold 6s linear infinite;
 }
 
 /* ════════════════════════════════════════════════
-   INK WASH BACKGROUND — CSS gradient simulation
+   INK WASH BACKGROUND — Visible, atmospheric
    ════════════════════════════════════════════════ */
 .ink-wash-bg {
   position: relative;
@@ -285,14 +381,30 @@ a { text-decoration: none; }
 .ink-wash-bg::before {
   content: '';
   position: absolute;
-  inset: -20%;
+  inset: -30%;
   background: 
-    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(196, 149, 107, 0.04) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 60% at 70% 60%, rgba(196, 149, 107, 0.03) 0%, transparent 70%),
-    radial-gradient(ellipse 80% 40% at 50% 20%, rgba(139, 58, 58, 0.015) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 50% at 20% 30%, rgba(196, 149, 107, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 80% 60%, rgba(196, 149, 107, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 90% 50% at 50% 10%, rgba(139, 58, 58, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 60% 80%, rgba(196, 149, 107, 0.05) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
-  animation: inkWash 20s ease-in-out infinite;
+  animation: inkWash 25s ease-in-out infinite;
+}
+
+/* ════════════════════════════════════════════════
+   NOISE TEXTURE OVERLAY — Adds grain/paper feel
+   ════════════════════════════════════════════════ */
+.noise-overlay::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
 }
 
 /* ════════════════════════════════════════════════
@@ -310,8 +422,8 @@ a { text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  color: rgba(196, 149, 107, 0.20);
+  gap: 20px;
+  color: rgba(196, 149, 107, 0.25);
   font-size: 12px;
   letter-spacing: 0.3em;
 }
@@ -320,17 +432,17 @@ a { text-decoration: none; }
 .divider-ornament::after {
   content: '';
   flex: 1;
-  max-width: 80px;
+  max-width: 100px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.15));
+  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.20));
 }
 
 .divider-ornament::after {
-  background: linear-gradient(90deg, rgba(196, 149, 107, 0.15), transparent);
+  background: linear-gradient(90deg, rgba(196, 149, 107, 0.20), transparent);
 }
 
 /* ════════════════════════════════════════════════
-   GLOW — Radial gold for page tops
+   GLOW EFFECTS
    ════════════════════════════════════════════════ */
 .glow-top {
   position: relative;
@@ -339,14 +451,22 @@ a { text-decoration: none; }
 .glow-top::before {
   content: '';
   position: absolute;
-  top: -200px;
+  top: -250px;
   left: 50%;
   transform: translateX(-50%);
-  width: 800px;
-  height: 500px;
-  background: radial-gradient(ellipse, rgba(196, 149, 107, 0.04) 0%, transparent 70%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(196, 149, 107, 0.07) 0%, transparent 65%);
   pointer-events: none;
   z-index: 0;
+}
+
+/* Character glow — for the 爻 visual anchor */
+.char-glow {
+  text-shadow: 
+    0 0 30px rgba(196, 149, 107, 0.20),
+    0 0 60px rgba(196, 149, 107, 0.10),
+    0 0 120px rgba(196, 149, 107, 0.05);
 }
 
 /* ════════════════════════════════════════════════
@@ -363,12 +483,32 @@ a { text-decoration: none; }
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 320px;
+  font-size: 400px;
   font-family: var(--font-noto-serif-sc), Georgia, serif;
-  color: rgba(196, 149, 107, 0.015);
+  color: rgba(196, 149, 107, 0.02);
   pointer-events: none;
   z-index: 0;
   animation: breatheSubtle 8s ease-in-out infinite;
+}
+
+/* ════════════════════════════════════════════════
+   IMAGE OVERLAY — For Unsplash backgrounds
+   ════════════════════════════════════════════════ */
+.img-overlay {
+  position: relative;
+}
+
+.img-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 11, 8, 0.7) 0%,
+    rgba(13, 11, 8, 0.4) 40%,
+    rgba(13, 11, 8, 0.8) 100%
+  );
+  pointer-events: none;
 }
 
 /* ════════════════════════════════════════════════
@@ -391,40 +531,37 @@ a { text-decoration: none; }
   flex: 1;
   max-width: 120px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.12));
+  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.15));
 }
 
 .footer-decoration::after {
-  background: linear-gradient(90deg, rgba(196, 149, 107, 0.12), transparent);
+  background: linear-gradient(90deg, rgba(196, 149, 107, 0.15), transparent);
 }
 
 /* ════════════════════════════════════════════════
-   SCROLLBAR — Minimal
+   SCROLLBAR
    ════════════════════════════════════════════════ */
-::-webkit-scrollbar {
-  width: 4px;
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(196, 149, 107, 0.15); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(196, 149, 107, 0.25); }
+
+/* ════════════════════════════════════════════════
+   ICON HELPERS
+   ════════════════════════════════════════════════ */
+.icon-gold {
+  color: var(--gold);
+  opacity: 0.8;
+  transition: opacity 300ms ease;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(196, 149, 107, 0.15);
-  border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(196, 149, 107, 0.25);
+.icon-gold:hover {
+  opacity: 1;
 }
 
 /* ════════════════════════════════════════════════
-   UTILITY
+   UTILITY COMPAT
    ════════════════════════════════════════════════ */
-.animate-fade-in-up {
-  animation: fadeIn 800ms ease-out both;
-}
-
 .animate-pulse-glow {
   animation: glowPulse 4s ease-in-out infinite;
 }

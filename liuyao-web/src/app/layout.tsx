@@ -4,7 +4,7 @@ import './globals.css';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
-const notoSerifSC = Noto_Serif_SC({ variable: '--font-noto-serif-sc', weight: ['200', '300', '400', '600', '700'], subsets: ['latin'] });
+const notoSerifSC = Noto_Serif_SC({ variable: '--font-noto-serif-sc', weight: ['200', '300', '400', '600', '700'], subsets: ['latin'], preload: false });
 
 export const metadata: Metadata = {
   title: '雅若 Yarrow · 六爻在线占卦',
@@ -14,6 +14,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN">
+      <head>
+        {/* Font Awesome Icons */}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+        {/* Material Icons */}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${notoSerifSC.variable} antialiased`}>
         {children}
       </body>
