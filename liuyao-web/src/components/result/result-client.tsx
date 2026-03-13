@@ -169,38 +169,57 @@ export function ResultClient({ id }: { id: string }) {
   async function handleSave() {
     if (!accessToken) return;
     setSaveState('saving');
-    const res = await saveDivinationApi(id, accessToken);
-    setSaveState(res.success ? 'saved' : 'error');
+    try {
+      const res = await saveDivinationApi(id, accessToken);
+      if (res.success) {
+        setSaveState('saved');
+      } else {
+        console.warn('[result] Save failed:', res.error);
+        setSaveState('error');
+        setTimeout(() => setSaveState('idle'), 3000);
+      }
+    } catch (err) {
+      console.warn('[result] Save error:', err);
+      setSaveState('error');
+      setTimeout(() => setSaveState('idle'), 3000);
+    }
   }
 
   async function handleShare() {
     setShareState('sharing');
     track('click_share');
 
-    if (accessToken && saveState === 'idle') {
-      await saveDivinationApi(id, accessToken);
-      setSaveState('saved');
-    }
+    try {
+      if (accessToken && saveState === 'idle') {
+        await saveDivinationApi(id, accessToken).catch(() => {});
+        setSaveState('saved');
+      }
 
-    const res = await shareDivinationApi(id, accessToken ?? undefined);
-    if (res.success) {
-      const url = res.data.shareUrl || `${window.location.origin}/share/${id}`;
-      setShareUrl(url);
-      try {
-        await navigator.clipboard.writeText(url);
-        setShareState('copied');
+      const res = await shareDivinationApi(id, accessToken ?? undefined);
+      if (res.success) {
+        const url = res.data.shareUrl || `${window.location.origin}/share/${id}`;
+        setShareUrl(url);
+        try {
+          await navigator.clipboard.writeText(url);
+          setShareState('copied');
+          setTimeout(() => setShareState('idle'), 3000);
+        } catch {
+          setShareState('idle');
+        }
+        // Trigger share reward
+        if (accessToken) {
+          fetch('/api/user/share-reward', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }).catch(() => {});
+        }
+      } else {
+        console.warn('[result] Share failed:', res.error);
+        setShareState('error');
         setTimeout(() => setShareState('idle'), 3000);
-      } catch {
-        setShareState('idle');
       }
-      // Trigger share reward
-      if (accessToken) {
-        fetch('/api/user/share-reward', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }).catch(() => {});
-      }
-    } else {
+    } catch (err) {
+      console.warn('[result] Share error:', err);
       setShareState('error');
       setTimeout(() => setShareState('idle'), 3000);
     }

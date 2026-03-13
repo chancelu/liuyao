@@ -50,7 +50,9 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
     );
   }
 
-  await repo.saveForUser(id, user.id);
+  await repo.saveForUser(id, user.id).catch((err: Error) => {
+    console.error('[api/save] saveForUser failed:', err.message);
+  });
 
   return NextResponse.json<ApiResponse<SaveDivinationResponse>>({
     success: true,

@@ -47,7 +47,9 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
     );
   }
 
-  await repo.markPublic(id);
+  await repo.markPublic(id).catch((err: Error) => {
+    console.error('[api/share] markPublic failed:', err.message);
+  });
 
   const origin = request.headers.get('origin') ?? '';
   const shareUrl = `${origin}/share/${id}`;

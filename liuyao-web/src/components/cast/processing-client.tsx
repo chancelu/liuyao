@@ -25,10 +25,17 @@ export function ProcessingClient() {
   const [progress, setProgress] = useState(0);
   const [stageIndex, setStageIndex] = useState(0);
   const [error, setError] = useState('');
-  const [analysisComplete, setAnalysisComplete] = useState(false);
   const analysisStarted = useRef(false);
+  const analysisComplete = useRef(false);
+  const navigated = useRef(false);
+  const progressRef = useRef(0);
 
-  // Smooth progress animation — slow easing that never stalls visually
+  // Keep progressRef in sync
+  useEffect(() => {
+    progressRef.current = progress;
+  }, [progress]);
+
+  // Smooth progress animation
   useEffect(() => {
     if (!id) {
       router.replace('/cast');
@@ -39,62 +46,48 @@ export function ProcessingClient() {
     const startTime = Date.now();
 
     function tick() {
+      if (navigated.current) return;
+
       const elapsed = Date.now() - startTime;
       const t = elapsed / 1000;
-      // Two-phase curve for natural feel:
-      // Phase 1 (0-3s): quick ramp to ~40% — feels responsive
-      // Phase 2 (3s+): slow crawl toward 92% — waiting for AI
+
       let rawProgress: number;
-      if (t < 3) {
-        // Fast ease-out: 0 → 40% in 3 seconds
+      if (analysisComplete.current) {
+        // Analysis done — animate quickly to 100%
+        const completedAt = progressRef.current;
+        rawProgress = completedAt + (100 - completedAt) * Math.min(1, (t - elapsed / 1000 + 0.5) / 0.5);
+        // Simple: just jump toward 100
+        rawProgress = Math.min(100, progressRef.current + 2);
+      } else if (t < 3) {
         rawProgress = 40 * (1 - Math.pow(1 - t / 3, 3));
       } else {
-        // Slow asymptotic approach: 40% → 92%
         rawProgress = 40 + 52 * (1 - Math.exp(-(t - 3) / 20));
       }
-      rawProgress = Math.min(92, rawProgress);
-      setProgress(rawProgress);
 
-      // Update stage based on progress thresholds
+      rawProgress = Math.min(100, rawProgress);
+      setProgress(rawProgress);
+      progressRef.current = rawProgress;
+
+      // Update stage
       if (rawProgress < 10) setStageIndex(0);
       else if (rawProgress < 30) setStageIndex(1);
       else if (rawProgress < 55) setStageIndex(2);
       else if (rawProgress < 80) setStageIndex(3);
       else setStageIndex(4);
 
-      if (!analysisComplete) {
-        animFrame = requestAnimationFrame(tick);
+      // Navigate when we hit 100
+      if (rawProgress >= 99.5 && analysisComplete.current && !navigated.current) {
+        navigated.current = true;
+        setTimeout(() => router.replace(`/result/${id}`), 300);
+        return;
       }
+
+      animFrame = requestAnimationFrame(tick);
     }
 
     animFrame = requestAnimationFrame(tick);
     return () => { if (animFrame) cancelAnimationFrame(animFrame); };
-  }, [id, router, analysisComplete]);
-
-  // When analysis completes, animate to 100% and navigate
-  useEffect(() => {
-    if (!analysisComplete || !id) return;
-
-    // Animate from current progress to 100%
-    let animFrame: number;
-    const startVal = progress;
-    const startTime = Date.now();
-    const duration = 500;
-
-    function animate() {
-      const elapsed = Date.now() - startTime;
-      const t = Math.min(1, elapsed / duration);
-      setProgress(startVal + (100 - startVal) * t);
-      if (t < 1) {
-        animFrame = requestAnimationFrame(animate);
-      } else {
-        setTimeout(() => router.replace(`/result/${id}`), 300);
-      }
-    }
-
-    animFrame = requestAnimationFrame(animate);
-    return () => { if (animFrame) cancelAnimationFrame(animFrame); };
-  }, [analysisComplete, id, router]);
+  }, [id, router]);
 
   // Call LLM via lightweight proxy, then save result
   useEffect(() => {
@@ -103,33 +96,28 @@ export function ProcessingClient() {
 
     async function runAnalysis() {
       try {
-        // Get the result from localStorage (saved by submitCastFlow)
         const result = getResultById(id!);
         if (!result || !result.chart) {
           console.warn('[processing] No result/chart in localStorage, falling back to server analysis');
-          // Fallback: call the old analysis API
           await fetch('/api/analysis', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ divinationId: id }),
           });
-          setAnalysisComplete(true);
+          analysisComplete.current = true;
           return;
         }
 
-        // Build prompt from local data
         const prompt = buildPromptFromResult(result as MockResult);
         if (!prompt) {
           console.warn('[processing] Could not build prompt');
-          setAnalysisComplete(true);
+          analysisComplete.current = true;
           return;
         }
 
-        // Call lightweight LLM proxy (edge runtime, streaming)
         const llmData = await callLLMStream(prompt);
 
         if (llmData) {
-          // Update local result with AI analysis
           const updatedResult = {
             ...result,
             summary: llmData.summary,
@@ -139,7 +127,6 @@ export function ProcessingClient() {
           };
           setResultById(id!, updatedResult);
 
-          // Also persist to server (fire and forget)
           fetch('/api/analysis', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -152,7 +139,7 @@ export function ProcessingClient() {
         console.warn('[processing] Analysis failed:', err);
       }
 
-      setAnalysisComplete(true);
+      analysisComplete.current = true;
     }
 
     void runAnalysis();
@@ -162,13 +149,13 @@ export function ProcessingClient() {
   useEffect(() => {
     if (!id) return;
     const timer = setTimeout(() => {
-      if (!analysisComplete) {
+      if (!analysisComplete.current) {
         console.warn('[processing] Safety timeout');
-        setAnalysisComplete(true);
+        analysisComplete.current = true;
       }
     }, 120000);
     return () => clearTimeout(timer);
-  }, [id, analysisComplete]);
+  }, [id]);
 
   const currentStage = PROGRESS_STAGES[stageIndex];
 
@@ -181,10 +168,10 @@ export function ProcessingClient() {
       </div>
 
       {/* Progress bar */}
-      <div className="mt-16 space-y-4">
+      <div className="relative z-10 mt-12 space-y-3">
         <div className="relative h-1 w-full overflow-hidden rounded-full bg-[rgba(255,255,255,0.06)]">
           <div
-            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--gold-dim)] to-[var(--gold)]"
+            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--gold-dim)] to-[var(--gold)] transition-[width] duration-200"
             style={{ width: `${progress}%` }}
           />
         </div>
