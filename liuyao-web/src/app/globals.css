@@ -371,6 +371,34 @@ a { text-decoration: none; }
 }
 
 /* ════════════════════════════════════════════════
+   INK WASH TEXT — Brush stroke texture on text
+   ════════════════════════════════════════════════ */
+.ink-wash-text {
+  background: linear-gradient(
+    135deg,
+    #8A7558 0%,
+    #C4956B 20%,
+    #D4A87B 35%,
+    #F0EBE3 50%,
+    #D4A87B 65%,
+    #C4956B 80%,
+    #8A7558 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: url(#ink-wash);
+  animation: inkTextShift 8s ease-in-out infinite;
+  text-shadow: none;
+}
+
+@keyframes inkTextShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ════════════════════════════════════════════════
    INK WASH BACKGROUND — Visible, atmospheric
    ════════════════════════════════════════════════ */
 .ink-wash-bg {

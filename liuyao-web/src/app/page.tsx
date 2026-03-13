@@ -25,11 +25,42 @@ export default function HomePage() {
         {/* ── Content ── */}
         <div className="relative z-10 flex flex-col items-center">
 
-          {/* Brand — YARROW only */}
+          {/* Brand — YARROW with ink wash effect */}
           <div className="animate-fade-in mb-4">
-            <span className="shimmer-gold text-[28px] tracking-[0.5em] font-light uppercase sm:text-[36px] lg:text-[44px]">
-              YARROW
-            </span>
+            {/* SVG filter for ink wash / brush stroke texture */}
+            <svg className="absolute h-0 w-0" aria-hidden="true">
+              <defs>
+                <filter id="ink-wash">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="2" result="noise" />
+                  <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+                  <feGaussianBlur in="displaced" stdDeviation="0.5" result="blurred" />
+                  <feComposite in="blurred" in2="SourceGraphic" operator="atop" />
+                </filter>
+                <filter id="ink-glow">
+                  <feGaussianBlur stdDeviation="8" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+            </svg>
+            <div className="relative">
+              {/* Glow layer behind text */}
+              <span
+                className="absolute inset-0 flex items-center justify-center text-[28px] font-extralight tracking-[0.5em] uppercase sm:text-[36px] lg:text-[48px]"
+                style={{
+                  color: 'rgba(196,149,107,0.3)',
+                  filter: 'blur(12px)',
+                }}
+                aria-hidden="true"
+              >
+                YARROW
+              </span>
+              {/* Main text with ink texture */}
+              <span
+                className="ink-wash-text relative block text-[28px] font-extralight tracking-[0.5em] uppercase sm:text-[36px] lg:text-[48px]"
+              >
+                YARROW
+              </span>
+            </div>
           </div>
 
           {/* Tagline */}
