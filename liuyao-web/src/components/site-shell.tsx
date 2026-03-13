@@ -2,20 +2,24 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { AuthNav } from '@/components/auth/auth-nav';
 import { AutoCheckin } from '@/components/auto-checkin';
+import { InkWashBackground } from '@/components/ui/ink-wash-background';
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="noise-overlay relative min-h-screen bg-[var(--bg-deep)] text-[var(--text-secondary)]">
-      <div className="relative mx-auto flex min-h-screen max-w-4xl flex-col px-6 py-8 sm:px-10">
+    <div className="relative min-h-screen bg-[var(--bg-deep)] text-[var(--text-secondary)]">
+      {/* Full-screen animated ink wash background */}
+      <InkWashBackground />
+
+      {/* Noise texture overlay */}
+      <div className="noise-overlay pointer-events-none fixed inset-0 z-[1]" />
+
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-4xl flex-col px-6 py-8 sm:px-10">
 
         {/* ── Header ── */}
         <header className="relative z-50 mb-16 flex items-center justify-between">
           <Link href="/" className="group flex items-center gap-3 transition-opacity duration-300 hover:opacity-80">
-            <img src="/images/logo-yao.png" alt="Yarrow" className="h-8 w-8" style={{ filter: 'drop-shadow(0 0 6px rgba(196,149,107,0.25))' }} />
-            <div className="flex flex-col">
-              <span className="text-[11px] tracking-[0.3em] text-[var(--text-muted)] uppercase">Yarrow</span>
-              <span className="text-[8px] tracking-[0.15em] text-[var(--text-dim)]">雅若</span>
-            </div>
+            <img src="/images/logo-simple.png" alt="Yarrow" className="h-7 w-7" style={{ filter: 'drop-shadow(0 0 6px rgba(196,149,107,0.25))' }} />
+            <span className="text-[12px] font-medium tracking-[0.35em] text-[var(--text-muted)] uppercase">Yarrow</span>
           </Link>
           <nav className="flex items-center gap-6 text-xs tracking-[0.1em] text-[var(--text-muted)]">
             <Link href="/cast" className="group flex items-center gap-2 transition-colors duration-300 hover:text-[var(--gold)]">
@@ -34,21 +38,21 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* ── Main ── */}
-        <main className="relative z-10 flex-1">{children}</main>
+        <main className="relative flex-1">{children}</main>
         <AutoCheckin />
 
         {/* ── Footer ── */}
-        <footer className="relative z-10 mt-32 pt-8 pb-6">
+        <footer className="relative mt-32 pt-8 pb-6">
           <div className="divider-ornament mb-8">
             <i className="fa-solid fa-diamond text-[5px]"></i>
           </div>
           <div className="flex flex-col items-center gap-3">
             <div className="flex items-center gap-2">
-              <span className="font-display text-sm text-[var(--gold)] opacity-50">爻</span>
+              <img src="/images/logo-simple.png" alt="" className="h-4 w-4 opacity-40" />
               <span className="text-[10px] tracking-[0.3em] text-[var(--text-dim)] uppercase">Yarrow</span>
             </div>
             <span className="text-[9px] tracking-[0.15em] text-[var(--text-dim)]">
-              雅若 · 六爻在线占卦
+              六爻在线占卦
             </span>
             <div className="mt-2 flex items-center gap-4 text-[var(--text-dim)]">
               <a href="#" className="transition-colors duration-300 hover:text-[var(--gold)]">

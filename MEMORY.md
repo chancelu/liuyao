@@ -15,3 +15,10 @@
 - 项目正在进行颠覆性设计改版，设计文档在 `liuyao-web/docs/design-v2.md`
 - 设计方向：东方神秘主义为主体，融入极简克制 + 现代宇宙感
 - 2026-03-12：铜钱音效按"清脆金属碰撞、接近真实铜钱互磕"方向重做，提交 `ce68046` (`Refine coin collision sound`)
+- 2026-03-13：6大功能上线（积分/个人中心/登录升级/管理后台/分享优化）
+- 2026-03-13：品牌从"爻镜"更名为"雅若 Yarrow"
+- 2026-03-13：用 Gemini 生成艺术素材（hero-yao.png, logo-yao.png, bg-inkwash.png）
+- Vercel 部署：Root Directory = liuyao-web，连接 GitHub repo chancelu/liuyao
+- Supabase：已建表 user_profiles, user_points, points_log, checkin_records
+- 管理员邮箱：18612669630@163.com
+- Gemini 图片生成脚本在 liuyao-web/scripts/，用环境变量 GEMINI_API_KEY
