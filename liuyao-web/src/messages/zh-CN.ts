@@ -1,7 +1,7 @@
 export const zhCN = {
   brand: {
-    name: '爻镜',
-    tagline: '把六爻变成现代、可感知的在线占卦体验。',
+    name: '雅若',
+    tagline: 'Ancient Chinese divination, reimagined.',
   },
   home: {
     heroTitle: '问一件事，起一卦，见一条脉络。',

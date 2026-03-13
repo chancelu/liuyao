@@ -18,7 +18,7 @@ export function ShareCard({ result, onClose, accessToken }: { result: MockResult
         useCORS: true,
       });
       const link = document.createElement('a');
-      link.download = `爻镜-${result.primaryHexagram}-${Date.now()}.png`;
+      link.download = `雅若-${result.primaryHexagram}-${Date.now()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
       // Trigger share reward
@@ -89,7 +89,7 @@ export function ShareCard({ result, onClose, accessToken }: { result: MockResult
                 }}>
                   爻
                 </div>
-                <span style={{ fontSize: 15, color: '#B8A070', letterSpacing: 4, fontWeight: 300 }}>爻镜</span>
+                <span style={{ fontSize: 15, color: '#B8A070', letterSpacing: 4, fontWeight: 300 }}>雅若</span>
               </div>
               <span style={{ fontSize: 10, color: '#666', letterSpacing: 2 }}>{dateStr}</span>
             </div>
@@ -203,10 +203,10 @@ export function ShareCard({ result, onClose, accessToken }: { result: MockResult
               alignItems: 'center',
             }}>
               <span style={{ fontSize: 10, color: '#444', letterSpacing: 2 }}>
-                爻镜 · 六爻在线占卦
+                雅若 Yarrow · 六爻在线占卦
               </span>
               <span style={{ fontSize: 10, color: '#444', letterSpacing: 1 }}>
-                yaojing.app
+                yarrow.app
               </span>
             </div>
           </div>

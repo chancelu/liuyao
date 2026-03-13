@@ -1,45 +1,42 @@
 @import "tailwindcss";
 
 /* ════════════════════════════════════════════════
-   EASTERN MYSTICISM DESIGN SYSTEM
-   暖调深色 · 古铜金 · 水墨意境 · 极简克制
+   雅若 YARROW — Design System v2
+   Eastern Mysticism · Minimalist Restraint · Modern Cosmic
+   "让用户忘记自己在用网站"
    ════════════════════════════════════════════════ */
 
 :root {
-  /* ═══ Background tiers — warm dark ═══ */
+  /* ═══ Background tiers — warm near-black, like night on rice paper ═══ */
   --bg-deep:       #0D0B08;
-  --bg-mid:        #12100C;
+  --bg-mid:        #11100C;
   --bg-elevated:   #16140F;
-  --bg-card:       rgba(196, 149, 107, 0.03);
-  --bg-card-hover: rgba(196, 149, 107, 0.06);
+  --bg-card:       rgba(196, 149, 107, 0.02);
+  --bg-card-hover: rgba(196, 149, 107, 0.04);
 
-  /* ═══ Text tiers — warm white ═══ */
+  /* ═══ Text tiers — warm white, never pure white ═══ */
   --text-primary:   #F0EBE3;
-  --text-secondary: #E8E0D4;
-  --text-muted:     #A09888;
-  --text-dim:       #6B6256;
+  --text-secondary: #D4CFC6;
+  --text-muted:     #8A8070;
+  --text-dim:       #5A5348;
 
-  /* ═══ Accent: 古铜金 ═══ */
+  /* ═══ Accent: Red-copper gold ═══ */
   --gold:          #C4956B;
-  --gold-light:    #D4AB82;
-  --gold-dim:      rgba(196, 149, 107, 0.40);
+  --gold-light:    #D4A87B;
+  --gold-dim:      rgba(196, 149, 107, 0.30);
 
-  /* ═══ Accent 2: 朱砂红 (极少量) ═══ */
+  /* ═══ Accent 2: Cinnabar — used sparingly ═══ */
   --cinnabar:      #8B3A3A;
-  --cinnabar-dim:  rgba(139, 58, 58, 0.30);
-
-  /* ═══ Legacy alias ═══ */
-  --blue:          #7A9EC0;
 
   /* ═══ Functional ═══ */
   --success: #7AB88A;
   --error:   #C47070;
 
   /* ═══ Semantic tokens ═══ */
-  --foreground:  var(--text-primary);
-  --background:  var(--bg-deep);
-  --border:      rgba(196, 149, 107, 0.08);
-  --border-hover: rgba(196, 149, 107, 0.18);
+  --foreground:    var(--text-primary);
+  --background:    var(--bg-deep);
+  --border:        rgba(196, 149, 107, 0.06);
+  --border-hover:  rgba(196, 149, 107, 0.12);
 }
 
 @theme inline {
@@ -57,7 +54,7 @@ body {
   color: var(--text-secondary);
   font-family: var(--font-noto-serif-sc), var(--font-geist-sans), 'Georgia', serif;
   font-size: 15px;
-  line-height: 1.8;
+  line-height: 2;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -69,48 +66,48 @@ a { text-decoration: none; }
 }
 
 /* ════════════════════════════════════════════════
-   CARD SYSTEM — Glass-morphism (克制)
+   CARD SYSTEM — Barely there, warm gold tint
    ════════════════════════════════════════════════ */
 .card-solid {
   background: var(--bg-card);
-  border: 1px solid rgba(196, 149, 107, 0.08);
-  border-radius: 14px;
-  transition: border-color 400ms ease, box-shadow 400ms ease;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 600ms ease, box-shadow 600ms ease;
 }
 
 .card-solid:hover {
-  border-color: rgba(196, 149, 107, 0.15);
-  box-shadow: 0 4px 24px rgba(196, 149, 107, 0.06);
+  border-color: var(--border-hover);
+  box-shadow: 0 0 24px rgba(196, 149, 107, 0.04);
 }
 
-/* Gold-accent card */
 .card-gold {
-  background: rgba(196, 149, 107, 0.04);
-  border: 1px solid rgba(196, 149, 107, 0.12);
-  border-radius: 14px;
-  transition: border-color 400ms ease, box-shadow 400ms ease;
+  background: var(--bg-card);
+  border: 1px solid rgba(196, 149, 107, 0.08);
+  border-radius: 12px;
+  transition: border-color 600ms ease, box-shadow 600ms ease;
 }
 
 .card-gold:hover {
-  border-color: rgba(196, 149, 107, 0.25);
-  box-shadow: 0 4px 28px rgba(196, 149, 107, 0.08);
+  border-color: rgba(196, 149, 107, 0.18);
+  box-shadow: 0 0 32px rgba(196, 149, 107, 0.06);
 }
 
 /* ════════════════════════════════════════════════
-   BUTTON SYSTEM — Clean, warm
+   BUTTON SYSTEM — Refined, weighted
    ════════════════════════════════════════════════ */
 .btn-primary {
   background: var(--gold);
   color: var(--bg-deep);
   font-family: var(--font-noto-serif-sc), Georgia, serif;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  transition: background 300ms ease, transform 150ms ease, box-shadow 300ms ease;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  border-radius: 9999px;
+  transition: background 400ms ease, box-shadow 400ms ease, transform 200ms ease;
 }
 
 .btn-primary:hover {
   background: var(--gold-light);
-  box-shadow: 0 0 20px rgba(196, 149, 107, 0.25);
+  box-shadow: 0 0 20px rgba(196, 149, 107, 0.20);
 }
 
 .btn-primary:active {
@@ -119,28 +116,80 @@ a { text-decoration: none; }
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid rgba(196, 149, 107, 0.15);
+  border: 1px solid var(--border);
   color: var(--text-muted);
-  letter-spacing: 0.06em;
-  transition: all 300ms ease;
+  letter-spacing: 0.08em;
+  border-radius: 9999px;
+  transition: all 400ms ease;
 }
 
 .btn-secondary:hover {
-  border-color: rgba(196, 149, 107, 0.35);
-  color: var(--gold);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
 }
 
 /* ════════════════════════════════════════════════
-   ANIMATIONS — Few and purposeful
+   INPUT — Borderless, bottom line only
    ════════════════════════════════════════════════ */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+.input-ritual {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(196, 149, 107, 0.12);
+  border-radius: 0;
+  color: var(--text-primary);
+  font-family: var(--font-noto-serif-sc), Georgia, serif;
+  font-size: 16px;
+  line-height: 2;
+  padding: 12px 0;
+  outline: none;
+  width: 100%;
+  transition: border-color 400ms ease;
 }
 
+.input-ritual::placeholder {
+  color: var(--text-dim);
+}
+
+.input-ritual:focus {
+  border-bottom-color: var(--gold);
+}
+
+/* ════════════════════════════════════════════════
+   ANIMATIONS — Slow, purposeful, like breathing
+   ════════════════════════════════════════════════ */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes fadeInSlow {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes breatheSubtle {
+  0%, 100% { opacity: 0.02; }
+  50% { opacity: 0.05; }
+}
+
+@keyframes inkWash {
+  0%, 100% { 
+    transform: scale(1) translate(0, 0);
+    opacity: 0.03;
+  }
+  33% { 
+    transform: scale(1.05) translate(2%, -1%);
+    opacity: 0.05;
+  }
+  66% { 
+    transform: scale(0.98) translate(-1%, 1%);
+    opacity: 0.035;
+  }
 }
 
 @keyframes coinShake {
@@ -153,115 +202,62 @@ a { text-decoration: none; }
   100% { transform: translateY(0) rotateX(720deg); }
 }
 
-@keyframes breathe {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-
-@keyframes shimmer {
+@keyframes shimmerGold {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
 
-@keyframes slowDrift {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.03; }
-  50% { transform: translateY(-6px) scale(1.01); opacity: 0.05; }
+@keyframes brushStroke {
+  from { width: 0; opacity: 0; }
+  to { width: 100%; opacity: 1; }
 }
 
-@keyframes pulseGlow {
+@keyframes glowPulse {
   0%, 100% { box-shadow: 0 0 0 rgba(196, 149, 107, 0); }
-  50% { box-shadow: 0 0 12px rgba(196, 149, 107, 0.12); }
+  50% { box-shadow: 0 0 16px rgba(196, 149, 107, 0.12); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 800ms ease-out both;
+}
+
+.animate-fade-in-slow {
+  animation: fadeInSlow 1200ms ease-out both;
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.animate-breathe-subtle {
+  animation: breatheSubtle 6s ease-in-out infinite;
+}
+
+.animate-ink-wash {
+  animation: inkWash 20s ease-in-out infinite;
 }
 
 .animate-coin-shake {
   animation: coinShake 0.8s cubic-bezier(0.36, 0, 0.66, 1) both;
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 600ms cubic-bezier(0.22, 0.1, 0.25, 1) both;
+.animate-glow-pulse {
+  animation: glowPulse 4s ease-in-out infinite;
 }
 
-.animate-fade-in {
-  animation: fadeIn 500ms ease both;
-}
-
-.animate-breathe {
-  animation: breathe 3s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
-}
-
-.animate-slow-drift {
-  animation: slowDrift 8s ease-in-out infinite;
-}
-
+/* Stagger delays */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
 .delay-600 { animation-delay: 600ms; }
+.delay-800 { animation-delay: 800ms; }
+.delay-1000 { animation-delay: 1000ms; }
 
 /* ════════════════════════════════════════════════
-   DIVIDERS — Gold ink stroke
+   SHIMMER GOLD TEXT
    ════════════════════════════════════════════════ */
-.gold-divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.25), transparent);
-}
-
-/* ════════════════════════════════════════════════
-   YAO LINE VISUALS
-   ════════════════════════════════════════════════ */
-.yao-yang { display: flex; justify-content: center; }
-.yao-yin { display: flex; justify-content: center; gap: 14px; }
-
-/* ════════════════════════════════════════════════
-   SCROLLBAR — Warm, minimal
-   ════════════════════════════════════════════════ */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(196, 149, 107, 0.12); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(196, 149, 107, 0.25); }
-
-/* ════════════════════════════════════════════════
-   TYPOGRAPHY HELPERS
-   ════════════════════════════════════════════════ */
-.font-display { font-family: var(--font-noto-serif-sc), Georgia, serif; }
-.text-gold { color: var(--gold); }
-.text-gold-light { color: var(--gold-light); }
-
-/* Vertical text ornament */
-.text-vertical {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  letter-spacing: 0.3em;
-}
-
-/* ════════════════════════════════════════════════
-   ATMOSPHERE — Eastern mysticism depth
-   ════════════════════════════════════════════════ */
-
-/* Radial gold glow for page tops */
-.glow-top {
-  position: relative;
-}
-.glow-top::before {
-  content: '';
-  position: absolute;
-  top: -150px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 700px;
-  height: 450px;
-  background: radial-gradient(ellipse, rgba(196, 149, 107, 0.04) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Shimmer effect for gold text */
 .shimmer-gold {
   background: linear-gradient(
     90deg,
@@ -275,29 +271,108 @@ a { text-decoration: none; }
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmer 6s linear infinite;
+  animation: shimmerGold 8s linear infinite;
 }
 
-/* Hexagram background watermark */
+/* ════════════════════════════════════════════════
+   INK WASH BACKGROUND — CSS gradient simulation
+   ════════════════════════════════════════════════ */
+.ink-wash-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.ink-wash-bg::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: 
+    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(196, 149, 107, 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 70% 60%, rgba(196, 149, 107, 0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 40% at 50% 20%, rgba(139, 58, 58, 0.015) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  animation: inkWash 20s ease-in-out infinite;
+}
+
+/* ════════════════════════════════════════════════
+   VERTICAL TEXT — Traditional ornament
+   ════════════════════════════════════════════════ */
+.text-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* ════════════════════════════════════════════════
+   DIVIDER — Traditional style with symbol
+   ════════════════════════════════════════════════ */
+.divider-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: rgba(196, 149, 107, 0.20);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+}
+
+.divider-ornament::before,
+.divider-ornament::after {
+  content: '';
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.15));
+}
+
+.divider-ornament::after {
+  background: linear-gradient(90deg, rgba(196, 149, 107, 0.15), transparent);
+}
+
+/* ════════════════════════════════════════════════
+   GLOW — Radial gold for page tops
+   ════════════════════════════════════════════════ */
+.glow-top {
+  position: relative;
+}
+
+.glow-top::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 500px;
+  background: radial-gradient(ellipse, rgba(196, 149, 107, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ════════════════════════════════════════════════
+   HEXAGRAM BACKGROUND WATERMARK
+   ════════════════════════════════════════════════ */
 .hexagram-bg {
   position: relative;
   overflow: hidden;
 }
+
 .hexagram-bg::after {
-  content: '☰';
+  content: '爻';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 320px;
+  font-family: var(--font-noto-serif-sc), Georgia, serif;
   color: rgba(196, 149, 107, 0.015);
   pointer-events: none;
   z-index: 0;
-  animation: slowDrift 10s ease-in-out infinite;
+  animation: breatheSubtle 8s ease-in-out infinite;
 }
 
 /* ════════════════════════════════════════════════
-   DECORATIVE FOOTER
+   FOOTER DECORATION
    ════════════════════════════════════════════════ */
 .footer-decoration {
   display: flex;
@@ -305,18 +380,55 @@ a { text-decoration: none; }
   justify-content: center;
   gap: 16px;
   padding: 48px 0 32px;
-  color: rgba(196, 149, 107, 0.20);
+  color: rgba(196, 149, 107, 0.18);
   font-size: 11px;
   letter-spacing: 0.3em;
 }
+
 .footer-decoration::before,
 .footer-decoration::after {
   content: '';
   flex: 1;
   max-width: 120px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.15));
+  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.12));
 }
+
 .footer-decoration::after {
-  background: linear-gradient(90deg, rgba(196, 149, 107, 0.15), transparent);
+  background: linear-gradient(90deg, rgba(196, 149, 107, 0.12), transparent);
+}
+
+/* ════════════════════════════════════════════════
+   SCROLLBAR — Minimal
+   ════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(196, 149, 107, 0.15);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(196, 149, 107, 0.25);
+}
+
+/* ════════════════════════════════════════════════
+   UTILITY
+   ════════════════════════════════════════════════ */
+.animate-fade-in-up {
+  animation: fadeIn 800ms ease-out both;
+}
+
+.animate-pulse-glow {
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+.animate-slow-drift {
+  animation: inkWash 20s ease-in-out infinite;
 }
