@@ -10,15 +10,18 @@ const messages = getMessages();
 export default function CastAskPage() {
   return (
     <SiteShell>
-      <div className="mx-auto max-w-4xl rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur md:p-10">
-        <div className="space-y-3">
-          <div className="text-xs tracking-[0.3em] text-stone-400 uppercase">Ask</div>
-          <h1 className="text-4xl text-stone-50">{messages.ask.title}</h1>
-          <p className="text-sm leading-7 text-stone-300/80">{messages.ask.description}</p>
+      <div className="glow-top mx-auto max-w-4xl">
+        <div className="relative rounded-2xl border border-[rgba(196,149,107,0.08)] bg-[var(--bg-card)] p-8 md:p-10">
+          <div className="space-y-3">
+            <div className="text-[10px] tracking-[0.4em] text-[var(--gold)] uppercase">起卦</div>
+            <h1 className="font-display text-3xl font-extralight text-[var(--text-primary)]">{messages.ask.title}</h1>
+            <div className="h-px w-10 bg-[var(--gold-dim)]" />
+            <p className="text-sm leading-7 text-[var(--text-muted)]">{messages.ask.description}</p>
+          </div>
+          <Suspense fallback={<div className="mt-10 text-sm text-[var(--text-dim)]">正在载入起卦表单…</div>}>
+            <AskForm />
+          </Suspense>
         </div>
-        <Suspense fallback={<div className="mt-10 text-sm text-stone-400">正在载入起卦表单…</div>}>
-          <AskForm />
-        </Suspense>
       </div>
     </SiteShell>
   );

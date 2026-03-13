@@ -1,31 +1,34 @@
 @import "tailwindcss";
 
 /* ════════════════════════════════════════════════
-   MINIMAL LUXURY DESIGN SYSTEM
-   Inspired by Co-Star, Cartier, Hermès
-   High contrast · Bold typography · Restrained color
+   EASTERN MYSTICISM DESIGN SYSTEM
+   暖调深色 · 古铜金 · 水墨意境 · 极简克制
    ════════════════════════════════════════════════ */
 
 :root {
-  /* ═══ Background tiers ═══ */
-  --bg-deep:       #0A0A0F;
-  --bg-mid:        #0E0E14;
-  --bg-elevated:   #121218;
-  --bg-card:       #151520;
-  --bg-card-hover: #1A1A25;
+  /* ═══ Background tiers — warm dark ═══ */
+  --bg-deep:       #0D0B08;
+  --bg-mid:        #12100C;
+  --bg-elevated:   #16140F;
+  --bg-card:       rgba(196, 149, 107, 0.03);
+  --bg-card-hover: rgba(196, 149, 107, 0.06);
 
-  /* ═══ Text tiers — high contrast ═══ */
-  --text-primary:   #FFFFFF;
-  --text-secondary: #F5F5F5;
-  --text-muted:     #999999;
-  --text-dim:       #666666;
+  /* ═══ Text tiers — warm white ═══ */
+  --text-primary:   #F0EBE3;
+  --text-secondary: #E8E0D4;
+  --text-muted:     #A09888;
+  --text-dim:       #6B6256;
 
-  /* ═══ Accent: Low-saturation gold ═══ */
-  --gold:          #B8A070;
-  --gold-light:    #CCBA8E;
-  --gold-dim:      rgba(184, 160, 112, 0.40);
+  /* ═══ Accent: 古铜金 ═══ */
+  --gold:          #C4956B;
+  --gold-light:    #D4AB82;
+  --gold-dim:      rgba(196, 149, 107, 0.40);
 
-  /* ═══ Accent 2: Cool blue (used sparingly) ═══ */
+  /* ═══ Accent 2: 朱砂红 (极少量) ═══ */
+  --cinnabar:      #8B3A3A;
+  --cinnabar-dim:  rgba(139, 58, 58, 0.30);
+
+  /* ═══ Legacy alias ═══ */
   --blue:          #7A9EC0;
 
   /* ═══ Functional ═══ */
@@ -35,8 +38,8 @@
   /* ═══ Semantic tokens ═══ */
   --foreground:  var(--text-primary);
   --background:  var(--bg-deep);
-  --border:      rgba(255, 255, 255, 0.06);
-  --border-hover: rgba(255, 255, 255, 0.12);
+  --border:      rgba(196, 149, 107, 0.08);
+  --border-hover: rgba(196, 149, 107, 0.18);
 }
 
 @theme inline {
@@ -61,52 +64,53 @@ body {
 a { text-decoration: none; }
 
 ::selection {
-  background: rgba(184, 160, 112, 0.30);
-  color: #fff;
+  background: rgba(196, 149, 107, 0.25);
+  color: var(--text-primary);
 }
 
 /* ════════════════════════════════════════════════
-   CARD SYSTEM — Solid, visible, no blur
+   CARD SYSTEM — Glass-morphism (克制)
    ════════════════════════════════════════════════ */
 .card-solid {
   background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: border-color 300ms ease, transform 300ms ease, box-shadow 300ms ease;
+  border: 1px solid rgba(196, 149, 107, 0.08);
+  border-radius: 14px;
+  transition: border-color 400ms ease, box-shadow 400ms ease;
 }
 
 .card-solid:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border-color: rgba(196, 149, 107, 0.15);
+  box-shadow: 0 4px 24px rgba(196, 149, 107, 0.06);
 }
 
 /* Gold-accent card */
 .card-gold {
-  background: var(--bg-card);
-  border: 1px solid rgba(184, 160, 112, 0.15);
-  transition: border-color 300ms ease, transform 300ms ease, box-shadow 300ms ease;
+  background: rgba(196, 149, 107, 0.04);
+  border: 1px solid rgba(196, 149, 107, 0.12);
+  border-radius: 14px;
+  transition: border-color 400ms ease, box-shadow 400ms ease;
 }
 
 .card-gold:hover {
-  border-color: rgba(184, 160, 112, 0.30);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(184, 160, 112, 0.06);
+  border-color: rgba(196, 149, 107, 0.25);
+  box-shadow: 0 4px 28px rgba(196, 149, 107, 0.08);
 }
 
 /* ════════════════════════════════════════════════
-   BUTTON SYSTEM — Clean, high contrast
+   BUTTON SYSTEM — Clean, warm
    ════════════════════════════════════════════════ */
 .btn-primary {
   background: var(--gold);
   color: var(--bg-deep);
   font-family: var(--font-noto-serif-sc), Georgia, serif;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.12em;
-  transition: background 300ms ease, transform 150ms ease;
+  transition: background 300ms ease, transform 150ms ease, box-shadow 300ms ease;
 }
 
 .btn-primary:hover {
   background: var(--gold-light);
+  box-shadow: 0 0 20px rgba(196, 149, 107, 0.25);
 }
 
 .btn-primary:active {
@@ -115,22 +119,22 @@ a { text-decoration: none; }
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(196, 149, 107, 0.15);
   color: var(--text-muted);
   letter-spacing: 0.06em;
   transition: all 300ms ease;
 }
 
 .btn-secondary:hover {
-  border-color: rgba(255, 255, 255, 0.30);
-  color: var(--text-primary);
+  border-color: rgba(196, 149, 107, 0.35);
+  color: var(--gold);
 }
 
 /* ════════════════════════════════════════════════
    ANIMATIONS — Few and purposeful
    ════════════════════════════════════════════════ */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -161,12 +165,12 @@ a { text-decoration: none; }
 
 @keyframes slowDrift {
   0%, 100% { transform: translateY(0) scale(1); opacity: 0.03; }
-  50% { transform: translateY(-8px) scale(1.02); opacity: 0.06; }
+  50% { transform: translateY(-6px) scale(1.01); opacity: 0.05; }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 rgba(184, 160, 112, 0); }
-  50% { box-shadow: 0 0 12px rgba(184, 160, 112, 0.15); }
+  0%, 100% { box-shadow: 0 0 0 rgba(196, 149, 107, 0); }
+  50% { box-shadow: 0 0 12px rgba(196, 149, 107, 0.12); }
 }
 
 .animate-coin-shake {
@@ -201,11 +205,11 @@ a { text-decoration: none; }
 .delay-600 { animation-delay: 600ms; }
 
 /* ════════════════════════════════════════════════
-   DIVIDERS — Simple gold line
+   DIVIDERS — Gold ink stroke
    ════════════════════════════════════════════════ */
 .gold-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.25), transparent);
 }
 
 /* ════════════════════════════════════════════════
@@ -215,12 +219,12 @@ a { text-decoration: none; }
 .yao-yin { display: flex; justify-content: center; gap: 14px; }
 
 /* ════════════════════════════════════════════════
-   SCROLLBAR — Minimal
+   SCROLLBAR — Warm, minimal
    ════════════════════════════════════════════════ */
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
+::-webkit-scrollbar-thumb { background: rgba(196, 149, 107, 0.12); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(196, 149, 107, 0.25); }
 
 /* ════════════════════════════════════════════════
    TYPOGRAPHY HELPERS
@@ -229,8 +233,15 @@ a { text-decoration: none; }
 .text-gold { color: var(--gold); }
 .text-gold-light { color: var(--gold-light); }
 
+/* Vertical text ornament */
+.text-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.3em;
+}
+
 /* ════════════════════════════════════════════════
-   ATMOSPHERE — Subtle depth & mysticism
+   ATMOSPHERE — Eastern mysticism depth
    ════════════════════════════════════════════════ */
 
 /* Radial gold glow for page tops */
@@ -240,12 +251,12 @@ a { text-decoration: none; }
 .glow-top::before {
   content: '';
   position: absolute;
-  top: -120px;
+  top: -150px;
   left: 50%;
   transform: translateX(-50%);
-  width: 600px;
-  height: 400px;
-  background: radial-gradient(ellipse, rgba(184, 160, 112, 0.06) 0%, transparent 70%);
+  width: 700px;
+  height: 450px;
+  background: radial-gradient(ellipse, rgba(196, 149, 107, 0.04) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -278,11 +289,11 @@ a { text-decoration: none; }
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 280px;
-  color: rgba(184, 160, 112, 0.02);
+  font-size: 320px;
+  color: rgba(196, 149, 107, 0.015);
   pointer-events: none;
   z-index: 0;
-  animation: slowDrift 8s ease-in-out infinite;
+  animation: slowDrift 10s ease-in-out infinite;
 }
 
 /* ════════════════════════════════════════════════
@@ -294,7 +305,7 @@ a { text-decoration: none; }
   justify-content: center;
   gap: 16px;
   padding: 48px 0 32px;
-  color: rgba(184, 160, 112, 0.25);
+  color: rgba(196, 149, 107, 0.20);
   font-size: 11px;
   letter-spacing: 0.3em;
 }
@@ -304,8 +315,8 @@ a { text-decoration: none; }
   flex: 1;
   max-width: 120px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(184, 160, 112, 0.2));
+  background: linear-gradient(90deg, transparent, rgba(196, 149, 107, 0.15));
 }
 .footer-decoration::after {
-  background: linear-gradient(90deg, rgba(184, 160, 112, 0.2), transparent);
+  background: linear-gradient(90deg, rgba(196, 149, 107, 0.15), transparent);
 }

@@ -164,14 +164,14 @@ export function LoginContent() {
     }
   }
 
-  const inputClass = 'w-full rounded-lg border border-[rgba(255,255,255,0.06)] bg-[var(--bg-deep)] px-5 py-3.5 text-sm text-white placeholder-[var(--text-dim)] outline-none transition-colors focus:border-[rgba(255,255,255,0.15)]';
+  const inputClass = 'w-full rounded-xl border border-[rgba(196,149,107,0.10)] bg-[var(--bg-elevated)] px-5 py-3.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-dim)] outline-none transition-colors duration-300 focus:border-[rgba(196,149,107,0.30)]';
   const labelClass = 'block text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase';
 
   // ── Done state ──
   if (otpStep === 'done' && tab === 'otp' && view === 'login') {
     return (
       <div className="space-y-4 text-center">
-        <div className="font-display text-2xl">✓</div>
+        <div className="font-display text-2xl text-[var(--gold)]">✓</div>
         <p className="text-sm leading-7 text-[var(--text-muted)]">登录成功，正在跳转…</p>
       </div>
     );
@@ -184,10 +184,10 @@ export function LoginContent() {
     return (
       <div className="space-y-6">
         {error && (
-          <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--error)]">{error}</p>
+          <p className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--error)]">{error}</p>
         )}
         {success && (
-          <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--success)]">{success}</p>
+          <p className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--success)]">{success}</p>
         )}
         <form onSubmit={handleRegister} className="space-y-5">
           <div className="space-y-2">
@@ -228,10 +228,10 @@ export function LoginContent() {
     return (
       <div className="space-y-6">
         {error && (
-          <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--error)]">{error}</p>
+          <p className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--error)]">{error}</p>
         )}
         {success && (
-          <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--success)]">{success}</p>
+          <p className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--success)]">{success}</p>
         )}
         <form onSubmit={handleForgotPassword} className="space-y-5">
           <div className="space-y-3 text-center">
@@ -262,7 +262,7 @@ export function LoginContent() {
   // ═══════════════════════════════════════════
   return (
     <div className="space-y-6">
-      {/* Tab bar — only 2 tabs */}
+      {/* Tab bar */}
       <div className="flex gap-1 rounded-xl bg-[var(--bg-elevated)] p-1">
         {([
           ['otp', '验证码登录'],
@@ -271,9 +271,9 @@ export function LoginContent() {
           <button
             key={key}
             onClick={() => switchTab(key)}
-            className={`flex-1 rounded-lg py-2.5 text-xs tracking-wider transition-all ${
+            className={`flex-1 rounded-lg py-2.5 text-xs tracking-wider transition-all duration-300 ${
               tab === key
-                ? 'bg-[var(--bg-card)] text-white'
+                ? 'bg-[rgba(196,149,107,0.08)] text-[var(--gold)]'
                 : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'
             }`}
           >
@@ -284,17 +284,17 @@ export function LoginContent() {
 
       {/* Next hint */}
       {next && (
-        <div className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs leading-6 text-[var(--text-muted)]">
-          登录后会自动返回：<span className="text-white">{nextLabel}</span>
+        <div className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3 text-xs leading-6 text-[var(--text-muted)]">
+          登录后会自动返回：<span className="text-[var(--text-primary)]">{nextLabel}</span>
         </div>
       )}
 
       {/* Error / Success */}
       {error && (
-        <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--error)]">{error}</p>
+        <p className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--error)]">{error}</p>
       )}
       {success && (
-        <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--success)]">{success}</p>
+        <p className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--success)]">{success}</p>
       )}
 
       {/* ═══ OTP Tab ═══ */}
@@ -317,7 +317,7 @@ export function LoginContent() {
         <form onSubmit={handleVerifyOtp} className="space-y-5">
           <div className="space-y-3 text-center">
             <p className="text-sm leading-7 text-[var(--text-muted)]">
-              验证码已发送至 <span className="text-white">{otpEmail}</span>
+              验证码已发送至 <span className="text-[var(--text-primary)]">{otpEmail}</span>
             </p>
           </div>
           <div className="space-y-2">
