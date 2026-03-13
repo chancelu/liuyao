@@ -10,7 +10,8 @@ import {
   signUpWithEmail,
 } from '@/lib/supabase/auth';
 
-type Tab = 'otp' | 'password' | 'register' | 'forgot';
+type Tab = 'otp' | 'password';
+type View = 'login' | 'register' | 'forgot';
 type OtpStep = 'email' | 'code' | 'done';
 
 function describeNextPath(next: string | null) {
@@ -32,6 +33,7 @@ export function LoginContent() {
   const nextLabel = useMemo(() => describeNextPath(next), [next]);
 
   const [tab, setTab] = useState<Tab>('otp');
+  const [view, setView] = useState<View>('login');
 
   // OTP state
   const [otpEmail, setOtpEmail] = useState('');
@@ -82,6 +84,12 @@ export function LoginContent() {
 
   function switchTab(t: Tab) {
     setTab(t);
+    setError(null);
+    setSuccess(null);
+  }
+
+  function switchView(v: View) {
+    setView(v);
     setError(null);
     setSuccess(null);
   }
@@ -160,7 +168,7 @@ export function LoginContent() {
   const labelClass = 'block text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase';
 
   // ── Done state ──
-  if (otpStep === 'done' && tab === 'otp') {
+  if (otpStep === 'done' && tab === 'otp' && view === 'login') {
     return (
       <div className="space-y-4 text-center">
         <div className="font-display text-2xl">✓</div>
@@ -169,14 +177,96 @@ export function LoginContent() {
     );
   }
 
+  // ═══════════════════════════════════════════
+  // Register view
+  // ═══════════════════════════════════════════
+  if (view === 'register') {
+    return (
+      <div className="space-y-6">
+        {error && (
+          <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--error)]">{error}</p>
+        )}
+        {success && (
+          <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--success)]">{success}</p>
+        )}
+        <form onSubmit={handleRegister} className="space-y-5">
+          <div className="space-y-2">
+            <label htmlFor="reg-email" className={labelClass}>邮箱地址</label>
+            <input id="reg-email" type="email" required autoComplete="email" placeholder="your@email.com"
+              value={regEmail} onChange={(e) => setRegEmail(e.target.value)} className={inputClass} />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="reg-pass" className={labelClass}>密码</label>
+            <input id="reg-pass" type="password" required autoComplete="new-password" placeholder="至少 6 个字符"
+              value={regPassword} onChange={(e) => setRegPassword(e.target.value)} className={inputClass} />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="reg-confirm" className={labelClass}>确认密码</label>
+            <input id="reg-confirm" type="password" required autoComplete="new-password" placeholder="再输入一次"
+              value={regConfirm} onChange={(e) => setRegConfirm(e.target.value)} className={inputClass} />
+          </div>
+          <button type="submit" disabled={busy || !regEmail.trim() || !regPassword || !regConfirm}
+            className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
+            {busy ? '注册中…' : '注册'}
+          </button>
+          <p className="text-center text-xs text-[var(--text-dim)]">注册后请查收验证邮件完成激活。</p>
+        </form>
+        <div className="text-center">
+          <button type="button" onClick={() => switchView('login')}
+            className="text-xs text-[var(--text-dim)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]">
+            已有账号？返回登录
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════
+  // Forgot password view
+  // ═══════════════════════════════════════════
+  if (view === 'forgot') {
+    return (
+      <div className="space-y-6">
+        {error && (
+          <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--error)]">{error}</p>
+        )}
+        {success && (
+          <p className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs text-[var(--success)]">{success}</p>
+        )}
+        <form onSubmit={handleForgotPassword} className="space-y-5">
+          <div className="space-y-3 text-center">
+            <p className="text-sm leading-7 text-[var(--text-muted)]">输入注册邮箱，我们将发送密码重置链接。</p>
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="forgot-email" className={labelClass}>邮箱地址</label>
+            <input id="forgot-email" type="email" required autoComplete="email" placeholder="your@email.com"
+              value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className={inputClass} />
+          </div>
+          <button type="submit" disabled={busy || !forgotEmail.trim() || forgotSent}
+            className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
+            {busy ? '发送中…' : forgotSent ? '已发送' : '发送重置邮件'}
+          </button>
+        </form>
+        <div className="text-center">
+          <button type="button" onClick={() => switchView('login')}
+            className="text-xs text-[var(--text-dim)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]">
+            返回登录
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════
+  // Login view (default)
+  // ═══════════════════════════════════════════
   return (
     <div className="space-y-6">
-      {/* Tab bar */}
+      {/* Tab bar — only 2 tabs */}
       <div className="flex gap-1 rounded-xl bg-[var(--bg-elevated)] p-1">
         {([
           ['otp', '验证码登录'],
           ['password', '密码登录'],
-          ['register', '注册'],
         ] as [Tab, string][]).map(([key, label]) => (
           <button
             key={key}
@@ -193,7 +283,7 @@ export function LoginContent() {
       </div>
 
       {/* Next hint */}
-      {next && tab !== 'forgot' && (
+      {next && (
         <div className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs leading-6 text-[var(--text-muted)]">
           登录后会自动返回：<span className="text-white">{nextLabel}</span>
         </div>
@@ -219,7 +309,7 @@ export function LoginContent() {
             className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
             {busy ? '发送中…' : '发送验证码'}
           </button>
-          <p className="text-center text-xs text-[var(--text-dim)]">无需密码，输入邮箱验证码即可登录 / 注册。</p>
+          <p className="text-center text-xs text-[var(--text-dim)]">无需密码，输入邮箱验证码即可登录。</p>
         </form>
       )}
 
@@ -270,7 +360,7 @@ export function LoginContent() {
             {busy ? '登录中…' : '登录'}
           </button>
           <div className="text-center">
-            <button type="button" onClick={() => switchTab('forgot')}
+            <button type="button" onClick={() => switchView('forgot')}
               className="text-xs text-[var(--text-dim)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]">
               忘记密码？
             </button>
@@ -278,55 +368,13 @@ export function LoginContent() {
         </form>
       )}
 
-      {/* ═══ Register Tab ═══ */}
-      {tab === 'register' && (
-        <form onSubmit={handleRegister} className="space-y-5">
-          <div className="space-y-2">
-            <label htmlFor="reg-email" className={labelClass}>邮箱地址</label>
-            <input id="reg-email" type="email" required autoComplete="email" placeholder="your@email.com"
-              value={regEmail} onChange={(e) => setRegEmail(e.target.value)} className={inputClass} />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="reg-pass" className={labelClass}>密码</label>
-            <input id="reg-pass" type="password" required autoComplete="new-password" placeholder="至少 6 个字符"
-              value={regPassword} onChange={(e) => setRegPassword(e.target.value)} className={inputClass} />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="reg-confirm" className={labelClass}>确认密码</label>
-            <input id="reg-confirm" type="password" required autoComplete="new-password" placeholder="再输入一次"
-              value={regConfirm} onChange={(e) => setRegConfirm(e.target.value)} className={inputClass} />
-          </div>
-          <button type="submit" disabled={busy || !regEmail.trim() || !regPassword || !regConfirm}
-            className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
-            {busy ? '注册中…' : '注册'}
-          </button>
-          <p className="text-center text-xs text-[var(--text-dim)]">注册后请查收验证邮件完成激活。</p>
-        </form>
-      )}
-
-      {/* ═══ Forgot Password ═══ */}
-      {tab === 'forgot' && (
-        <form onSubmit={handleForgotPassword} className="space-y-5">
-          <div className="space-y-3 text-center">
-            <p className="text-sm leading-7 text-[var(--text-muted)]">输入注册邮箱，我们将发送密码重置链接。</p>
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="forgot-email" className={labelClass}>邮箱地址</label>
-            <input id="forgot-email" type="email" required autoComplete="email" placeholder="your@email.com"
-              value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className={inputClass} />
-          </div>
-          <button type="submit" disabled={busy || !forgotEmail.trim() || forgotSent}
-            className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
-            {busy ? '发送中…' : forgotSent ? '已发送' : '发送重置邮件'}
-          </button>
-          <div className="text-center">
-            <button type="button" onClick={() => switchTab('password')}
-              className="text-xs text-[var(--text-dim)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]">
-              返回登录
-            </button>
-          </div>
-        </form>
-      )}
+      {/* Bottom: register link */}
+      <div className="flex justify-end">
+        <button type="button" onClick={() => switchView('register')}
+          className="text-xs text-[var(--text-dim)] transition-colors hover:text-[var(--gold)]">
+          新用户注册 →
+        </button>
+      </div>
     </div>
   );
 }

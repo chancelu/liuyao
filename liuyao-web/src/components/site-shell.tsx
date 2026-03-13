@@ -23,12 +23,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <Link href="/cast" className="transition-colors duration-200 hover:text-white">
               {messages.home.primaryCta}
             </Link>
-            <Link href="/history" className="transition-colors duration-200 hover:text-white">
-              历史记录
-            </Link>
-            <Link href="/profile" className="transition-colors duration-200 hover:text-white">
-              我的
-            </Link>
             <Suspense fallback={<Link href="/login" className="text-[var(--text-dim)] transition-colors duration-200 hover:text-white">登录</Link>}>
               <AuthNav />
             </Suspense>
