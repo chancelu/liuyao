@@ -8,7 +8,7 @@ export default function HomePage() {
       <HomeTracker />
 
       {/* ═══ HERO — Full screen, canvas bg handles atmosphere ═══ */}
-      <section className="relative flex min-h-[85vh] flex-col items-center justify-center text-center">
+      <section className="relative flex min-h-[75vh] flex-col items-center justify-center text-center sm:min-h-[85vh]">
 
         {/* Vertical ornaments — desktop */}
         <div className="pointer-events-none absolute left-0 top-[28%] hidden text-vertical lg:block">
@@ -37,7 +37,7 @@ export default function HomePage() {
 
               {/* Glow layer */}
               <span
-                className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[28px] font-extralight tracking-[0.5em] uppercase sm:text-[36px] lg:text-[48px]"
+                className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[22px] font-extralight tracking-[0.35em] uppercase sm:text-[36px] sm:tracking-[0.5em] lg:text-[48px]"
                 style={{
                   color: 'rgba(196,149,107,0.15)',
                   filter: 'blur(20px)',
@@ -49,7 +49,7 @@ export default function HomePage() {
 
               {/* Main text — strong metallic gradient */}
               <h1
-                className="shimmer-gold-strong relative text-[28px] font-extralight tracking-[0.5em] uppercase sm:text-[36px] lg:text-[48px]"
+                className="shimmer-gold-strong relative text-[22px] font-extralight tracking-[0.35em] uppercase sm:text-[36px] sm:tracking-[0.5em] lg:text-[48px]"
               >
                 YARROW
               </h1>
@@ -64,24 +64,24 @@ export default function HomePage() {
           </div>
 
           {/* Tagline */}
-          <div className="animate-fade-in delay-200 mb-14">
+          <div className="animate-fade-in delay-200 mb-8 sm:mb-14">
             <span className="text-[12px] tracking-[0.2em] text-[var(--text-muted)]">
               六爻在线占卦
             </span>
           </div>
 
           {/* Decorative line */}
-          <div className="animate-fade-in delay-300 mb-14 flex items-center gap-4">
+          <div className="animate-fade-in delay-300 mb-8 flex items-center gap-4 sm:mb-14">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-[rgba(196,149,107,0.25)]" />
             <i className="fa-solid fa-diamond text-[5px] text-[rgba(196,149,107,0.30)]"></i>
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-[rgba(196,149,107,0.25)]" />
           </div>
 
           {/* CTA Button */}
-          <div className="animate-fade-in-up delay-500 mb-20">
+          <div className="animate-fade-in-up delay-500 mb-12 sm:mb-20">
             <Link
               href="/cast"
-              className="btn-primary group relative inline-flex items-center gap-3 overflow-hidden px-16 py-5 text-[15px]"
+              className="btn-primary group relative inline-flex items-center gap-3 overflow-hidden px-10 py-4 text-[14px] sm:px-16 sm:py-5 sm:text-[15px]"
             >
               <i className="fa-solid fa-coins text-[12px] opacity-60 transition-all duration-300 group-hover:rotate-12 group-hover:opacity-100" />
               <span>问 卦</span>
@@ -103,7 +103,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ INTRO ═══ */}
-      <section className="glow-top relative mx-auto max-w-2xl py-32 text-center">
+      <section className="glow-top relative mx-auto max-w-2xl py-16 text-center sm:py-32">
         <div className="relative z-10">
           <div className="animate-fade-in-up mb-8">
             <i className="fa-solid fa-yin-yang text-3xl text-[var(--gold)]" style={{ opacity: 0.5 }} />
@@ -123,7 +123,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ THREE PILLARS ═══ */}
-      <section className="mx-auto max-w-3xl pb-32">
+      <section className="mx-auto max-w-3xl pb-16 sm:pb-32">
         <div className="grid gap-5 md:grid-cols-3">
           {[
             { icon: 'fa-solid fa-feather-pointed', num: '壹', title: '起卦', desc: '静心片刻，写下你的问题。选择类别与时间，准备与天地对话。' },
@@ -132,7 +132,7 @@ export default function HomePage() {
           ].map((item, i) => (
             <div
               key={item.title}
-              className="card-gold animate-fade-in-up group cursor-default p-8 text-center"
+              className="card-gold animate-fade-in-up group cursor-default p-5 text-center sm:p-8"
               style={{ animationDelay: `${400 + i * 150}ms` }}
             >
               <div className="mb-2 font-display text-[10px] tracking-[0.4em] text-[var(--gold)]" style={{ opacity: 0.4 }}>
@@ -153,7 +153,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ QUOTE ═══ */}
-      <section className="relative mx-auto mb-32 max-w-2xl py-16 text-center">
+      <section className="relative mx-auto mb-16 max-w-2xl py-10 text-center sm:mb-32 sm:py-16">
         <div className="animate-fade-in flex flex-col items-center gap-6">
           <p className="font-display text-lg tracking-[0.25em] text-[var(--text-primary)] lg:text-2xl" style={{ opacity: 0.85, textShadow: '0 0 30px rgba(196,149,107,0.15)' }}>
             天行健，君子以自强不息

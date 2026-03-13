@@ -39,7 +39,7 @@ export function InkWashBackground() {
       twinkleOffset: number;
     }
     const stars: Star[] = [];
-    const STAR_COUNT = 120;
+    const STAR_COUNT = width < 640 ? 60 : 120;
 
     // ── Ink wash blobs ──
     interface InkBlob {
@@ -65,7 +65,7 @@ export function InkWashBackground() {
       color: string;
     }
     const particles: Particle[] = [];
-    const PARTICLE_COUNT = 50;
+    const PARTICLE_COUNT = width < 640 ? 25 : 50;
 
     function resize() {
       width = window.innerWidth;
@@ -242,10 +242,11 @@ export function InkWashBackground() {
       ctx!.fillStyle = '#0D0B08';
       ctx!.fillRect(0, 0, width, height);
 
-      // Draw static background image (low opacity, blended)
+      // Draw static background image (blurred, with dark overlay)
       if (imgRef.current) {
         ctx!.save();
-        ctx!.globalAlpha = 0.35;
+        ctx!.filter = 'blur(3px)';
+        ctx!.globalAlpha = 0.22;
         // Cover the canvas maintaining aspect ratio
         const imgW = imgRef.current.width;
         const imgH = imgRef.current.height;
@@ -255,6 +256,13 @@ export function InkWashBackground() {
         const dx = (width - dw) / 2;
         const dy = (height - dh) / 2;
         ctx!.drawImage(imgRef.current, dx, dy, dw, dh);
+        ctx!.filter = 'none';
+        ctx!.restore();
+
+        // Dark overlay
+        ctx!.save();
+        ctx!.fillStyle = 'rgba(13,11,8,0.35)';
+        ctx!.fillRect(0, 0, width, height);
         ctx!.restore();
       }
 

@@ -13,10 +13,10 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       {/* Noise texture overlay */}
       <div className="noise-overlay pointer-events-none fixed inset-0 z-[1]" />
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-4xl flex-col px-6 py-8 sm:px-10">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-6 sm:px-6 sm:py-8 md:px-10">
 
         {/* ── Header ── */}
-        <header className="relative z-50 mb-16 flex items-center justify-between">
+        <header className="relative z-50 mb-8 flex items-center justify-between sm:mb-16">
           <Link href="/" className="group flex items-center gap-3 transition-opacity duration-300 hover:opacity-80">
             {/* CSS hexagram lines logo */}
             <div className="flex flex-col items-center gap-[3px]">
@@ -50,7 +50,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <AutoCheckin />
 
         {/* ── Footer ── */}
-        <footer className="relative mt-32 pt-8 pb-6">
+        <footer className="relative mt-16 pt-8 pb-6 sm:mt-32">
           <div className="divider-ornament mb-8">
             <i className="fa-solid fa-diamond text-[5px]"></i>
           </div>
