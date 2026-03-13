@@ -242,11 +242,10 @@ export function InkWashBackground() {
       ctx!.fillStyle = '#0D0B08';
       ctx!.fillRect(0, 0, width, height);
 
-      // Draw static background image (blurred, with dark overlay)
+      // Draw static background image (with dark overlay)
       if (imgRef.current) {
         ctx!.save();
-        ctx!.filter = 'blur(3px)';
-        ctx!.globalAlpha = 0.22;
+        ctx!.globalAlpha = 0.20;
         // Cover the canvas maintaining aspect ratio
         const imgW = imgRef.current.width;
         const imgH = imgRef.current.height;
@@ -256,12 +255,11 @@ export function InkWashBackground() {
         const dx = (width - dw) / 2;
         const dy = (height - dh) / 2;
         ctx!.drawImage(imgRef.current, dx, dy, dw, dh);
-        ctx!.filter = 'none';
         ctx!.restore();
 
         // Dark overlay
         ctx!.save();
-        ctx!.fillStyle = 'rgba(13,11,8,0.35)';
+        ctx!.fillStyle = 'rgba(13,11,8,0.40)';
         ctx!.fillRect(0, 0, width, height);
         ctx!.restore();
       }
