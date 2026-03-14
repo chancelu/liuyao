@@ -72,12 +72,12 @@ export function AskForm() {
   };
 
   return (
-    <div className="mt-12 space-y-10">
+    <div className="mt-6 space-y-6 sm:mt-12 sm:space-y-10">
       {/* Question */}
       <section className="space-y-3">
         <label className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.ask.questionLabel}</label>
         <textarea
-          className="font-display min-h-36 w-full rounded-xl border border-[rgba(255,255,255,0.06)] bg-[var(--bg-card)] px-6 py-5 text-base leading-8 text-white outline-none placeholder:text-[var(--text-dim)] transition-colors focus:border-[rgba(255,255,255,0.15)]"
+          className="font-display min-h-28 w-full rounded-xl border border-[rgba(255,255,255,0.06)] bg-[var(--bg-card)] px-4 py-4 text-base leading-8 text-white outline-none placeholder:text-[var(--text-dim)] transition-colors focus:border-[rgba(255,255,255,0.15)] sm:min-h-36 sm:px-6 sm:py-5"
           placeholder={messages.ask.questionPlaceholder}
           value={question}
           onChange={(event) => {
@@ -90,13 +90,13 @@ export function AskForm() {
       {/* Category */}
       <section className="space-y-3">
         <div className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.ask.categoryLabel}</div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           {categories.map((item) => (
             <button
               key={item.value}
               type="button"
               onClick={() => setCategory(item.value)}
-              className={`rounded-full border px-5 py-2.5 text-sm transition-all duration-200 ${
+              className={`rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 sm:text-sm ${
                 category === item.value
                   ? 'border-[var(--gold)] bg-[rgba(184,160,112,0.10)] text-[var(--gold)]'
                   : 'border-[rgba(255,255,255,0.06)] text-[var(--text-muted)] hover:border-[rgba(255,255,255,0.15)] hover:text-white'
@@ -111,13 +111,13 @@ export function AskForm() {
       {/* Time Scope */}
       <section className="space-y-3">
         <div className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.ask.timeScopeLabel}</div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           {timeScopes.map((item) => (
             <button
               key={item.value}
               type="button"
               onClick={() => setTimeScope(item.value)}
-              className={`rounded-full border px-5 py-2.5 text-sm transition-all duration-200 ${
+              className={`rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 sm:text-sm ${
                 timeScope === item.value
                   ? 'border-[var(--gold)] bg-[rgba(184,160,112,0.10)] text-[var(--gold)]'
                   : 'border-[rgba(255,255,255,0.06)] text-[var(--text-muted)] hover:border-[rgba(255,255,255,0.15)] hover:text-white'
@@ -133,7 +133,7 @@ export function AskForm() {
       <section className="space-y-3">
         <label className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.ask.backgroundLabel}</label>
         <textarea
-          className="min-h-28 w-full rounded-xl border border-[rgba(255,255,255,0.06)] bg-[var(--bg-card)] px-6 py-5 text-base leading-8 text-white outline-none placeholder:text-[var(--text-dim)] transition-colors focus:border-[rgba(255,255,255,0.15)]"
+          className="min-h-20 w-full rounded-xl border border-[rgba(255,255,255,0.06)] bg-[var(--bg-card)] px-4 py-4 text-base leading-8 text-white outline-none placeholder:text-[var(--text-dim)] transition-colors focus:border-[rgba(255,255,255,0.15)] sm:min-h-28 sm:px-6 sm:py-5"
           placeholder={messages.ask.backgroundPlaceholder}
           value={background}
           onChange={(event) => setBackground(event.target.value)}
@@ -141,11 +141,11 @@ export function AskForm() {
       </section>
 
       {/* Submit Button — above examples */}
-      <div className="flex justify-center pt-4">
+      <div className="flex justify-center pt-2 sm:pt-4">
         <button
           type="button"
           onClick={onSubmit}
-          className="btn-primary w-full max-w-md rounded-full px-12 py-5 text-base font-medium disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto"
+          className="btn-primary w-full rounded-full px-10 py-4 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:max-w-md sm:px-12 sm:py-5 sm:text-base"
           disabled={!canSubmit || isSubmitting}
         >
           {isSubmitting ? '正在进入摇卦…' : messages.ask.submit}

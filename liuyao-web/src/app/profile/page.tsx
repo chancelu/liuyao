@@ -148,21 +148,21 @@ export default function ProfilePage() {
       </div>
 
       {/* Profile card */}
-      <div className="animate-fade-in-up delay-100 card-solid rounded-2xl p-6 sm:p-8">
-        <div className="flex items-center gap-6">
+      <div className="animate-fade-in-up delay-100 card-solid rounded-2xl p-5 sm:p-8">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
           {/* Avatar */}
           <div className="relative shrink-0">
             <img
               src={avatarSrc}
               alt="头像"
-              className="h-20 w-20 rounded-full border border-[rgba(255,255,255,0.1)] object-cover"
+              className="h-16 w-16 rounded-full border border-[rgba(255,255,255,0.1)] object-cover sm:h-20 sm:w-20"
             />
           </div>
 
           {/* Info */}
-          <div className="min-w-0 flex-1 space-y-2">
-            <div className="flex items-center gap-3">
-              <span className="font-display text-lg text-white">{profile.email}</span>
+          <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start sm:gap-3">
+              <span className="truncate font-display text-base text-white sm:text-lg">{profile.email}</span>
               {profile.role === 'admin' && (
                 <span className="rounded-full bg-[rgba(184,160,112,0.15)] px-2.5 py-0.5 text-[10px] text-[var(--gold)]">管理员</span>
               )}

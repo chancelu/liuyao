@@ -234,7 +234,7 @@ export function ResultClient({ id }: { id: string }) {
   }
 
   return (
-    <div className="glow-top mx-auto max-w-6xl space-y-12">
+    <div className="glow-top mx-auto max-w-6xl space-y-8 sm:space-y-12">
       {/* Page header */}
       <div className="animate-fade-in-up">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -478,12 +478,12 @@ export function ResultClient({ id }: { id: string }) {
           </div>
         ) : null}
 
-        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
+        <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap sm:gap-3">
           {isAuthenticated ? (
             <button
               onClick={handleSave}
               disabled={saveState === 'saving' || saveState === 'saved'}
-              className="btn-primary rounded-full px-8 py-3.5 text-sm disabled:opacity-40"
+              className="btn-primary rounded-full px-6 py-3 text-xs disabled:opacity-40 sm:px-8 sm:py-3.5 sm:text-sm"
             >
               {saveState === 'saving' ? '保存中…' : saveState === 'saved' ? '已保存' : messages.result.save}
             </button>
@@ -491,7 +491,7 @@ export function ResultClient({ id }: { id: string }) {
             <Link
               href={loginHref}
               onClick={() => track('click_register')}
-              className="btn-primary rounded-full px-8 py-3.5 text-center text-sm"
+              className="btn-primary rounded-full px-6 py-3 text-center text-xs sm:px-8 sm:py-3.5 sm:text-sm"
             >
               登录后回到这条结果
             </Link>
@@ -499,19 +499,19 @@ export function ResultClient({ id }: { id: string }) {
           <button
             onClick={handleShare}
             disabled={shareState === 'sharing'}
-            className="btn-secondary rounded-full px-8 py-3.5 text-sm disabled:opacity-40"
+            className="btn-secondary rounded-full px-6 py-3 text-xs disabled:opacity-40 sm:px-8 sm:py-3.5 sm:text-sm"
           >
             {shareState === 'sharing' ? '生成中…' : shareState === 'copied' ? '已复制' : messages.result.share}
           </button>
           <button
-            className="btn-secondary rounded-full px-8 py-3.5 text-sm"
+            className="btn-secondary rounded-full px-6 py-3 text-xs sm:px-8 sm:py-3.5 sm:text-sm"
             onClick={() => router.push('/cast')}
           >
             {messages.result.restart}
           </button>
           {result && (
             <button
-              className="btn-secondary rounded-full px-8 py-3.5 text-sm"
+              className="btn-secondary rounded-full px-6 py-3 text-xs sm:px-8 sm:py-3.5 sm:text-sm"
               onClick={() => { setShowShareCard(true); track('click_share_image'); }}
             >
               生成分享图
@@ -519,7 +519,7 @@ export function ResultClient({ id }: { id: string }) {
           )}
           {result && (
             <button
-              className="btn-secondary rounded-full px-8 py-3.5 text-sm"
+              className="btn-secondary rounded-full px-6 py-3 text-xs sm:px-8 sm:py-3.5 sm:text-sm"
               onClick={handleCopyUrl}
             >
               {copiedUrl ? '已复制链接' : '复制分享链接'}

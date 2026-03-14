@@ -112,7 +112,7 @@ export function RitualClient() {
   };
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-16 lg:grid-cols-[0.6fr_1.4fr] lg:items-start">
+    <div className="mx-auto grid max-w-5xl gap-8 sm:gap-16 lg:grid-cols-[0.6fr_1.4fr] lg:items-start">
       {/* Left — Info & Progress */}
       <div className="animate-fade-in-up space-y-8">
         <div>
@@ -167,17 +167,17 @@ export function RitualClient() {
       </div>
 
       {/* Right — Ritual Stage */}
-      <div className="card-solid animate-fade-in-up delay-200 rounded-2xl p-10 md:p-12">
-        <div className="mx-auto flex max-w-md flex-col items-center gap-12 text-center">
+      <div className="card-solid animate-fade-in-up delay-200 rounded-2xl p-5 sm:p-8 md:p-12">
+        <div className="mx-auto flex max-w-md flex-col items-center gap-8 text-center sm:gap-12">
           {/* Copper Coins — front (字/开元通宝) vs back (面/blank with lines) */}
-          <div className="grid grid-cols-3 gap-10">
+          <div className="grid grid-cols-3 gap-5 sm:gap-10">
             {[1, 2, 3].map((coin) => {
               // After shaking, show random face per coin based on last cast result
               const showBack = !isShaking && lines.length > 0 && coinFaces[coin - 1];
               return (
                 <div
                   key={`${coin}-${shakeKey}`}
-                  className={`relative flex h-24 w-24 items-center justify-center rounded-full ${
+                  className={`relative flex h-18 w-18 items-center justify-center rounded-full sm:h-24 sm:w-24 ${
                     isShaking ? 'animate-coin-shake' : ''
                   }`}
                   style={{

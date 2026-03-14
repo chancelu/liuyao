@@ -8,9 +8,9 @@ export default function CastAskPage() {
   return (
     <SiteShell>
       <div className="glow-top mx-auto max-w-2xl">
-        <div className="relative py-8">
+        <div className="relative py-4 sm:py-8">
           {/* Header */}
-          <div className="mb-16 text-center">
+          <div className="mb-8 text-center sm:mb-16">
             <div className="mb-4 text-[10px] tracking-[0.5em] text-[var(--gold)] uppercase">起卦</div>
             <h1 className="font-display text-3xl font-extralight tracking-[0.08em] text-[var(--text-primary)]">
               心中所问
