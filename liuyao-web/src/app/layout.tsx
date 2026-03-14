@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Noto_Serif_SC } from 'next/font/google';
+import { Geist, Geist_Mono, Noto_Serif_SC, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
 const notoSerifSC = Noto_Serif_SC({ variable: '--font-noto-serif-sc', weight: ['200', '300', '400', '600', '700'], subsets: ['latin'], preload: false });
+const cormorant = Cormorant_Garamond({ variable: '--font-cormorant', weight: ['300', '400', '500'], subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: '雅若 Yarrow · 六爻在线占卦',
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {/* Material Icons */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${notoSerifSC.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${notoSerifSC.variable} ${cormorant.variable} antialiased`}>
         {children}
       </body>
     </html>
