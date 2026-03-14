@@ -77,7 +77,7 @@ export default function HomePage() {
         {/* ── Brand ── */}
         <div className="animate-fade-in-up delay-200 mb-3">
           <h1
-            className="text-[26px] font-light tracking-[0.45em] text-[var(--text-primary)] sm:text-[34px] sm:tracking-[0.5em] lg:text-[42px]"
+            className="text-[24px] font-light tracking-[0.35em] text-[var(--text-primary)] sm:text-[34px] sm:tracking-[0.5em] lg:text-[42px]"
             style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}
           >
             YARROW

@@ -6,7 +6,7 @@ import { InkWashBackground } from '@/components/ui/ink-wash-background';
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-screen bg-[var(--bg-deep)] text-[var(--text-secondary)]">
+    <div className="relative min-h-screen overflow-x-hidden bg-[var(--bg-deep)] text-[var(--text-secondary)]">
       {/* Full-screen animated ink wash background */}
       <InkWashBackground />
 
@@ -29,7 +29,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             </div>
             <span className="text-[12px] font-medium tracking-[0.35em] text-[var(--text-muted)] uppercase">Yarrow</span>
           </Link>
-          <nav className="flex items-center gap-6 text-xs tracking-[0.1em] text-[var(--text-muted)]">
+          <nav className="flex items-center gap-3 text-xs tracking-[0.1em] text-[var(--text-muted)] sm:gap-6">
             <Link href="/cast" className="group flex items-center gap-2 transition-colors duration-300 hover:text-[var(--gold)]">
               <i className="fa-solid fa-coins text-[10px] opacity-50 transition-opacity group-hover:opacity-100"></i>
               <span>问卦</span>
