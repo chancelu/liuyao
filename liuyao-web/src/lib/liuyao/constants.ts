@@ -144,7 +144,7 @@ function h(name: string, upper: Trigram, lower: Trigram, palace: Trigram, palace
  * 六十四卦完整表 — 京房八宫排列
  * key = `${upper三位binary}${lower三位binary}` 的十进制值
  */
-const HEXAGRAM_LIST: HexagramInfo[] = [
+export const HEXAGRAM_LIST: HexagramInfo[] = [
   // 乾宫（金）
   h('乾为天',   '乾', '乾', '乾', 0),
   h('天风姤',   '乾', '巽', '乾', 1),
@@ -237,6 +237,25 @@ function buildHexagramLookup(): Map<number, HexagramInfo> {
 }
 
 const HEXAGRAM_LOOKUP = buildHexagramLookup();
+
+/** 通过卦名查找卦 */
+const HEXAGRAM_NAME_MAP: Map<string, HexagramInfo> = new Map(
+  HEXAGRAM_LIST.map(hex => [hex.name, hex])
+);
+
+/** 卦名别名（习题常见异体字） */
+const HEXAGRAM_ALIASES: Record<string, string> = {
+  '山天大蓄': '山天大畜',
+  '风天小蓄': '风天小畜',
+  '天风小蓄': '风天小畜',
+};
+
+export function lookupHexagramByName(name: string): HexagramInfo {
+  const normalized = HEXAGRAM_ALIASES[name] ?? name;
+  const info = HEXAGRAM_NAME_MAP.get(normalized);
+  if (!info) throw new Error(`Unknown hexagram name: ${name}`);
+  return info;
+}
 
 export function lookupHexagram(upper: Trigram, lower: Trigram): HexagramInfo {
   const key = (TRIGRAM_MAP[upper].binary << 3) | TRIGRAM_MAP[lower].binary;

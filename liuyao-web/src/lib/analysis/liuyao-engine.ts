@@ -226,9 +226,9 @@ function assessComprehensiveStrength(
     const eff = getEffect(s.element, target.element);
     // 暗动权重低于真动爻，旬空的动爻权重更低
     let weight: number;
-    if (s.isAnDong) weight = 0.3;
-    else if (s.isEffectivelyEmpty) weight = 0.2;
-    else weight = 0.6;
+    if (s.isAnDong) weight = 0.4;
+    else if (s.isEffectivelyEmpty) weight = 0.25;
+    else weight = 0.75;
     score += relationScore(eff, weight * 2);
   }
 
@@ -238,7 +238,7 @@ function assessComprehensiveStrength(
     const changedBranch = target.changedBranch!;
     const changedEmpty = isInXunkong(changedBranch, chart.xunkong);
     if (!changedEmpty) {
-      score += relationScore(changedEff, 1.5);
+      score += relationScore(changedEff, 1.8);
     }
     // 变爻旬空则回头生克无力
   }
@@ -260,15 +260,15 @@ function relationScore(rel: FiveRelation, weight: number): number {
   switch (rel) {
     case '生': case '同': return weight;
     case '克': return -weight;
-    case '泄': case '耗': return -weight * 0.5;
+    case '泄': case '耗': return -weight * 0.7;
   }
 }
 
 function scoreToStrength(score: number): Strength {
-  if (score >= 3) return '旺';
-  if (score >= 1) return '偏旺';
-  if (score >= -1) return '平';
-  if (score >= -3) return '偏弱';
+  if (score >= 3.2) return '旺';
+  if (score >= 1.0) return '偏旺';
+  if (score >= -1.0) return '平';
+  if (score >= -2.8) return '偏弱';
   return '弱';
 }
 
