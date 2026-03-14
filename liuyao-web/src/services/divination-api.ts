@@ -84,6 +84,7 @@ export function buildCreateDivinationPayload(input: Omit<DivinationDraft, 'creat
     question: input.question,
     category: input.category,
     timeScope: input.timeScope,
+    gender: input.gender,
     background: input.background,
     locale: input.locale,
   };

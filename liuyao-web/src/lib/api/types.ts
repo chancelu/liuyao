@@ -19,6 +19,7 @@ export interface CreateDivinationRequest {
   question: string;
   category: DivinationDraft['category'];
   timeScope: DivinationDraft['timeScope'];
+  gender?: DivinationDraft['gender'];
   background: string;
   locale: string;
 }

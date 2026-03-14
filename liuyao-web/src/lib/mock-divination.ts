@@ -1,5 +1,5 @@
 import { buildChart } from '@/lib/liuyao';
-import type { CastLine, Category, MockResult, TimeScope } from '@/lib/types';
+import type { CastLine, Category, Gender, MockResult, TimeScope } from '@/lib/types';
 
 function getMovingLines(lines: CastLine[]) {
   return lines
@@ -39,6 +39,7 @@ export function buildMockResult(params: {
   question: string;
   category: Category;
   timeScope: TimeScope;
+  gender?: Gender;
   background: string;
   lines: CastLine[];
 }): MockResult {
@@ -51,6 +52,7 @@ export function buildMockResult(params: {
     question: params.question,
     category: params.category,
     timeScope: params.timeScope,
+    gender: params.gender,
     background: params.background,
     primaryHexagram: chart.primary.name,
     changedHexagram: chart.changed.name,

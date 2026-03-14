@@ -74,6 +74,7 @@ export async function POST(request: Request) {
     question: body.question.trim(),
     category: body.category,
     timeScope: body.timeScope,
+    gender: body.gender,
     background: body.background?.trim() ?? '',
     locale: body.locale,
     createdAt: new Date().toISOString(),

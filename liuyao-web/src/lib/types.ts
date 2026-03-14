@@ -9,6 +9,8 @@ export type Category =
 
 export type TimeScope = 'recent' | 'this_month' | 'this_year' | 'unspecified';
 
+export type Gender = 'male' | 'female';
+
 export type CastLine = 'old_yin' | 'young_yin' | 'young_yang' | 'old_yang';
 
 export interface DivinationDraft {
@@ -16,6 +18,7 @@ export interface DivinationDraft {
   question: string;
   category: Category;
   timeScope: TimeScope;
+  gender?: Gender;
   background: string;
   locale: string;
   createdAt: string;
@@ -32,6 +35,7 @@ export interface MockResult {
   question: string;
   category: Category;
   timeScope: TimeScope;
+  gender?: Gender;
   background: string;
   primaryHexagram: string;
   changedHexagram: string;

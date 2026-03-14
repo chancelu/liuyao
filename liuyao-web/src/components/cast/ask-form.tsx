@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { getMessages } from '@/lib/i18n';
 import { buildCreateDivinationPayload, createDivinationFlow } from '@/services/divination-api';
 import { track } from '@/lib/analytics';
-import type { Category, TimeScope } from '@/lib/types';
+import type { Category, Gender, TimeScope } from '@/lib/types';
 
 const messages = getMessages();
 
@@ -34,6 +34,7 @@ export function AskForm() {
   const [question, setQuestion] = useState(prefill);
   const [category, setCategory] = useState<Category>('relationship');
   const [timeScope, setTimeScope] = useState<TimeScope>('recent');
+  const [gender, setGender] = useState<Gender>('male');
   const [background, setBackground] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,6 +56,7 @@ export function AskForm() {
         question: question.trim(),
         category,
         timeScope,
+        gender,
         background: background.trim(),
         locale: 'zh-CN',
       }),
@@ -119,6 +121,27 @@ export function AskForm() {
               onClick={() => setTimeScope(item.value)}
               className={`rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 sm:text-sm ${
                 timeScope === item.value
+                  ? 'border-[var(--gold)] bg-[rgba(184,160,112,0.10)] text-[var(--gold)]'
+                  : 'border-[rgba(255,255,255,0.06)] text-[var(--text-muted)] hover:border-[rgba(255,255,255,0.15)] hover:text-white'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Gender */}
+      <section className="space-y-3">
+        <div className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">性别</div>
+        <div className="flex flex-wrap gap-2 sm:gap-3">
+          {([{ value: 'male' as Gender, label: '男' }, { value: 'female' as Gender, label: '女' }]).map((item) => (
+            <button
+              key={item.value}
+              type="button"
+              onClick={() => setGender(item.value)}
+              className={`rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 sm:text-sm ${
+                gender === item.value
                   ? 'border-[var(--gold)] bg-[rgba(184,160,112,0.10)] text-[var(--gold)]'
                   : 'border-[rgba(255,255,255,0.06)] text-[var(--text-muted)] hover:border-[rgba(255,255,255,0.15)] hover:text-white'
               }`}

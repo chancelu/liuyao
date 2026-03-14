@@ -59,6 +59,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     question: draft.question,
     category: draft.category,
     timeScope: draft.timeScope,
+    gender: draft.gender,
     background: draft.background,
     lines: body.lines,
   });
