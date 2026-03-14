@@ -120,8 +120,9 @@ function isMoving(line: CastLine): boolean {
 function splitTrigrams(bits: (0 | 1)[]): { upperBin: number; lowerBin: number; upper: Trigram; lower: Trigram } {
   // bits[0]=初爻(最下) ... bits[5]=上爻(最上)
   // 下卦=初二三, 上卦=四五上
-  const lowerBin = (bits[2] << 2) | (bits[1] << 1) | bits[0];
-  const upperBin = (bits[5] << 2) | (bits[4] << 1) | bits[3];
+  // TRIGRAM_MAP binary: bit2=下爻, bit1=中爻, bit0=上爻
+  const lowerBin = (bits[0] << 2) | (bits[1] << 1) | bits[2];
+  const upperBin = (bits[3] << 2) | (bits[4] << 1) | bits[5];
   return {
     upperBin,
     lowerBin,
