@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { SiteShell } from '@/components/site-shell';
 import { HomeTracker } from '@/components/home-tracker';
+import { RotatingQuote } from '@/components/ui/rotating-quote';
 
 export default function HomePage() {
   return (
@@ -174,16 +175,7 @@ export default function HomePage() {
 
       {/* ═══ QUOTE ═══ */}
       <section className="relative mx-auto mb-16 max-w-2xl py-10 text-center sm:mb-32 sm:py-16">
-        <div className="animate-fade-in flex flex-col items-center gap-6">
-          <p className="font-display text-lg tracking-[0.25em] text-[var(--text-primary)] lg:text-2xl" style={{ opacity: 0.85, textShadow: '0 0 30px rgba(196,149,107,0.15)' }}>
-            天行健，君子以自强不息
-          </p>
-          <div className="flex items-center gap-3">
-            <div className="h-px w-6 bg-[rgba(196,149,107,0.20)]" />
-            <span className="text-[9px] tracking-[0.3em] text-[var(--text-dim)]">《周易 · 乾卦》</span>
-            <div className="h-px w-6 bg-[rgba(196,149,107,0.20)]" />
-          </div>
-        </div>
+        <RotatingQuote />
       </section>
 
       {/* Footer divider */}
