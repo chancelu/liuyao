@@ -69,14 +69,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <span className="text-[9px] tracking-[0.15em] text-[var(--text-dim)]">
               六爻在线占卦
             </span>
-            <div className="mt-2 flex items-center gap-4 text-[var(--text-dim)]">
-              <a href="#" className="transition-colors duration-300 hover:text-[var(--gold)]">
-                <i className="fa-brands fa-github text-[12px]"></i>
-              </a>
-              <a href="#" className="transition-colors duration-300 hover:text-[var(--gold)]">
-                <i className="fa-brands fa-twitter text-[12px]"></i>
-              </a>
-            </div>
           </div>
         </footer>
       </div>
