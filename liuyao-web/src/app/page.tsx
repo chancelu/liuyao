@@ -23,23 +23,10 @@ export default function HomePage() {
         </div>
 
         {/* ── Content ── */}
-        <div className="relative z-10 flex flex-col items-center">
+        <div className="relative z-10 flex flex-col items-center" style={{ marginTop: '45vh' }}>
 
-          {/* Hero image — mystical yarrow stalks */}
-          <div className="animate-fade-in mb-6">
-            <img
-              src="/images/hero-mystical-2.png"
-              alt="Yarrow"
-              className="mx-auto h-[220px] w-auto sm:h-[300px] lg:h-[380px]"
-              style={{
-                mixBlendMode: 'screen',
-                filter: 'drop-shadow(0 0 30px rgba(196,149,107,0.15))',
-              }}
-            />
-          </div>
-
-          {/* Brand name — small text below image */}
-          <div className="animate-fade-in delay-200 mb-8 sm:mb-14">
+          {/* Brand name — small text below canvas hero image */}
+          <div className="animate-fade-in mb-8 sm:mb-14">
             <span className="text-[11px] tracking-[0.4em] text-[var(--text-muted)] uppercase">
               Yarrow
             </span>

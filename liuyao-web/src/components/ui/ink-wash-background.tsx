@@ -30,6 +30,12 @@ export function InkWashBackground() {
     img.src = '/images/bg-golden-landscape-2.png';
     img.onload = () => { imgRef.current = img; };
 
+    // Load hero image (yarrow stalks)
+    const heroImgRef = { current: null as HTMLImageElement | null };
+    const heroImg = new Image();
+    heroImg.src = '/images/hero-mystical-2.png';
+    heroImg.onload = () => { heroImgRef.current = heroImg; };
+
     // ── Stars ──
     interface Star {
       x: number; y: number;
@@ -268,6 +274,25 @@ export function InkWashBackground() {
       drawBlobs();
       drawMoon(time);
       drawStars(time);
+
+      // Draw hero image (yarrow stalks) blended into scene
+      if (heroImgRef.current) {
+        ctx!.save();
+        ctx!.globalCompositeOperation = 'screen';
+        const hi = heroImgRef.current;
+        const hiAspect = hi.width / hi.height;
+        // Size: roughly 30% of viewport height, centered upper area
+        const hiH = height * 0.35;
+        const hiW = hiH * hiAspect;
+        const hiX = (width - hiW) / 2;
+        const hiY = height * 0.12;
+        // Breathing opacity
+        const heroBreath = 0.7 + 0.15 * Math.sin(time * 0.4);
+        ctx!.globalAlpha = heroBreath;
+        ctx!.drawImage(hi, hiX, hiY, hiW, hiH);
+        ctx!.restore();
+      }
+
       drawParticles();
 
       // Bottom fade to black (for content readability)
