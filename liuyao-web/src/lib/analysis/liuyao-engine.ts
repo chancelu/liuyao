@@ -56,6 +56,8 @@ export interface YaoStatus {
   muKu?: '入墓' | '入库' | null;
   /** 综合旺衰（含动爻生克、变爻回头、旬空等） */
   comprehensiveStrength?: Strength;
+  /** 综合旺衰原始得分（用于置信度判断） */
+  comprehensiveScore?: number;
 }
 
 export interface FuShenInfo {
@@ -213,7 +215,7 @@ function assessComprehensiveStrength(
   targetPos: number,
   yaoStatuses: YaoStatus[],
   chart: ChartData,
-): Strength {
+): { strength: Strength; score: number } {
   const target = yaoStatuses[targetPos - 1];
   let score = 0;
 
@@ -267,7 +269,95 @@ function assessComprehensiveStrength(
   // 日破惩罚
   if (target.isDayBroken) score -= 1.5;
 
-  return scoreToStrength(score);
+  return { strength: scoreToStrength(score), score };
+}
+
+/** 评分明细（供 LLM 参考） */
+export interface ScoreBreakdown {
+  monthEffect: FiveRelation;
+  monthScore: number;
+  dayEffect: FiveRelation;
+  dayScore: number;
+  dongYaoEffects: Array<{
+    position: number;
+    branch: EarthlyBranch;
+    element: WuXing;
+    effect: FiveRelation;
+    dongStrength: Strength;
+    score: number;
+  }>;
+  bianYaoEffect?: {
+    branch: EarthlyBranch;
+    element: WuXing;
+    effect: FiveRelation;
+    score: number;
+  };
+  xunkongPenalty: number;
+  monthBrokenPenalty: number;
+  dayBrokenPenalty: number;
+  totalScore: number;
+  strength: Strength;
+}
+
+export function getScoreBreakdown(
+  targetPos: number,
+  yaoStatuses: YaoStatus[],
+  chart: ChartData,
+): ScoreBreakdown {
+  const target = yaoStatuses[targetPos - 1];
+  const monthScore = relationScore(target.monthEffect, 2);
+  const dayScore = relationScore(target.dayEffect, 2);
+
+  const dongYaoEffects: ScoreBreakdown['dongYaoEffects'] = [];
+  for (const s of yaoStatuses) {
+    if (s.position === targetPos) continue;
+    if (!s.isMoving && !s.isAnDong) continue;
+    const eff = getEffect(s.element, target.element);
+    let weight: number;
+    if (s.isAnDong) weight = 0.4;
+    else if (s.isEffectivelyEmpty) weight = 0.25;
+    else weight = 0.75;
+    const dongStr = s.strength;
+    if (eff === '生' || eff === '同') {
+      if (dongStr === '旺') weight *= 1.15;
+      else if (dongStr === '偏弱') weight *= 0.65;
+      else if (dongStr === '弱') weight *= 0.4;
+    }
+    if (s.isMonthBroken) weight *= 0.3;
+    const sc = relationScore(eff, weight * 2);
+    dongYaoEffects.push({
+      position: s.position, branch: s.branch, element: s.element,
+      effect: eff, dongStrength: dongStr, score: sc,
+    });
+  }
+
+  let bianYaoEffect: ScoreBreakdown['bianYaoEffect'];
+  if (target.isMoving && target.changedElement && target.changedBranch) {
+    const changedEff = getEffect(target.changedElement, target.element);
+    const changedEmpty = isInXunkong(target.changedBranch, chart.xunkong);
+    const sc = changedEmpty ? 0 : relationScore(changedEff, 1.8);
+    bianYaoEffect = {
+      branch: target.changedBranch, element: target.changedElement,
+      effect: changedEff, score: sc,
+    };
+  }
+
+  const xunkongPenalty = target.isInXunkong ? (target.isEffectivelyEmpty ? -2 : -0.8) : 0;
+  const monthBrokenPenalty = target.isMonthBroken ? -2 : 0;
+  const dayBrokenPenalty = target.isDayBroken ? -1.5 : 0;
+
+  const totalScore = monthScore + dayScore
+    + dongYaoEffects.reduce((sum, d) => sum + d.score, 0)
+    + (bianYaoEffect?.score ?? 0)
+    + xunkongPenalty + monthBrokenPenalty + dayBrokenPenalty;
+
+  return {
+    monthEffect: target.monthEffect, monthScore,
+    dayEffect: target.dayEffect, dayScore,
+    dongYaoEffects, bianYaoEffect,
+    xunkongPenalty, monthBrokenPenalty, dayBrokenPenalty,
+    totalScore, strength: scoreToStrength(totalScore),
+  };
 }
 
 function relationScore(rel: FiveRelation, weight: number): number {
@@ -702,7 +792,9 @@ export function analyze(
 
   // ---- 1b. 综合旺衰（需要所有爻状态就绪后计算） ----
   for (const s of yaoStatuses) {
-    s.comprehensiveStrength = assessComprehensiveStrength(s.position, yaoStatuses, chart);
+    const { strength, score } = assessComprehensiveStrength(s.position, yaoStatuses, chart);
+    s.comprehensiveStrength = strength;
+    s.comprehensiveScore = score;
   }
 
   // ---- 2. 取用神 ----
