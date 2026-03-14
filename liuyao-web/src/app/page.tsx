@@ -14,13 +14,13 @@ export default function HomePage() {
         <div className="animate-fade-in relative mb-8 sm:mb-10">
           <svg
             viewBox="0 0 200 200"
-            className="h-[120px] w-[120px] sm:h-[160px] sm:w-[160px] lg:h-[200px] lg:w-[200px]"
+            className="h-[180px] w-[180px] sm:h-[240px] sm:w-[240px] lg:h-[300px] lg:w-[300px]"
           >
             {/* Outer ring — slow rotation */}
             <circle
-              cx="100" cy="100" r="90"
+              cx="100" cy="100" r="95"
               fill="none"
-              stroke="rgba(196,149,107,0.12)"
+              stroke="rgba(196,149,107,0.25)"
               strokeWidth="0.5"
               style={{ animation: 'spin 120s linear infinite' }}
               transform-origin="100 100"
@@ -29,41 +29,46 @@ export default function HomePage() {
             <circle
               cx="100" cy="100" r="75"
               fill="none"
-              stroke="rgba(196,149,107,0.25)"
-              strokeWidth="0.8"
+              stroke="rgba(196,149,107,0.50)"
+              strokeWidth="1"
               style={{ animation: 'breathe 5s ease-in-out infinite' }}
             />
             {/* Inner ring */}
             <circle
-              cx="100" cy="100" r="60"
+              cx="100" cy="100" r="55"
               fill="none"
-              stroke="rgba(196,149,107,0.08)"
-              strokeWidth="0.3"
+              stroke="rgba(196,149,107,0.18)"
+              strokeWidth="0.5"
               style={{ animation: 'spin 90s linear infinite reverse' }}
               transform-origin="100 100"
             />
             {/* Center dot */}
             <circle
-              cx="100" cy="100" r="2"
-              fill="rgba(196,149,107,0.35)"
+              cx="100" cy="100" r="2.5"
+              fill="rgba(196,149,107,0.6)"
               style={{ animation: 'breathe 4s ease-in-out infinite' }}
             />
             {/* 4 cardinal marks on main ring */}
-            <line x1="100" y1="20" x2="100" y2="30" stroke="rgba(196,149,107,0.15)" strokeWidth="0.5" />
-            <line x1="100" y1="170" x2="100" y2="180" stroke="rgba(196,149,107,0.15)" strokeWidth="0.5" />
-            <line x1="20" y1="100" x2="30" y2="100" stroke="rgba(196,149,107,0.15)" strokeWidth="0.5" />
-            <line x1="170" y1="100" x2="180" y2="100" stroke="rgba(196,149,107,0.15)" strokeWidth="0.5" />
+            <line x1="100" y1="2" x2="100" y2="18" stroke="rgba(196,149,107,0.30)" strokeWidth="0.5" />
+            <line x1="100" y1="182" x2="100" y2="198" stroke="rgba(196,149,107,0.30)" strokeWidth="0.5" />
+            <line x1="2" y1="100" x2="18" y2="100" stroke="rgba(196,149,107,0.30)" strokeWidth="0.5" />
+            <line x1="182" y1="100" x2="198" y2="100" stroke="rgba(196,149,107,0.30)" strokeWidth="0.5" />
             {/* Trigram marks — 3 short lines at top */}
-            <line x1="92" y1="55" x2="108" y2="55" stroke="rgba(196,149,107,0.20)" strokeWidth="0.8" />
-            <line x1="92" y1="60" x2="99" y2="60" stroke="rgba(196,149,107,0.20)" strokeWidth="0.8" />
-            <line x1="101" y1="60" x2="108" y2="60" stroke="rgba(196,149,107,0.20)" strokeWidth="0.8" />
-            <line x1="92" y1="65" x2="108" y2="65" stroke="rgba(196,149,107,0.20)" strokeWidth="0.8" />
+            <line x1="90" y1="50" x2="110" y2="50" stroke="rgba(196,149,107,0.40)" strokeWidth="1" />
+            <line x1="90" y1="56" x2="98" y2="56" stroke="rgba(196,149,107,0.40)" strokeWidth="1" />
+            <line x1="102" y1="56" x2="110" y2="56" stroke="rgba(196,149,107,0.40)" strokeWidth="1" />
+            <line x1="90" y1="62" x2="110" y2="62" stroke="rgba(196,149,107,0.40)" strokeWidth="1" />
+            {/* Trigram marks — bottom */}
+            <line x1="90" y1="138" x2="110" y2="138" stroke="rgba(196,149,107,0.35)" strokeWidth="1" />
+            <line x1="90" y1="144" x2="110" y2="144" stroke="rgba(196,149,107,0.35)" strokeWidth="1" />
+            <line x1="90" y1="150" x2="98" y2="150" stroke="rgba(196,149,107,0.35)" strokeWidth="1" />
+            <line x1="102" y1="150" x2="110" y2="150" stroke="rgba(196,149,107,0.35)" strokeWidth="1" />
           </svg>
           {/* Glow behind ring */}
           <div
             className="pointer-events-none absolute inset-0 rounded-full"
             style={{
-              background: 'radial-gradient(circle, rgba(196,149,107,0.06) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(196,149,107,0.12) 0%, rgba(196,149,107,0.04) 40%, transparent 70%)',
               animation: 'breathe 5s ease-in-out infinite',
             }}
           />
