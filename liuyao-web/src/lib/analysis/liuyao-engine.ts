@@ -69,6 +69,8 @@ export interface FuShenInfo {
   flyToFu: FiveRelation;
   isUseful: boolean;
   reason: string;
+  /** 伏神综合旺衰（月日 + 飞神 + 旬空） */
+  comprehensiveStrength: Strength;
 }
 
 export interface YongShenInfo {
@@ -229,6 +231,18 @@ function assessComprehensiveStrength(
     if (s.isAnDong) weight = 0.4;
     else if (s.isEffectivelyEmpty) weight = 0.25;
     else weight = 0.75;
+
+    // 动爻自身旺衰修正：弱的动爻生扶不动（只影响正面效果）
+    const dongStr = s.strength;
+    if (eff === '生' || eff === '同') {
+      if (dongStr === '旺') weight *= 1.15;
+      else if (dongStr === '偏弱') weight *= 0.65;
+      else if (dongStr === '弱') weight *= 0.4;
+    }
+
+    // 月破的动爻几乎无力
+    if (s.isMonthBroken) weight *= 0.3;
+
     score += relationScore(eff, weight * 2);
   }
 
@@ -442,6 +456,44 @@ const YUAN_JI_CHOU: Record<SixRelative, { yuan: SixRelative; ji: SixRelative; ch
 // 伏神
 // ============================================================
 
+/**
+ * 伏神综合旺衰：月日 + 飞神生克 + 旬空
+ * 伏神藏于飞神之下，飞神对伏神的影响权重较大
+ */
+function assessFuShenStrength(
+  fuElement: WuXing,
+  fuBranch: EarthlyBranch,
+  flyElement: WuXing,
+  flyBranch: EarthlyBranch,
+  chart: ChartData,
+): Strength {
+  let score = 0;
+
+  // 月日对伏神的影响（与普通爻相同）
+  const monthEff = getEffect(BRANCH_ELEMENT[chart.monthBranch], fuElement);
+  const dayEff = getEffect(BRANCH_ELEMENT[chart.dayBranch], fuElement);
+  score += relationScore(monthEff, 2);
+  score += relationScore(dayEff, 2);
+
+  // 飞神对伏神的影响（权重 1.5，飞神直接压在伏神上）
+  const flyToFuEff = getEffect(flyElement, fuElement);
+  score += relationScore(flyToFuEff, 1.5);
+
+  // 伏神旬空：伏神本就不上卦，再旬空则更弱
+  if (isInXunkong(fuBranch, chart.xunkong)) {
+    score -= 1.5;
+  }
+
+  // 飞神旬空/月破：飞神无力压制，伏神可出，减轻克制
+  const flyEmpty = isInXunkong(flyBranch, chart.xunkong);
+  const flyBroken = isClash(flyBranch, chart.monthBranch);
+  if ((flyEmpty || flyBroken) && (flyToFuEff === '克' || flyToFuEff === '泄' || flyToFuEff === '耗')) {
+    score += 1.0; // 飞神无力，负面影响减轻
+  }
+
+  return scoreToStrength(score);
+}
+
 function findFuShen(
   chart: ChartData,
   targetRelative: SixRelative,
@@ -498,6 +550,9 @@ function findFuShen(
       branch, element, relative,
       flyBranch, flyElement, flyRelative,
       flyToFu, isUseful, reason,
+      comprehensiveStrength: assessFuShenStrength(
+        element, branch, flyElement, flyBranch, chart,
+      ),
     };
   }
   return undefined;

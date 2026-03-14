@@ -459,9 +459,11 @@ function runTests(): void {
       if (result.yongShen.selectedPosition != null) {
         const pos = result.yongShen.selectedPosition;
         engineStrength = result.yaoStatuses[pos - 1].comprehensiveStrength ?? result.yaoStatuses[pos - 1].strength;
+      } else if (result.yongShen.fuShen) {
+        // 伏神：使用伏神综合旺衰
+        engineStrength = result.yongShen.fuShen.comprehensiveStrength;
       } else {
-        // 伏神情况，引擎没有综合旺衰
-        engineStrength = '弱'; // 默认弱
+        engineStrength = '弱'; // 无用神也无伏神
       }
 
       // 如果答案指定了具体位置，且与引擎选择不同，用答案位置的旺衰
