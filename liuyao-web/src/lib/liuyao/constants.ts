@@ -316,9 +316,12 @@ export function getXunkong(dayStem: HeavenlyStem, dayBranch: EarthlyBranch): [Ea
   const branchIdx = EARTHLY_BRANCHES.indexOf(dayBranch);
   // 回推到本旬甲日对应的地支索引：branchIdx - stemIdx（mod 12）
   const jiaBranchIdx = ((branchIdx - stemIdx) % 12 + 12) % 12;
-  // 甲子=0, 甲戌=1, 甲申=2, 甲午=3, 甲辰=4, 甲寅=5
-  // 甲子对应branchIdx=0, 甲戌=10, 甲申=8, 甲午=6, 甲辰=4, 甲寅=2
-  // 旬序 = jiaBranchIdx / 2
-  const xunIdx = jiaBranchIdx / 2;
+  // 甲子旬: jiaBranchIdx=0  → index 0 (戌亥空)
+  // 甲戌旬: jiaBranchIdx=10 → index 1 (申酉空)
+  // 甲申旬: jiaBranchIdx=8  → index 2 (午未空)
+  // 甲午旬: jiaBranchIdx=6  → index 3 (辰巳空)
+  // 甲辰旬: jiaBranchIdx=4  → index 4 (寅卯空)
+  // 甲寅旬: jiaBranchIdx=2  → index 5 (子丑空)
+  const xunIdx = ((12 - jiaBranchIdx) % 12) / 2;
   return XUNKONG_TABLE[xunIdx];
 }

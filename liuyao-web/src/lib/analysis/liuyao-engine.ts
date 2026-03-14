@@ -54,6 +54,8 @@ export interface YaoStatus {
   jinTui?: '进神' | '退神' | null;
   // 墓库
   muKu?: '入墓' | '入库' | null;
+  /** 综合旺衰（含动爻生克、变爻回头、旬空等） */
+  comprehensiveStrength?: Strength;
 }
 
 export interface FuShenInfo {
@@ -172,7 +174,7 @@ function getJinTui(from: EarthlyBranch, to: EarthlyBranch): '进神' | '退神' 
 }
 
 // ============================================================
-// 旺衰判断
+// 旺衰判断（综合：月日 + 动爻生克 + 变爻回头 + 旬空）
 // ============================================================
 
 function assessStrength(
@@ -193,6 +195,81 @@ function assessStrength(
   else if (mn || dn) s = '偏弱';
   else s = '平';
   return { monthEffect: me, dayEffect: de, strength: s };
+}
+
+/**
+ * 综合旺衰：在月日基础上叠加动爻生克、变爻回头、旬空等因素
+ * 返回调整后的 Strength
+ *
+ * score 体系：
+ *   月日生/同 各 +2，克 各 -2，泄/耗 各 -1
+ *   动爻生 +1，克 -1.5，泄/耗 -0.5（旬空的动爻减半）
+ *   变爻回头生 +1，回头克 -1.5（旬空的变爻无效）
+ *   用神自身旬空(实空) -1.5，月破 -2
+ */
+function assessComprehensiveStrength(
+  targetPos: number,
+  yaoStatuses: YaoStatus[],
+  chart: ChartData,
+): Strength {
+  const target = yaoStatuses[targetPos - 1];
+  let score = 0;
+
+  // 月日
+  score += relationScore(target.monthEffect, 2);
+  score += relationScore(target.dayEffect, 2);
+
+  // 卦中其他动爻对用神的影响
+  for (const s of yaoStatuses) {
+    if (s.position === targetPos) continue;
+    if (!s.isMoving && !s.isAnDong) continue;
+    const eff = getEffect(s.element, target.element);
+    // 暗动权重低于真动爻，旬空的动爻权重更低
+    let weight: number;
+    if (s.isAnDong) weight = 0.3;
+    else if (s.isEffectivelyEmpty) weight = 0.2;
+    else weight = 0.6;
+    score += relationScore(eff, weight * 2);
+  }
+
+  // 用神自身动爻的变爻（回头生/回头克）
+  if (target.isMoving && target.changedElement) {
+    const changedEff = getEffect(target.changedElement, target.element);
+    const changedBranch = target.changedBranch!;
+    const changedEmpty = isInXunkong(changedBranch, chart.xunkong);
+    if (!changedEmpty) {
+      score += relationScore(changedEff, 1.5);
+    }
+    // 变爻旬空则回头生克无力
+  }
+
+  // 旬空惩罚（实空重罚，假空轻罚）
+  if (target.isInXunkong) {
+    if (target.isEffectivelyEmpty) score -= 2;
+    else score -= 0.8; // 假空（旺不为空/动不为空）仍有减力
+  }
+  // 月破惩罚
+  if (target.isMonthBroken) score -= 2;
+  // 日破惩罚
+  if (target.isDayBroken) score -= 1.5;
+
+  return scoreToStrength(score);
+}
+
+function relationScore(rel: FiveRelation, weight: number): number {
+  switch (rel) {
+    case '生': case '同': return weight;
+    case '克': return -weight;
+    case '泄': case '耗': return -weight * 0.5;
+  }
+}
+
+function scoreToStrength(score: number): Strength {
+  if (score >= 3) return '旺';
+  if (score >= 1) return '偏旺';
+  if (score >= -1) return '平';
+  if (score >= -3) return '偏弱';
+  return '弱';
 }
 
 // ============================================================
@@ -501,7 +578,7 @@ function summarizeYongShen(
   const s = statuses[ys.selectedPosition - 1];
   const parts: string[] = [];
   parts.push(`用神${s.relative}在第${s.position}爻（${s.branch}${s.element}）`);
-  parts.push(`旺衰=${s.strength}`);
+  parts.push(`基础旺衰=${s.strength}，综合旺衰=${s.comprehensiveStrength ?? s.strength}`);
   if (s.isMoving) {
     parts.push('动爻');
     if (s.jinTui) parts.push(s.jinTui);
@@ -567,6 +644,11 @@ export function analyze(
 
     return status;
   });
+
+  // ---- 1b. 综合旺衰（需要所有爻状态就绪后计算） ----
+  for (const s of yaoStatuses) {
+    s.comprehensiveStrength = assessComprehensiveStrength(s.position, yaoStatuses, chart);
+  }
 
   // ---- 2. 取用神 ----
   const ysType = getYongShenRelative(category, gender);
