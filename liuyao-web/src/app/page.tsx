@@ -82,17 +82,17 @@ export default function HomePage() {
               fill="rgba(196,149,107,0.6)"
               style={{ animation: 'breathe 5s ease-in-out infinite' }}
             />
-            {/* 8 Trigrams arranged on the main ring — slow rotation as a group */}
+            {/* 8 Trigrams — 文王后天八卦 arrangement, each facing center */}
             <g style={{ animation: 'spin 180s linear infinite', transformOrigin: '100px 100px' }}>
               {[
-                { name: '乾', lines: [1,1,1], angle: 0 },     // ☰ 三阳
-                { name: '巽', lines: [1,1,0], angle: 45 },    // ☴ 阳阳阴
-                { name: '坎', lines: [0,1,0], angle: 90 },    // ☵ 阴阳阴
-                { name: '艮', lines: [1,0,0], angle: 135 },   // ☶ 阳阴阴
-                { name: '坤', lines: [0,0,0], angle: 180 },   // ☷ 三阴
-                { name: '震', lines: [0,0,1], angle: 225 },   // ☳ 阴阴阳
-                { name: '离', lines: [1,0,1], angle: 270 },   // ☲ 阳阴阳
-                { name: '兑', lines: [0,1,1], angle: 315 },   // ☱ 阴阳阳
+                { name: '离', lines: [1,0,1], angle: 0 },     // 南(上)
+                { name: '坤', lines: [0,0,0], angle: 45 },    // 西南
+                { name: '兑', lines: [0,1,1], angle: 90 },    // 西(右)
+                { name: '乾', lines: [1,1,1], angle: 135 },   // 西北
+                { name: '坎', lines: [0,1,0], angle: 180 },   // 北(下)
+                { name: '艮', lines: [1,0,0], angle: 225 },   // 东北
+                { name: '震', lines: [0,0,1], angle: 270 },   // 东(左)
+                { name: '巽', lines: [1,1,0], angle: 315 },   // 东南
               ].map((tri) => {
                 const r = 78;
                 const rad = (tri.angle - 90) * Math.PI / 180;
@@ -105,7 +105,7 @@ export default function HomePage() {
                 return (
                   <g
                     key={tri.name}
-                    transform={`translate(${cx},${cy})`}
+                    transform={`translate(${cx},${cy}) rotate(${tri.angle})`}
                     style={{ animation: `breathe 8s ease-in-out ${breatheDelay}s infinite` }}
                     filter="url(#glow)"
                   >
