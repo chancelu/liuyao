@@ -2,14 +2,13 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getMessages } from '@/lib/i18n';
+import { useI18n } from '@/lib/i18n';
 import { getCurrentDraft, getOrCreateGuestSession } from '@/lib/storage/draft-storage';
 import { submitCastFlow } from '@/services/divination-api';
 import { track } from '@/lib/analytics';
 import { playCoinSound } from '@/lib/audio/coin-sound';
 import type { CastLine, DivinationDraft } from '@/lib/types';
 
-const messages = getMessages();
 const CAST_OPTIONS: CastLine[] = ['old_yin', 'young_yin', 'young_yang', 'old_yang'];
 const CAST_LABELS: Record<CastLine, string> = {
   old_yin: '老阴',
@@ -24,6 +23,7 @@ export function RitualClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
+  const { messages } = useI18n();
   const [lines, setLines] = useState<CastLine[]>([]);
   const [lastLabel, setLastLabel] = useState('');
   const [error, setError] = useState('');

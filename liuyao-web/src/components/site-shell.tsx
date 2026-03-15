@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { AuthNav } from '@/components/auth/auth-nav';
 import { AutoCheckin } from '@/components/auto-checkin';
 import { InkWashBackground } from '@/components/ui/ink-wash-background';
+import { LocaleSwitcher } from '@/components/ui/locale-switcher';
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
@@ -34,6 +35,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               <i className="fa-solid fa-coins text-[10px] opacity-50 transition-opacity group-hover:opacity-100"></i>
               <span>问卦</span>
             </Link>
+            <LocaleSwitcher />
             <Suspense fallback={
               <Link href="/login" className="flex items-center gap-2 text-[var(--text-dim)] transition-colors duration-300 hover:text-[var(--gold)]">
                 <i className="fa-regular fa-user text-[10px]"></i>

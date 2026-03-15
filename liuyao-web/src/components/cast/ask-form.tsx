@@ -2,12 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getMessages } from '@/lib/i18n';
+import { useI18n } from '@/lib/i18n';
 import { buildCreateDivinationPayload, createDivinationFlow } from '@/services/divination-api';
 import { track } from '@/lib/analytics';
 import type { Category, Gender, TimeScope } from '@/lib/types';
-
-const messages = getMessages();
 
 const categories: Array<{ value: Category; label: string }> = [
   { value: 'relationship', label: '感情' },
@@ -30,6 +28,7 @@ export function AskForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prefill = searchParams.get('prefill') ?? '';
+  const { messages } = useI18n();
 
   const [question, setQuestion] = useState(prefill);
   const [category, setCategory] = useState<Category>('relationship');

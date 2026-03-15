@@ -5,9 +5,7 @@ import { useEffect, useState } from 'react';
 import { getSession } from '@/lib/supabase/auth';
 import { listDivinationsApi } from '@/lib/api/client';
 import type { DivinationListItem } from '@/lib/api/types';
-import { getMessages } from '@/lib/i18n';
-
-const messages = getMessages();
+import { useI18n } from '@/lib/i18n';
 
 const CATEGORY_LABELS: Record<string, string> = {
   relationship: '感情',
@@ -25,6 +23,7 @@ function formatDate(iso: string) {
 }
 
 export function HistoryClient() {
+  const { messages } = useI18n();
   const [items, setItems] = useState<DivinationListItem[] | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 

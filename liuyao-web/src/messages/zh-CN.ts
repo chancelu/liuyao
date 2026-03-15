@@ -1,4 +1,4 @@
-export const zhCN = {
+const _zhCN = {
   brand: {
     name: '雅若',
     tagline: 'Ancient Chinese divination, reimagined.',
@@ -76,6 +76,7 @@ export const zhCN = {
     empty: '你还没有保存过卦例。',
     cta: '开始第一次起卦',
   },
-} as const;
+};
 
-export type Messages = typeof zhCN;
+export type Messages = typeof _zhCN;
+export const zhCN: Messages = _zhCN;

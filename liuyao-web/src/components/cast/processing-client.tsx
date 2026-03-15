@@ -2,13 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getMessages } from '@/lib/i18n';
+import { useI18n } from '@/lib/i18n';
 import { getResultById, setResultById } from '@/lib/storage/draft-storage';
 import { buildPromptFromResult } from '@/lib/analysis/build-prompt';
 import { callLLMStream } from '@/lib/api/llm-stream';
 import type { MockResult } from '@/lib/types';
-
-const messages = getMessages();
 
 const PROGRESS_STAGES = [
   { label: '正在排盘…', threshold: 0 },
@@ -22,6 +20,7 @@ export function ProcessingClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
+  const { messages } = useI18n();
   const [progress, setProgress] = useState(0);
   const [stageIndex, setStageIndex] = useState(0);
   const [error, setError] = useState('');

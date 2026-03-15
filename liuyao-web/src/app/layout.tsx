@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Noto_Serif_SC, Cormorant_Garamond } from 'next/font/google';
+import { I18nProvider } from '@/lib/i18n';
 import './globals.css';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -22,7 +23,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${notoSerifSC.variable} ${cormorant.variable} antialiased`}>
-        {children}
+        <I18nProvider>{children}</I18nProvider>
       </body>
     </html>
   );

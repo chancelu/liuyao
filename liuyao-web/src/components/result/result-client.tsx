@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getMessages } from '@/lib/i18n';
+import { useI18n } from '@/lib/i18n';
 import { getSession, getUser } from '@/lib/supabase/auth';
 import { getDivinationResultFlow } from '@/services/divination-api';
 import { getDivinationApi, saveDivinationApi, shareDivinationApi } from '@/lib/api/client';
@@ -16,7 +16,6 @@ import { ShareCard } from '@/components/result/share-card';
 import { track } from '@/lib/analytics';
 import type { MockResult } from '@/lib/types';
 
-const messages = getMessages();
 const YAO_POS = ['初', '二', '三', '四', '五', '上'];
 
 function YaoLine({ line }: { line: { position: number; spirit: string; relative: string; branch: string; branchElement: string; yinYang: string; moving: boolean; isShi: boolean; isYing: boolean; changedBranch?: string; changedRelative?: string } }) {
@@ -80,6 +79,7 @@ function YaoLine({ line }: { line: { position: number; spirit: string; relative:
 
 export function ResultClient({ id }: { id: string }) {
   const router = useRouter();
+  const { messages } = useI18n();
   const [result, setResult] = useState<MockResult | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
