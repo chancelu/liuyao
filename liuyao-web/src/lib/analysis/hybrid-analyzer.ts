@@ -448,19 +448,19 @@ export async function analyzeHybrid(
     if (false) {
       try {
         const prompt = buildStrengthReviewPrompt(
-          effectivePos, engineResult.yaoStatuses, chart, breakdown, specialFactors,
+          effectivePos!, engineResult.yaoStatuses, chart, breakdown, specialFactors,
         );
         const response = await llm(prompt);
         const parsed = parseStrengthResponse(response);
 
-        if (parsed?.adjust && parsed.strength !== currentStrength) {
+        if (parsed?.adjust && parsed!.strength !== currentStrength) {
           // 验证：最多调整±1级
           const levels: Strength[] = ['弱', '偏弱', '平', '偏旺', '旺'];
           const curIdx = levels.indexOf(currentStrength);
-          const newIdx = levels.indexOf(parsed.strength);
+          const newIdx = levels.indexOf(parsed!.strength);
           if (Math.abs(curIdx - newIdx) <= 1) {
-            correctedStrength = parsed.strength;
-            decisions[1].llmOverride = `${parsed.strength}: ${parsed.reason}`;
+            correctedStrength = parsed!.strength;
+            decisions[1].llmOverride = `${parsed!.strength}: ${parsed!.reason}`;
           }
         }
       } catch (e) {
