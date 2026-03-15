@@ -1,9 +1,15 @@
+'use client';
+
 import Link from 'next/link';
 import { SiteShell } from '@/components/site-shell';
 import { HomeTracker } from '@/components/home-tracker';
 import { RotatingQuote } from '@/components/ui/rotating-quote';
+import { useI18n } from '@/lib/i18n';
 
 export default function HomePage() {
+  const { messages, locale } = useI18n();
+  const m = messages.home;
+  const isEn = locale === 'en';
   return (
     <SiteShell>
       <HomeTracker />
@@ -141,7 +147,7 @@ export default function HomePage() {
         {/* ── Tagline ── */}
         <div className="animate-fade-in delay-300 mb-10 sm:mb-14">
           <span className="text-[11px] tracking-[0.25em] text-[var(--text-dim)]">
-            六爻在线占卦
+            {m.subtitle}
           </span>
         </div>
 
@@ -159,14 +165,14 @@ export default function HomePage() {
             className="btn-primary group relative inline-flex items-center gap-3 overflow-hidden px-10 py-4 text-[14px] sm:px-16 sm:py-5 sm:text-[15px]"
           >
             <i className="fa-solid fa-coins text-[12px] opacity-60 transition-all duration-300 group-hover:rotate-12 group-hover:opacity-100" />
-            <span>问 卦</span>
+            <span>{isEn ? 'Cast' : '问 卦'}</span>
           </Link>
         </div>
 
         {/* ── Subtitle ── */}
         <div className="animate-fade-in delay-1000">
           <span className="text-[10px] tracking-[0.15em] text-[var(--text-dim)]" style={{ fontStyle: 'italic', fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
-            Ancient wisdom, reimagined.
+            {m.ancientWisdom}
           </span>
         </div>
 
@@ -183,7 +189,7 @@ export default function HomePage() {
             <i className="fa-solid fa-yin-yang text-3xl text-[var(--gold)]" style={{ opacity: 0.5 }} />
           </div>
           <h2 className="animate-fade-in-up delay-100 mb-10 font-display text-xl font-extralight leading-relaxed tracking-[0.06em] text-[var(--text-primary)] sm:text-2xl lg:text-3xl">
-            问一件事，起一卦，<br className="hidden sm:block" />见一条脉络。
+            {m.introTitle}
           </h2>
           <div className="animate-fade-in delay-200 mx-auto mb-10 flex items-center justify-center gap-4">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-[rgba(196,149,107,0.20)]" />
@@ -191,7 +197,7 @@ export default function HomePage() {
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-[rgba(196,149,107,0.20)]" />
           </div>
           <p className="animate-fade-in-up delay-300 mx-auto max-w-lg text-[13px] leading-[2.4] text-[var(--text-muted)] sm:text-[14px]">
-            六爻占卦，源自三千年前的《周易》。三枚铜钱，六次投掷，天地人三才尽在其中。雅若将这一古老智慧带入数字时代，让每一次问卦都成为一次与自我的对话。
+            {m.introDesc}
           </p>
         </div>
       </section>
@@ -200,9 +206,9 @@ export default function HomePage() {
       <section className="mx-auto max-w-3xl pb-16 sm:pb-32">
         <div className="grid gap-4 sm:gap-5 md:grid-cols-3">
           {[
-            { icon: 'fa-solid fa-feather-pointed', num: '壹', title: '起卦', desc: '静心片刻，写下你的问题。选择类别与时间，准备与天地对话。' },
-            { icon: 'fa-solid fa-coins', num: '贰', title: '摇卦', desc: '三枚铜钱，六次投掷。每一爻的生成，都是随机中的必然。' },
-            { icon: 'fa-solid fa-scroll', num: '叁', title: '解卦', desc: 'AI 结合传统卦理，为你呈现白话解读与专业分析。' },
+            { icon: 'fa-solid fa-feather-pointed', num: isEn ? 'I' : '壹', title: m.stepCast, desc: m.stepCastDesc },
+            { icon: 'fa-solid fa-coins', num: isEn ? 'II' : '贰', title: m.stepToss, desc: m.stepTossDesc },
+            { icon: 'fa-solid fa-scroll', num: isEn ? 'III' : '叁', title: m.stepRead, desc: m.stepReadDesc },
           ].map((item, i) => (
             <div
               key={item.title}
