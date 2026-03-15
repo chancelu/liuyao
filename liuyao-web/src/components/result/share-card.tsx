@@ -96,14 +96,16 @@ export function ShareCard({ result, onClose, accessToken }: { result: MockResult
             {/* Brand header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{
-                  width: 28, height: 28, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, rgba(184,160,112,0.35), rgba(184,160,112,0.1))',
-                  border: '1px solid rgba(184,160,112,0.25)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 14, color: 'rgba(184,160,112,0.8)',
-                }}>爻</div>
-                <span style={{ fontSize: 15, color: '#B8A070', letterSpacing: 4, fontWeight: 300 }}>雅若</span>
+                {/* CSS hexagram lines logo — matches site header */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+                  <div style={{ width: 20, height: 2, background: '#B8A070', opacity: 0.7, borderRadius: 1 }} />
+                  <div style={{ display: 'flex', gap: 4 }}>
+                    <div style={{ width: 8, height: 2, background: '#B8A070', opacity: 0.7, borderRadius: 1 }} />
+                    <div style={{ width: 8, height: 2, background: '#B8A070', opacity: 0.7, borderRadius: 1 }} />
+                  </div>
+                  <div style={{ width: 20, height: 2, background: '#B8A070', opacity: 0.7, borderRadius: 1 }} />
+                </div>
+                <span style={{ fontSize: 12, color: '#999', letterSpacing: 5, fontWeight: 500, textTransform: 'uppercase' as const }}>Yarrow</span>
               </div>
               <span style={{ fontSize: 10, color: '#666', letterSpacing: 2 }}>{dateStr}</span>
             </div>
@@ -260,7 +262,17 @@ export function ShareCard({ result, onClose, accessToken }: { result: MockResult
 
             {/* Footer with URL */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 10, color: '#444', letterSpacing: 2 }}>雅若 Yarrow · 六爻在线占卦</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, opacity: 0.4 }}>
+                  <div style={{ width: 14, height: 1.5, background: '#B8A070', borderRadius: 1 }} />
+                  <div style={{ display: 'flex', gap: 3 }}>
+                    <div style={{ width: 6, height: 1.5, background: '#B8A070', borderRadius: 1 }} />
+                    <div style={{ width: 6, height: 1.5, background: '#B8A070', borderRadius: 1 }} />
+                  </div>
+                  <div style={{ width: 14, height: 1.5, background: '#B8A070', borderRadius: 1 }} />
+                </div>
+                <span style={{ fontSize: 10, color: '#444', letterSpacing: 2 }}>六爻在线占卦</span>
+              </div>
               <span style={{ fontSize: 10, color: '#B8A070', letterSpacing: 1 }}>{SITE_URL}</span>
             </div>
           </div>
