@@ -7,28 +7,28 @@ import { buildCreateDivinationPayload, createDivinationFlow } from '@/services/d
 import { track } from '@/lib/analytics';
 import type { Category, Gender, TimeScope } from '@/lib/types';
 
-const categories: Array<{ value: Category; label: string }> = [
-  { value: 'relationship', label: '感情' },
-  { value: 'career', label: '事业' },
-  { value: 'wealth', label: '财运' },
-  { value: 'health', label: '健康' },
-  { value: 'study', label: '学业' },
-  { value: 'lost', label: '失物' },
-  { value: 'other', label: '其他' },
-];
-
-const timeScopes: Array<{ value: TimeScope; label: string }> = [
-  { value: 'recent', label: '近期' },
-  { value: 'this_month', label: '本月' },
-  { value: 'this_year', label: '本年' },
-  { value: 'unspecified', label: '未限定' },
-];
-
 export function AskForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prefill = searchParams.get('prefill') ?? '';
   const { messages } = useI18n();
+
+  const categories: Array<{ value: Category; label: string }> = [
+    { value: 'relationship', label: messages.ask.categories.relationship },
+    { value: 'career', label: messages.ask.categories.career },
+    { value: 'wealth', label: messages.ask.categories.wealth },
+    { value: 'health', label: messages.ask.categories.health },
+    { value: 'study', label: messages.ask.categories.study },
+    { value: 'lost', label: messages.ask.categories.lost },
+    { value: 'other', label: messages.ask.categories.other },
+  ];
+
+  const timeScopes: Array<{ value: TimeScope; label: string }> = [
+    { value: 'recent', label: messages.ask.timeScopes.recent },
+    { value: 'this_month', label: messages.ask.timeScopes.this_month },
+    { value: 'this_year', label: messages.ask.timeScopes.this_year },
+    { value: 'unspecified', label: messages.ask.timeScopes.unspecified },
+  ];
 
   const [question, setQuestion] = useState(prefill);
   const [category, setCategory] = useState<Category>('relationship');
@@ -41,7 +41,7 @@ export function AskForm() {
 
   const onSubmit = async () => {
     if (!canSubmit) {
-      setError('先把问题写得更具体一点，再开始摇卦。');
+      setError(messages.ask.questionTooShort);
       return;
     }
 
@@ -132,9 +132,9 @@ export function AskForm() {
 
       {/* Gender */}
       <section className="space-y-3">
-        <div className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">性别</div>
+        <div className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.ask.genders.male === '男' ? '性别' : 'Gender'}</div>
         <div className="flex flex-wrap gap-2 sm:gap-3">
-          {([{ value: 'male' as Gender, label: '男' }, { value: 'female' as Gender, label: '女' }]).map((item) => (
+          {([{ value: 'male' as Gender, label: messages.ask.genders.male }, { value: 'female' as Gender, label: messages.ask.genders.female }]).map((item) => (
             <button
               key={item.value}
               type="button"
