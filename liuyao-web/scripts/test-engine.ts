@@ -152,13 +152,9 @@ function buildChartFromExercise(
       spirit: spirits[i],
       isShi: position === primaryHex.shi,
       isYing: position === primaryHex.ying,
+      changedBranch: changedBranches[i],
+      changedRelative: getSixRelative(palaceElement, BRANCH_ELEMENT[changedBranches[i]]),
     };
-
-    if (moving) {
-      const cb = changedBranches[i];
-      result.changedBranch = cb;
-      result.changedRelative = getSixRelative(palaceElement, BRANCH_ELEMENT[cb]);
-    }
 
     return result;
   });

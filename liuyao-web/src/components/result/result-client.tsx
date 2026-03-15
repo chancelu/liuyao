@@ -312,6 +312,7 @@ export function ResultClient({ id }: { id: string }) {
                           line.moving ? 'animate-pulse-glow border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
                         }`}
                       >
+                        <span className="shrink-0 text-[9px] text-[var(--text-dim)] sm:text-[10px]">{line.spirit.slice(0, 1)}</span>
                         <span className="shrink-0 text-center text-[10px] text-white sm:w-8 sm:text-[11px]">{YAO_POS[line.position - 1]}</span>
                         <div className="w-8 shrink-0 sm:w-14">
                           {line.yinYang === '阳' ? (
@@ -324,7 +325,7 @@ export function ResultClient({ id }: { id: string }) {
                           )}
                           {line.moving && <div className="mt-0.5 text-center text-[8px] text-[var(--gold)] sm:text-[9px]">{line.yinYang === '阳' ? '○' : '×'}</div>}
                         </div>
-                        <span className="hidden text-xs text-white sm:inline">{line.relative}</span>
+                        <span className="text-[9px] text-white sm:text-xs">{line.relative}</span>
                         <span className="text-[9px] text-[var(--text-dim)] sm:text-[10px]">{line.branch}</span>
                         {line.isShi && <span className="ml-auto text-[9px] text-[var(--gold)] sm:text-[10px]">世</span>}
                         {line.isYing && <span className="ml-auto text-[9px] text-[var(--blue)] sm:text-[10px]">应</span>}
@@ -357,11 +358,11 @@ export function ResultClient({ id }: { id: string }) {
                               </div>
                             )}
                           </div>
-                          <span className="hidden text-xs text-[var(--text-muted)] sm:inline">
-                            {isChanged ? (line.changedRelative ?? line.relative) : line.relative}
+                          <span className="text-[9px] text-[var(--text-muted)] sm:text-xs">
+                            {line.changedRelative}
                           </span>
                           <span className="text-[9px] text-[var(--text-dim)] sm:text-[10px]">
-                            {isChanged ? (line.changedBranch ?? line.branch) : line.branch}
+                            {line.changedBranch}
                           </span>
                         </div>
                       );

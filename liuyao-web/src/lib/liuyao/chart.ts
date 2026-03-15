@@ -53,10 +53,10 @@ export interface LineData {
   isShi: boolean;
   /** 是否应爻 */
   isYing: boolean;
-  /** 变爻纳支（仅动爻有） */
-  changedBranch?: EarthlyBranch;
-  /** 变爻六亲（仅动爻有，仍用本宫五行算） */
-  changedRelative?: SixRelative;
+  /** 变卦该位置的纳支 */
+  changedBranch: EarthlyBranch;
+  /** 变卦该位置的六亲（仍用本宫五行算） */
+  changedRelative: SixRelative;
 }
 
 export interface HexagramData {
@@ -220,13 +220,9 @@ export function buildChart(lines: CastLine[], date?: Date): ChartData {
       spirit: spirits[i],
       isShi: position === primaryHex.shi,
       isYing: position === primaryHex.ying,
+      changedBranch: changedBranches[i],
+      changedRelative: getSixRelative(palaceElement, BRANCH_ELEMENT[changedBranches[i]]),
     };
-
-    if (moving) {
-      const cb = changedBranches[i];
-      result.changedBranch = cb;
-      result.changedRelative = getSixRelative(palaceElement, BRANCH_ELEMENT[cb]);
-    }
 
     return result;
   });

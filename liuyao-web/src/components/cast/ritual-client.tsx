@@ -56,23 +56,14 @@ export function RitualClient() {
     playCoinSound();
 
     setTimeout(() => {
-      const next = CAST_OPTIONS[Math.floor(Math.random() * CAST_OPTIONS.length)];
-      // Generate coin faces matching the result
-      // 字(front/false)=3, 面(back/true)=2
-      // old_yang(9)=字字字, old_yin(6)=面面面, young_yang(7)=2字1面, young_yin(8)=1字2面
-      let faces: boolean[];
-      if (next === 'old_yang') {
-        faces = [false, false, false];
-      } else if (next === 'old_yin') {
-        faces = [true, true, true];
-      } else if (next === 'young_yang') {
-        faces = [false, false, true];
-        // shuffle
-        faces.sort(() => Math.random() - 0.5);
-      } else {
-        faces = [true, true, false];
-        faces.sort(() => Math.random() - 0.5);
-      }
+      // 模拟三枚真实铜钱：每枚 50% 阴阳
+      // false=字(3分), true=面(2分)
+      // 总分: 9=老阳, 8=少阴, 7=少阳, 6=老阴
+      const faces: boolean[] = [Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5];
+      const backCount = faces.filter(Boolean).length; // 面的数量
+      const COIN_RESULT: CastLine[] = ['old_yang', 'young_yin', 'young_yang', 'old_yin'];
+      // backCount: 0=三字(老阳), 1=二字一面(少阴), 2=一字二面(少阳), 3=三面(老阴)
+      const next = COIN_RESULT[backCount];
       setCoinFaces(faces);
       setLines((current) => [...current, next]);
       setLastLabel(CAST_LABELS[next]);
