@@ -443,7 +443,9 @@ export async function analyzeHybrid(
       reason: `特殊因素: ${specialFactors.map(f => f.type).join(', ') || '无'}`,
     });
 
-    if (strengthConf !== 'high') {
+    // 旺衰微调暂时关闭 — 测试显示 LLM 在旺衰判断上回退多于改善
+    // TODO: 优化 prompt 或换更强模型后重新启用
+    if (false) {
       try {
         const prompt = buildStrengthReviewPrompt(
           effectivePos, engineResult.yaoStatuses, chart, breakdown, specialFactors,
