@@ -11,34 +11,67 @@ export default function HomePage() {
       {/* ═══ HERO — Minimal, let the background breathe ═══ */}
       <section className="relative flex min-h-[75vh] flex-col items-center justify-center text-center sm:min-h-[85vh]">
 
-        {/* ── Oracle Ring — SVG animated circle ── */}
+        {/* ── Oracle Ring — 8 trigrams with breathing glow + floating particles ── */}
         <div className="animate-fade-in relative mb-8 sm:mb-10">
+          {/* Floating golden particles — scattered, irregular drift */}
+          <div className="pointer-events-none absolute inset-[-40px] sm:inset-[-60px]">
+            {Array.from({ length: 18 }).map((_, i) => {
+              const angle = (i * 137.5) % 360; // golden angle for natural scatter
+              const dist = 40 + (i * 17) % 80; // varied distance from center
+              const size = 1.2 + (i % 4) * 0.6;
+              const dur = 8 + (i % 5) * 4; // 8-24s breathing cycle
+              const delay = (i * 1.3) % 6;
+              const driftX = ((i * 7) % 30) - 15;
+              const driftY = ((i * 11) % 30) - 15;
+              return (
+                <div
+                  key={i}
+                  className="absolute rounded-full"
+                  style={{
+                    width: size,
+                    height: size,
+                    background: `rgba(196,149,107,${0.15 + (i % 3) * 0.15})`,
+                    boxShadow: `0 0 ${size * 3}px rgba(196,149,107,${0.1 + (i % 3) * 0.1})`,
+                    left: `calc(50% + ${Math.cos(angle * Math.PI / 180) * dist}px)`,
+                    top: `calc(50% + ${Math.sin(angle * Math.PI / 180) * dist}px)`,
+                    animation: `particle-drift-${i % 4} ${dur}s ease-in-out ${delay}s infinite`,
+                  }}
+                />
+              );
+            })}
+          </div>
           <svg
             viewBox="0 0 200 200"
-            className="h-[180px] w-[180px] sm:h-[240px] sm:w-[240px] lg:h-[300px] lg:w-[300px]"
+            className="relative h-[180px] w-[180px] sm:h-[240px] sm:w-[240px] lg:h-[300px] lg:w-[300px]"
           >
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="1.5" result="blur" />
+                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+            </defs>
             {/* Outer ring — slow rotation */}
             <circle
               cx="100" cy="100" r="95"
               fill="none"
-              stroke="rgba(196,149,107,0.25)"
+              stroke="rgba(196,149,107,0.20)"
               strokeWidth="0.5"
               style={{ animation: 'spin 120s linear infinite' }}
               transform-origin="100 100"
             />
             {/* Main ring — breathing glow */}
             <circle
-              cx="100" cy="100" r="75"
+              cx="100" cy="100" r="78"
               fill="none"
-              stroke="rgba(196,149,107,0.50)"
-              strokeWidth="1"
-              style={{ animation: 'breathe 5s ease-in-out infinite' }}
+              stroke="rgba(196,149,107,0.45)"
+              strokeWidth="0.8"
+              style={{ animation: 'breathe 6s ease-in-out infinite' }}
             />
             {/* Inner ring */}
             <circle
               cx="100" cy="100" r="55"
               fill="none"
-              stroke="rgba(196,149,107,0.18)"
+              stroke="rgba(196,149,107,0.15)"
               strokeWidth="0.5"
               style={{ animation: 'spin 90s linear infinite reverse' }}
               transform-origin="100 100"
@@ -47,30 +80,58 @@ export default function HomePage() {
             <circle
               cx="100" cy="100" r="2.5"
               fill="rgba(196,149,107,0.6)"
-              style={{ animation: 'breathe 4s ease-in-out infinite' }}
+              style={{ animation: 'breathe 5s ease-in-out infinite' }}
             />
-            {/* 4 cardinal marks on main ring */}
-            <line x1="100" y1="2" x2="100" y2="18" stroke="rgba(196,149,107,0.30)" strokeWidth="0.5" />
-            <line x1="100" y1="182" x2="100" y2="198" stroke="rgba(196,149,107,0.30)" strokeWidth="0.5" />
-            <line x1="2" y1="100" x2="18" y2="100" stroke="rgba(196,149,107,0.30)" strokeWidth="0.5" />
-            <line x1="182" y1="100" x2="198" y2="100" stroke="rgba(196,149,107,0.30)" strokeWidth="0.5" />
-            {/* Trigram marks — 3 short lines at top */}
-            <line x1="90" y1="50" x2="110" y2="50" stroke="rgba(196,149,107,0.40)" strokeWidth="1" />
-            <line x1="90" y1="56" x2="98" y2="56" stroke="rgba(196,149,107,0.40)" strokeWidth="1" />
-            <line x1="102" y1="56" x2="110" y2="56" stroke="rgba(196,149,107,0.40)" strokeWidth="1" />
-            <line x1="90" y1="62" x2="110" y2="62" stroke="rgba(196,149,107,0.40)" strokeWidth="1" />
-            {/* Trigram marks — bottom */}
-            <line x1="90" y1="138" x2="110" y2="138" stroke="rgba(196,149,107,0.35)" strokeWidth="1" />
-            <line x1="90" y1="144" x2="110" y2="144" stroke="rgba(196,149,107,0.35)" strokeWidth="1" />
-            <line x1="90" y1="150" x2="98" y2="150" stroke="rgba(196,149,107,0.35)" strokeWidth="1" />
-            <line x1="102" y1="150" x2="110" y2="150" stroke="rgba(196,149,107,0.35)" strokeWidth="1" />
+            {/* 8 Trigrams arranged on the main ring — slow rotation as a group */}
+            <g style={{ animation: 'spin 180s linear infinite', transformOrigin: '100px 100px' }}>
+              {[
+                { name: '乾', lines: [1,1,1], angle: 0 },     // ☰ 三阳
+                { name: '巽', lines: [1,1,0], angle: 45 },    // ☴ 阳阳阴
+                { name: '坎', lines: [0,1,0], angle: 90 },    // ☵ 阴阳阴
+                { name: '艮', lines: [1,0,0], angle: 135 },   // ☶ 阳阴阴
+                { name: '坤', lines: [0,0,0], angle: 180 },   // ☷ 三阴
+                { name: '震', lines: [0,0,1], angle: 225 },   // ☳ 阴阴阳
+                { name: '离', lines: [1,0,1], angle: 270 },   // ☲ 阳阴阳
+                { name: '兑', lines: [0,1,1], angle: 315 },   // ☱ 阴阳阳
+              ].map((tri) => {
+                const r = 78;
+                const rad = (tri.angle - 90) * Math.PI / 180;
+                const cx = 100 + r * Math.cos(rad);
+                const cy = 100 + r * Math.sin(rad);
+                const lineW = 8;
+                const lineH = 1.2;
+                const gap = 3.5;
+                const breatheDelay = (tri.angle / 360) * 8;
+                return (
+                  <g
+                    key={tri.name}
+                    transform={`translate(${cx},${cy})`}
+                    style={{ animation: `breathe 8s ease-in-out ${breatheDelay}s infinite` }}
+                    filter="url(#glow)"
+                  >
+                    {tri.lines.map((solid, li) => {
+                      const y = (li - 1) * gap;
+                      if (solid) {
+                        return <rect key={li} x={-lineW/2} y={y - lineH/2} width={lineW} height={lineH} rx={0.5} fill="rgba(196,149,107,0.55)" />;
+                      }
+                      return (
+                        <g key={li}>
+                          <rect x={-lineW/2} y={y - lineH/2} width={lineW * 0.38} height={lineH} rx={0.5} fill="rgba(196,149,107,0.55)" />
+                          <rect x={lineW * 0.12} y={y - lineH/2} width={lineW * 0.38} height={lineH} rx={0.5} fill="rgba(196,149,107,0.55)" />
+                        </g>
+                      );
+                    })}
+                  </g>
+                );
+              })}
+            </g>
           </svg>
           {/* Glow behind ring */}
           <div
             className="pointer-events-none absolute inset-0 rounded-full"
             style={{
-              background: 'radial-gradient(circle, rgba(196,149,107,0.12) 0%, rgba(196,149,107,0.04) 40%, transparent 70%)',
-              animation: 'breathe 5s ease-in-out infinite',
+              background: 'radial-gradient(circle, rgba(196,149,107,0.10) 0%, rgba(196,149,107,0.03) 40%, transparent 70%)',
+              animation: 'breathe 6s ease-in-out infinite',
             }}
           />
         </div>

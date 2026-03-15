@@ -11,11 +11,11 @@ import type { MockResult } from '@/lib/types';
 const messages = getMessages();
 
 const PROGRESS_STAGES = [
-  { label: '正在排盘…', duration: 2000 },
-  { label: '分析卦象结构…', duration: 3000 },
-  { label: '解读动爻变化…', duration: 5000 },
-  { label: '综合分析中…', duration: 10000 },
-  { label: '生成解读报告…', duration: 15000 },
+  { label: '正在排盘…', threshold: 0 },
+  { label: '分析卦象结构…', threshold: 20 },
+  { label: '解读动爻变化…', threshold: 40 },
+  { label: '综合分析中…', threshold: 60 },
+  { label: '生成解读报告…', threshold: 80 },
 ];
 
 export function ProcessingClient() {
@@ -68,12 +68,9 @@ export function ProcessingClient() {
       setProgress(rawProgress);
       progressRef.current = rawProgress;
 
-      // Update stage
-      if (rawProgress < 10) setStageIndex(0);
-      else if (rawProgress < 30) setStageIndex(1);
-      else if (rawProgress < 55) setStageIndex(2);
-      else if (rawProgress < 80) setStageIndex(3);
-      else setStageIndex(4);
+      // Update stage — sync with progress bar
+      const newStage = rawProgress >= 80 ? 4 : rawProgress >= 60 ? 3 : rawProgress >= 40 ? 2 : rawProgress >= 20 ? 1 : 0;
+      setStageIndex(newStage);
 
       // Navigate when we hit 100
       if (rawProgress >= 99.5 && analysisComplete.current && !navigated.current) {
