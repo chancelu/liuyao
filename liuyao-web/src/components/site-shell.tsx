@@ -4,6 +4,7 @@ import { AuthNav } from '@/components/auth/auth-nav';
 import { AutoCheckin } from '@/components/auto-checkin';
 import { InkWashBackground } from '@/components/ui/ink-wash-background';
 import { LocaleSwitcher } from '@/components/ui/locale-switcher';
+import { ShellNav, ShellFooterTagline } from '@/components/ui/shell-nav';
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
@@ -31,10 +32,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <span className="text-[12px] font-medium tracking-[0.35em] text-[var(--text-muted)] uppercase">Yarrow</span>
           </Link>
           <nav className="flex items-center gap-3 text-xs tracking-[0.1em] text-[var(--text-muted)] sm:gap-6">
-            <Link href="/cast" className="group flex items-center gap-2 transition-colors duration-300 hover:text-[var(--gold)]">
-              <i className="fa-solid fa-coins text-[10px] opacity-50 transition-opacity group-hover:opacity-100"></i>
-              <span>问卦</span>
-            </Link>
+            <ShellNav />
             <LocaleSwitcher />
             <Suspense fallback={
               <Link href="/login" className="flex items-center gap-2 text-[var(--text-dim)] transition-colors duration-300 hover:text-[var(--gold)]">
@@ -68,9 +66,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               </div>
               <span className="text-[10px] tracking-[0.3em] text-[var(--text-dim)] uppercase">Yarrow</span>
             </div>
-            <span className="text-[9px] tracking-[0.15em] text-[var(--text-dim)]">
-              六爻在线占卦
-            </span>
+            <ShellFooterTagline />
           </div>
         </footer>
       </div>
