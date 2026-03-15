@@ -14,10 +14,10 @@ export default function HomePage() {
         {/* ── Oracle Ring — 8 trigrams with breathing glow + floating particles ── */}
         <div className="animate-fade-in relative mb-8 sm:mb-10">
           {/* Floating golden particles — scattered, irregular drift */}
-          <div className="pointer-events-none absolute inset-[-40px] sm:inset-[-60px]">
+          <div className="pointer-events-none absolute inset-[-60px] sm:inset-[-80px]">
             {Array.from({ length: 18 }).map((_, i) => {
               const angle = (i * 137.5) % 360; // golden angle for natural scatter
-              const dist = 40 + (i * 17) % 80; // varied distance from center
+              const dist = 50 + (i * 21) % 100; // varied distance from center
               const size = 1.2 + (i % 4) * 0.6;
               const dur = 8 + (i % 5) * 4; // 8-24s breathing cycle
               const delay = (i * 1.3) % 6;
@@ -42,7 +42,7 @@ export default function HomePage() {
           </div>
           <svg
             viewBox="0 0 200 200"
-            className="relative h-[180px] w-[180px] sm:h-[240px] sm:w-[240px] lg:h-[300px] lg:w-[300px]"
+            className="relative h-[240px] w-[240px] sm:h-[320px] sm:w-[320px] lg:h-[400px] lg:w-[400px]"
           >
             <defs>
               <filter id="glow">
@@ -58,14 +58,6 @@ export default function HomePage() {
               strokeWidth="0.5"
               style={{ animation: 'spin 120s linear infinite' }}
               transform-origin="100 100"
-            />
-            {/* Main ring — breathing glow */}
-            <circle
-              cx="100" cy="100" r="78"
-              fill="none"
-              stroke="rgba(196,149,107,0.45)"
-              strokeWidth="0.8"
-              style={{ animation: 'breathe 6s ease-in-out infinite' }}
             />
             {/* Inner ring */}
             <circle
