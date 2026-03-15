@@ -29,3 +29,30 @@
 - Supabase：已建表 user_profiles, user_points, points_log, checkin_records
 - 管理员邮箱：18612669630@163.com
 - Gemini 图片生成脚本在 liuyao-web/scripts/，用环境变量 GEMINI_API_KEY
+
+## 分析引擎测试结果（2026-03-15）
+
+### 引擎基线（卷五100题）
+- **44/99 精确 (44.4%)，81/99 接近 (81.8%)**
+- 评分权重：月日=2, 动爻=0.75, 暗动=0.4, 变爻=1.8, 泄耗系数=0.7
+- 旺衰阈值：≥3.2→旺, ≥1.0→偏旺, ≥-1.0→平, ≥-2.8→偏弱, else→弱
+
+### 混合分析器（引擎+LLM）
+- 架构：`src/lib/analysis/hybrid-analyzer.ts`
+- 用神选择：LLM 在 confidence !== 'high' 时介入（relationship/career/health/other）
+- 旺衰微调：**已关闭** — 测试显示 LLM 回退多于改善
+- 测试结论：LLM 用神选择有潜力但当前 prompt 太保守，基本没改变引擎选择
+- 测试脚本：`scripts/test-hybrid.ts`（--live/--json/--batch）
+
+### LLM API
+- **生产环境已切换到 Gemini 3 Flash**
+- Base URL: `https://generativelanguage.googleapis.com/v1beta/openai`
+- Model: `gemini-3-flash-preview`
+- 原豆包 API 有连接池卡死问题，已弃用
+- Vercel 环境变量需手动更新（小北待操作）
+
+### 剩余瓶颈
+- 用神位置不匹配 22 题（引擎选错爻位）
+- 纯旺衰偏差 25 题（偏高17，偏低8）
+- 缺少三刑/六害/连续相生链对旺衰的影响
+- 权重调优已到极限，需要结构性改进
