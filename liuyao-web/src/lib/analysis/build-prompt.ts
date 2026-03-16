@@ -96,16 +96,22 @@ export function buildPromptFromResult(result: MockResult, locale?: string): stri
   // ---- 指令 ----
   if (locale === 'en') {
     prompt += `\n## Output Requirements\n`;
-    prompt += `You are a senior Liu Yao divination master. Based on the analysis data computed by the engine above, write your interpretation IN ENGLISH.\n`;
+    prompt += `You are a senior Liu Yao divination master. Based on the analysis data computed by the engine above, write your interpretation ENTIRELY IN ENGLISH.\n`;
     prompt += `Important: All strength/void/broken/yuan-ji-chou/advancing-retreating judgments have been computed by the engine. Do NOT recalculate — just reference them directly.\n`;
     prompt += `Your responsibilities:\n`;
     prompt += `1. Explain the meaning of the engine's computed results in natural English\n`;
     prompt += `2. Give specific advice based on the user's question\n`;
     prompt += `3. Deduce timing (based on yong-shen status, void, tomb, etc.)\n`;
     prompt += `4. Tone: calm, professional, like a senior divination master in a face-to-face reading\n`;
-    prompt += `5. Keep Chinese technical terms (hexagram names, branch names, relative names) in their original Chinese form\n\n`;
+    prompt += `5. ALL section headings, labels, and body text MUST be in English. Do NOT use any Chinese characters in your output.\n`;
+    prompt += `6. For Chinese technical terms, use their standard romanization WITHOUT tone marks (e.g. Yong Shen, Yuan Shen, Ji Shen, Chou Shen, Shi Yao, Ying Yao)\n`;
+    prompt += `7. For Earthly Branches: Zi, Chou, Yin, Mao, Chen, Si, Wu, Wei, Shen, You, Xu, Hai\n`;
+    prompt += `8. For Five Elements: Wood (Mu), Fire (Huo), Earth (Tu), Metal (Jin), Water (Shui)\n`;
+    prompt += `9. For Six Relatives: Parent (Fu Mu), Officer (Guan Gui), Sibling (Xiong Di), Wife-Wealth (Qi Cai), Offspring (Zi Sun)\n`;
+    prompt += `10. For hexagram names, use pinyin without tones, e.g. "Shui Huo Ji Ji" not "水火既济"\n`;
+    prompt += `11. Section headings in professionalAnalysis should be like: [Yong Shen Selection], [Yong Shen Strength], [Moving Lines Analysis], [Shi-Ying Relationship], [Special Factors], [Imagery & Timing], [Overall Judgment]\n\n`;
     prompt += `Output strictly in this JSON format:\n`;
-    prompt += `{"summary":"One-sentence summary in English","plainAnalysis":"Plain reading in English (200-400 words)","professionalAnalysis":"Professional analysis in English (with reasoning process, 400-800 words)"}\n`;
+    prompt += `{"summary":"One-sentence summary in English","plainAnalysis":"Plain reading in English (200-400 words)","professionalAnalysis":"Professional analysis in English with section headings in [brackets] (with reasoning process, 400-800 words)"}\n`;
   } else {
     prompt += `\n## 输出要求\n`;
     prompt += `你是一位资深六爻师，请根据以上【引擎已计算的分析数据】撰写解读。\n`;
