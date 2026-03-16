@@ -10,6 +10,7 @@ interface DivinationRow {
   question: string;
   category: string;
   time_scope: string;
+  gender: string | null;
   background: string;
   locale: string;
   created_at: string;
@@ -44,6 +45,7 @@ function rowToDraft(row: DivinationRow): DivinationDraft {
     question: row.question,
     category: row.category as DivinationDraft['category'],
     timeScope: row.time_scope as DivinationDraft['timeScope'],
+    gender: (row.gender as DivinationDraft['gender']) ?? undefined,
     background: row.background,
     locale: row.locale,
     createdAt: row.created_at,
@@ -64,6 +66,7 @@ function rowToResult(d: DivinationRow, r: ReadingRow): MockResult {
     question: d.question,
     category: d.category as MockResult['category'],
     timeScope: d.time_scope as MockResult['timeScope'],
+    gender: (d.gender as MockResult['gender']) ?? undefined,
     background: d.background,
     primaryHexagram: r.primary_hexagram,
     changedHexagram: r.changed_hexagram,
@@ -87,6 +90,7 @@ export class SupabaseDivinationRepository implements IDivinationRepository {
       question: draft.question,
       category: draft.category,
       time_scope: draft.timeScope,
+      gender: draft.gender ?? null,
       background: draft.background,
       locale: draft.locale,
       created_at: draft.createdAt,
