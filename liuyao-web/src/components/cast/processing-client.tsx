@@ -21,58 +21,68 @@ export function ProcessingClient() {
     { label: messages.processing.steps[3], threshold: 60 },
     { label: messages.processing.steps[4], threshold: 80 },
   ];
+
   const [progress, setProgress] = useState(0);
   const [stageIndex, setStageIndex] = useState(0);
   const [error, setError] = useState('');
   const analysisStarted = useRef(false);
   const analysisComplete = useRef(false);
   const navigated = useRef(false);
-  const progressRef = useRef(0);
+  const completeTime = useRef(0);
 
-  // Keep progressRef in sync
+  // Redirect if no id
   useEffect(() => {
-    progressRef.current = progress;
-  }, [progress]);
+    if (!id) router.replace('/cast');
+  }, [id, router]);
 
   // Smooth progress animation
   useEffect(() => {
-    if (!id) {
-      router.replace('/cast');
-      return;
-    }
+    if (!id) return;
 
     let animFrame: number;
     const startTime = Date.now();
+    // Expected LLM duration ~25s; progress crawls to 90% over that time
+    const expectedDuration = 25000;
 
     function tick() {
       if (navigated.current) return;
 
       const elapsed = Date.now() - startTime;
-      const t = elapsed / 1000;
+      let p: number;
 
-      let rawProgress: number;
       if (analysisComplete.current) {
-        // Analysis done — animate quickly to 100%
-        const completedAt = progressRef.current;
-        rawProgress = completedAt + (100 - completedAt) * Math.min(1, (t - elapsed / 1000 + 0.5) / 0.5);
-        // Simple: just jump toward 100
-        rawProgress = Math.min(100, progressRef.current + 2);
-      } else if (t < 3) {
-        rawProgress = 40 * (1 - Math.pow(1 - t / 3, 3));
+        // Record when analysis completed
+        if (completeTime.current === 0) completeTime.current = Date.now();
+        const sinceComplete = Date.now() - completeTime.current;
+        // Animate from current to 100% over 600ms
+        const base = 90;
+        p = base + (100 - base) * Math.min(1, sinceComplete / 600);
       } else {
-        rawProgress = 40 + 52 * (1 - Math.exp(-(t - 3) / 20));
+        // Ease toward 90% using a curve that feels natural:
+        // - 0-2s: quick start to ~15%
+        // - 2-8s: steady climb to ~45%
+        // - 8-25s: slow crawl to ~85%
+        // - 25s+: asymptotically approach 90%
+        const t = elapsed / 1000;
+        if (t < 2) {
+          p = 15 * (t / 2);
+        } else if (t < 8) {
+          p = 15 + 30 * ((t - 2) / 6);
+        } else {
+          // Logarithmic slowdown: approaches 90 but never reaches it
+          p = 45 + 45 * (1 - Math.exp(-(t - 8) / 18));
+        }
       }
 
-      rawProgress = Math.min(100, rawProgress);
-      setProgress(rawProgress);
-      progressRef.current = rawProgress;
+      p = Math.min(100, Math.max(0, p));
+      setProgress(p);
 
-      // Update stage — sync with progress bar
-      const newStage = rawProgress >= 80 ? 4 : rawProgress >= 60 ? 3 : rawProgress >= 40 ? 2 : rawProgress >= 20 ? 1 : 0;
+      // Update stage index based on progress
+      const newStage = p >= 80 ? 4 : p >= 60 ? 3 : p >= 40 ? 2 : p >= 20 ? 1 : 0;
       setStageIndex(newStage);
 
-      // Navigate when we hit 100
-      if (rawProgress >= 99.5 && analysisComplete.current && !navigated.current) {
+      // Navigate when done
+      if (p >= 99.5 && analysisComplete.current && !navigated.current) {
         navigated.current = true;
         setTimeout(() => router.replace(`/result/${id}`), 300);
         return;
@@ -139,7 +149,7 @@ export function ProcessingClient() {
     }
 
     void runAnalysis();
-  }, [id]);
+  }, [id, locale]);
 
   // Safety timeout
   useEffect(() => {
