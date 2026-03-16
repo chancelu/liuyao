@@ -101,6 +101,8 @@ const _zhCN = {
       female: '女',
     },
     questionTooShort: '先把问题写得更具体一点，再开始摇卦。',
+    genderLabel: '性别',
+    submitting: '正在进入摇卦…',
   },
   cast: {
     title: '请专注这件事，然后开始摇卦。',

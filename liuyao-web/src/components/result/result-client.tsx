@@ -16,67 +16,6 @@ import { ShareCard } from '@/components/result/share-card';
 import { track } from '@/lib/analytics';
 import type { MockResult } from '@/lib/types';
 
-const YAO_POS = ['初', '二', '三', '四', '五', '上'];
-
-function YaoLine({ line }: { line: { position: number; spirit: string; relative: string; branch: string; branchElement: string; yinYang: string; moving: boolean; isShi: boolean; isYing: boolean; changedBranch?: string; changedRelative?: string } }) {
-  const isYang = line.yinYang === '阳';
-  const posName = `${YAO_POS[line.position - 1]}爻`;
-
-  return (
-    <div
-      className={`animate-fade-in-up grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 rounded-xl px-5 py-4 transition-colors duration-200 ${
-        line.moving
-          ? 'border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]'
-          : 'bg-[var(--bg-elevated)]'
-      }`}
-      style={{ animationDelay: `${(6 - line.position) * 80}ms` }}
-    >
-      {/* Position & Spirit */}
-      <div className="text-center">
-        <div className="text-xs font-medium text-white">{posName}</div>
-        <div className="mt-0.5 text-[10px] text-[var(--text-dim)]">{line.spirit}</div>
-      </div>
-
-      {/* Yao visual + info */}
-      <div className="flex items-center gap-5">
-        <div className="w-20 shrink-0">
-          {isYang ? (
-            <div className="h-[4px] w-full rounded-full bg-white" />
-          ) : (
-            <div className="flex gap-2.5">
-              <div className="h-[4px] flex-1 rounded-full bg-[var(--text-muted)]" />
-              <div className="h-[4px] flex-1 rounded-full bg-[var(--text-muted)]" />
-            </div>
-          )}
-          {line.moving && (
-            <div className="mt-1 text-center text-[10px] text-[var(--gold)]">
-              {isYang ? '○' : '×'}
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-baseline gap-3">
-          <span className="text-sm text-white">{line.relative}</span>
-          <span className="text-xs text-[var(--text-dim)]">{line.branch}{line.branchElement}</span>
-        </div>
-
-        {line.moving && (
-          <div className="flex items-center gap-2 text-xs">
-            <span className="text-[var(--gold-dim)]">→</span>
-            <span className="text-[var(--text-muted)]">{line.changedBranch} {line.changedRelative}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Shi/Ying */}
-      <div className="w-8 text-center">
-        {line.isShi && <span className="text-xs text-[var(--gold)]">世</span>}
-        {line.isYing && <span className="text-xs text-[var(--blue)]">应</span>}
-      </div>
-    </div>
-  );
-}
-
 export function ResultClient({ id }: { id: string }) {
   const router = useRouter();
   const { messages, locale } = useI18n();

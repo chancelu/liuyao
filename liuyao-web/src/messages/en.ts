@@ -103,6 +103,8 @@ export const en: Messages = {
       female: 'Female',
     },
     questionTooShort: 'Please be more specific before starting the cast.',
+    genderLabel: 'Gender',
+    submitting: 'Entering ritual…',
   },
   cast: {
     title: 'Focus on your question, then begin casting.',

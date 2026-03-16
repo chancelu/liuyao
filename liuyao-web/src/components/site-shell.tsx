@@ -37,7 +37,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <Suspense fallback={
               <Link href="/login" className="flex items-center gap-2 text-[var(--text-dim)] transition-colors duration-300 hover:text-[var(--gold)]">
                 <i className="fa-regular fa-user text-[10px]"></i>
-                <span>入</span>
+                <span>…</span>
               </Link>
             }>
               <AuthNav />

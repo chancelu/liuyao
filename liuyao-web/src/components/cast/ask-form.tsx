@@ -132,7 +132,7 @@ export function AskForm() {
 
       {/* Gender */}
       <section className="space-y-3">
-        <div className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.ask.genders.male === '男' ? '性别' : 'Gender'}</div>
+        <div className="text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.ask.genderLabel}</div>
         <div className="flex flex-wrap gap-2 sm:gap-3">
           {([{ value: 'male' as Gender, label: messages.ask.genders.male }, { value: 'female' as Gender, label: messages.ask.genders.female }]).map((item) => (
             <button
@@ -170,7 +170,7 @@ export function AskForm() {
           className="btn-primary w-full rounded-full px-10 py-4 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:max-w-md sm:px-12 sm:py-5 sm:text-base"
           disabled={!canSubmit || isSubmitting}
         >
-          {isSubmitting ? '正在进入摇卦…' : messages.ask.submit}
+          {isSubmitting ? messages.ask.submitting : messages.ask.submit}
         </button>
       </div>
 
