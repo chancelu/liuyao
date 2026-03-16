@@ -6,7 +6,7 @@ import { analyze, type AnalysisResult, type YaoStatus } from './liuyao-engine';
  *
  * v2: 使用确定性分析引擎预计算所有数据，LLM 仅负责文字表达。
  */
-export function buildPromptFromResult(result: MockResult): string {
+export function buildPromptFromResult(result: MockResult, locale?: string): string {
   const chart = result.chart;
   if (!chart) return '';
 
@@ -94,16 +94,30 @@ export function buildPromptFromResult(result: MockResult): string {
   }
 
   // ---- 指令 ----
-  prompt += `\n## 输出要求\n`;
-  prompt += `你是一位资深六爻师，请根据以上【引擎已计算的分析数据】撰写解读。\n`;
-  prompt += `重要：所有旺衰、空破、原忌仇、进退神等判断已由引擎完成，你不需要重新计算，直接引用即可。\n`;
-  prompt += `你的职责是：\n`;
-  prompt += `1. 用自然语言解释引擎计算结果的含义\n`;
-  prompt += `2. 结合用户问题给出具体建议\n`;
-  prompt += `3. 推导应期（基于用神状态、空破、墓库等）\n`;
-  prompt += `4. 语气沉稳专业，如资深易师面对面解卦\n\n`;
-  prompt += `严格按以下 JSON 格式输出：\n`;
-  prompt += `{"summary":"一句话总结","plainAnalysis":"白话解读（200-400字）","professionalAnalysis":"专业分析（含推导过程，400-800字）"}\n`;
+  if (locale === 'en') {
+    prompt += `\n## Output Requirements\n`;
+    prompt += `You are a senior Liu Yao divination master. Based on the analysis data computed by the engine above, write your interpretation IN ENGLISH.\n`;
+    prompt += `Important: All strength/void/broken/yuan-ji-chou/advancing-retreating judgments have been computed by the engine. Do NOT recalculate — just reference them directly.\n`;
+    prompt += `Your responsibilities:\n`;
+    prompt += `1. Explain the meaning of the engine's computed results in natural English\n`;
+    prompt += `2. Give specific advice based on the user's question\n`;
+    prompt += `3. Deduce timing (based on yong-shen status, void, tomb, etc.)\n`;
+    prompt += `4. Tone: calm, professional, like a senior divination master in a face-to-face reading\n`;
+    prompt += `5. Keep Chinese technical terms (hexagram names, branch names, relative names) in their original Chinese form\n\n`;
+    prompt += `Output strictly in this JSON format:\n`;
+    prompt += `{"summary":"One-sentence summary in English","plainAnalysis":"Plain reading in English (200-400 words)","professionalAnalysis":"Professional analysis in English (with reasoning process, 400-800 words)"}\n`;
+  } else {
+    prompt += `\n## 输出要求\n`;
+    prompt += `你是一位资深六爻师，请根据以上【引擎已计算的分析数据】撰写解读。\n`;
+    prompt += `重要：所有旺衰、空破、原忌仇、进退神等判断已由引擎完成，你不需要重新计算，直接引用即可。\n`;
+    prompt += `你的职责是：\n`;
+    prompt += `1. 用自然语言解释引擎计算结果的含义\n`;
+    prompt += `2. 结合用户问题给出具体建议\n`;
+    prompt += `3. 推导应期（基于用神状态、空破、墓库等）\n`;
+    prompt += `4. 语气沉稳专业，如资深易师面对面解卦\n\n`;
+    prompt += `严格按以下 JSON 格式输出：\n`;
+    prompt += `{"summary":"一句话总结","plainAnalysis":"白话解读（200-400字）","professionalAnalysis":"专业分析（含推导过程，400-800字）"}\n`;
+  }
 
   return prompt;
 }

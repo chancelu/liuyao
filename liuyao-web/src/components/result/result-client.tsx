@@ -79,7 +79,7 @@ function YaoLine({ line }: { line: { position: number; spirit: string; relative:
 
 export function ResultClient({ id }: { id: string }) {
   const router = useRouter();
-  const { messages } = useI18n();
+  const { messages, locale } = useI18n();
   const [result, setResult] = useState<MockResult | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -136,7 +136,7 @@ export function ResultClient({ id }: { id: string }) {
 
     async function fetchAIAnalysis() {
       try {
-        const prompt = buildPromptFromResult(result!);
+        const prompt = buildPromptFromResult(result!, locale);
         if (!prompt) { setAiLoading(false); return; }
 
         const data = await callLLMStream(prompt);
@@ -241,7 +241,7 @@ export function ResultClient({ id }: { id: string }) {
           <div className="space-y-3">
             <div className="text-[10px] tracking-[0.4em] text-[var(--text-dim)] uppercase">Result #{id}</div>
             <h1 className="font-display text-2xl font-extralight tracking-[0.02em] text-white sm:text-4xl">{messages.result.title}</h1>
-            <p className="max-w-2xl text-sm leading-8 text-[var(--text-muted)]">先看卦象结构，再看基础结论，最后展开卦象解读与断卦释义。</p>
+            <p className="max-w-2xl text-sm leading-8 text-[var(--text-muted)]">{messages.result.description}</p>
           </div>
         </div>
         <div className="mt-8 h-px w-full bg-[rgba(255,255,255,0.06)]" />
@@ -256,15 +256,15 @@ export function ResultClient({ id }: { id: string }) {
           {/* Primary & Changed Hexagram Names */}
           <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4">
             <div className="rounded-xl bg-[var(--bg-elevated)] p-3 sm:p-5">
-              <div className="text-[10px] text-[var(--text-dim)]">本卦</div>
+              <div className="text-[10px] text-[var(--text-dim)]">{messages.result.chart.primary}</div>
               <div className="mt-1 font-display text-lg font-light text-white sm:mt-2 sm:text-2xl">
-                {result?.primaryHexagram ?? '待生成'}
+                {result?.primaryHexagram ?? messages.result.chart.pending}
               </div>
             </div>
             <div className="rounded-xl bg-[var(--bg-elevated)] p-3 sm:p-5">
-              <div className="text-[10px] text-[var(--text-dim)]">变卦</div>
+              <div className="text-[10px] text-[var(--text-dim)]">{messages.result.chart.changed}</div>
               <div className="mt-1 font-display text-lg font-light text-white sm:mt-2 sm:text-2xl">
-                {result?.changedHexagram ?? '待生成'}
+                {result?.changedHexagram ?? messages.result.chart.pending}
               </div>
             </div>
           </div>
@@ -272,8 +272,8 @@ export function ResultClient({ id }: { id: string }) {
           {/* Moving lines info */}
           <div className="mb-6 rounded-xl bg-[var(--bg-elevated)] p-5 text-sm leading-7 text-[var(--text-muted)]">
             {result?.movingLines.length
-              ? `动爻：第 ${result.movingLines.join('、')} 爻`
-              : '静卦，无动爻'}
+              ? messages.result.chart.movingLinesLabel.replace('{lines}', result.movingLines.join('、'))
+              : messages.result.chart.staticText}
           </div>
 
           {/* Chart Details */}
@@ -282,20 +282,20 @@ export function ResultClient({ id }: { id: string }) {
               {/* Meta Tags */}
               <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
                 <div className="rounded-lg bg-[var(--bg-elevated)] px-3 py-2.5">
-                  <div className="text-[10px] text-[var(--text-dim)]">月建</div>
+                  <div className="text-[10px] text-[var(--text-dim)]">{messages.result.chart.monthBranch}</div>
                   <div className="mt-1 text-white">{result.chart.monthBranch}</div>
                 </div>
                 <div className="rounded-lg bg-[var(--bg-elevated)] px-3 py-2.5">
-                  <div className="text-[10px] text-[var(--text-dim)]">日辰</div>
+                  <div className="text-[10px] text-[var(--text-dim)]">{messages.result.chart.dayStemBranch}</div>
                   <div className="mt-1 text-white">{result.chart.dayStem}{result.chart.dayBranch}</div>
                 </div>
                 <div className="rounded-lg bg-[var(--bg-elevated)] px-3 py-2.5">
-                  <div className="text-[10px] text-[var(--text-dim)]">旬空</div>
+                  <div className="text-[10px] text-[var(--text-dim)]">{messages.result.chart.xunkong}</div>
                   <div className="mt-1 text-white">{result.chart.xunkong[0]}{result.chart.xunkong[1]}</div>
                 </div>
                 <div className="rounded-lg bg-[var(--bg-elevated)] px-3 py-2.5">
-                  <div className="text-[10px] text-[var(--text-dim)]">宫</div>
-                  <div className="mt-1 text-white">{result.chart.primary.palace}宫（{result.chart.primary.palaceElement}）</div>
+                  <div className="text-[10px] text-[var(--text-dim)]">{messages.result.chart.palace}</div>
+                  <div className="mt-1 text-white">{result.chart.primary.palace}（{result.chart.primary.palaceElement}）</div>
                 </div>
               </div>
 
@@ -303,7 +303,7 @@ export function ResultClient({ id }: { id: string }) {
               <div className="grid grid-cols-2 gap-2 sm:gap-6">
                 {/* Primary Hexagram */}
                 <div>
-                  <div className="mb-3 text-[10px] tracking-[0.2em] text-[var(--text-dim)] uppercase">本卦 · {result.chart.primary.name}</div>
+                  <div className="mb-3 text-[10px] tracking-[0.2em] text-[var(--text-dim)] uppercase">{messages.result.chart.primary} · {result.chart.primary.name}</div>
                   <div className="flex flex-col gap-1.5">
                     {[...result.chart.lines].reverse().map((line) => (
                       <div
@@ -313,7 +313,7 @@ export function ResultClient({ id }: { id: string }) {
                         }`}
                       >
                         <span className="shrink-0 text-[9px] text-[var(--text-dim)] sm:text-[10px]">{line.spirit.slice(0, 1)}</span>
-                        <span className="shrink-0 text-center text-[10px] text-white sm:w-8 sm:text-[11px]">{YAO_POS[line.position - 1]}</span>
+                        <span className="shrink-0 text-center text-[10px] text-white sm:w-8 sm:text-[11px]">{messages.result.chart.yaoPos[line.position - 1]}</span>
                         <div className="w-8 shrink-0 sm:w-14">
                           {line.yinYang === '阳' ? (
                             <div className="h-[3px] w-full rounded-full bg-white" />
@@ -327,15 +327,15 @@ export function ResultClient({ id }: { id: string }) {
                         </div>
                         <span className="text-[9px] text-white sm:text-xs">{line.relative}</span>
                         <span className="text-[9px] text-[var(--text-dim)] sm:text-[10px]">{line.branch}</span>
-                        {line.isShi && <span className="ml-auto text-[9px] text-[var(--gold)] sm:text-[10px]">世</span>}
-                        {line.isYing && <span className="ml-auto text-[9px] text-[var(--blue)] sm:text-[10px]">应</span>}
+                        {line.isShi && <span className="ml-auto text-[9px] text-[var(--gold)] sm:text-[10px]">{messages.result.chart.shi}</span>}
+                        {line.isYing && <span className="ml-auto text-[9px] text-[var(--blue)] sm:text-[10px]">{messages.result.chart.ying}</span>}
                       </div>
                     ))}
                   </div>
                 </div>
                 {/* Changed Hexagram */}
                 <div>
-                  <div className="mb-3 text-[10px] tracking-[0.2em] text-[var(--text-dim)] uppercase">变卦 · {result.chart.changed.name}</div>
+                  <div className="mb-3 text-[10px] tracking-[0.2em] text-[var(--text-dim)] uppercase">{messages.result.chart.changed} · {result.chart.changed.name}</div>
                   <div className="flex flex-col gap-1.5">
                     {[...result.chart.lines].reverse().map((line) => {
                       const isChanged = line.moving;
@@ -347,7 +347,7 @@ export function ResultClient({ id }: { id: string }) {
                             isChanged ? 'animate-pulse-glow border border-[rgba(184,160,112,0.15)] bg-[var(--bg-elevated)]' : 'bg-[var(--bg-elevated)]'
                           }`}
                         >
-                          <span className="shrink-0 text-center text-[10px] text-white sm:w-8 sm:text-[11px]">{YAO_POS[line.position - 1]}</span>
+                          <span className="shrink-0 text-center text-[10px] text-white sm:w-8 sm:text-[11px]">{messages.result.chart.yaoPos[line.position - 1]}</span>
                           <div className="w-8 shrink-0 sm:w-14">
                             {changedYinYang === '阳' ? (
                               <div className="h-[3px] w-full rounded-full bg-white" />
@@ -380,15 +380,15 @@ export function ResultClient({ id }: { id: string }) {
           <div className="flex flex-1 flex-col justify-center space-y-5">
             <div className="border-l-2 border-[var(--gold-dim)] pl-5">
               {result && !result.isAI && result.chart && !aiFailed
-                ? <span className="animate-pulse font-display text-xl font-light text-[var(--text-dim)]">AI 正在分析卦象…</span>
+                ? <span className="animate-pulse font-display text-xl font-light text-[var(--text-dim)]">{messages.result.aiAnalyzing}</span>
                 : aiFailed && !result?.isAI
-                  ? <span className="font-display text-xl font-light text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</span>
+                  ? <span className="font-display text-xl font-light text-[var(--text-dim)]">{messages.result.aiUnavailable}</span>
                   : result?.summary
                     ? <SummaryPoints text={String(result.summary)} />
-                    : <span className="font-display text-xl font-light text-white">正在等待分析结果。</span>}
+                    : <span className="font-display text-xl font-light text-white">{messages.result.waitingAnalysis}</span>}
             </div>
             <div className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3">
-              <div className="mb-1 text-[10px] tracking-widest text-[var(--text-dim)] uppercase">所问</div>
+              <div className="mb-1 text-[10px] tracking-widest text-[var(--text-dim)] uppercase">{messages.result.question}</div>
               <p className="text-sm leading-8 text-[var(--text-muted)]">{result?.question ?? ''}</p>
             </div>
           </div>
@@ -407,12 +407,12 @@ export function ResultClient({ id }: { id: string }) {
           </button>
           {showPlainAnalysis && (
             result && !result.isAI && result.chart && !aiFailed
-              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成卦象解读，请稍候…</p>
+              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">{messages.result.aiGenerating}</p>
               : aiFailed && !result?.isAI
-                ? <p className="text-sm leading-9 text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</p>
+                ? <p className="text-sm leading-9 text-[var(--text-dim)]">{messages.result.aiUnavailable}</p>
                 : result?.plainAnalysis
                   ? <StructuredText text={String(result.plainAnalysis)} className="animate-fade-in" />
-                  : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">解读生成中…</p>
+                  : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">{messages.result.aiGenerating}</p>
           )}
         </div>
         <div className="card-solid animate-fade-in-up delay-500 rounded-2xl p-5 sm:p-7 lg:p-8">
@@ -425,12 +425,12 @@ export function ResultClient({ id }: { id: string }) {
           </button>
           {showProAnalysis && (
             result && !result.isAI && result.chart && !aiFailed
-              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">AI 正在生成断卦释义，请稍候…</p>
+              ? <p className="animate-pulse text-sm leading-9 text-[var(--text-dim)]">{messages.result.aiProGenerating}</p>
               : aiFailed && !result?.isAI
-                ? <p className="text-sm leading-9 text-[var(--text-dim)]">AI 分析暂时不可用，请稍后刷新重试。</p>
+                ? <p className="text-sm leading-9 text-[var(--text-dim)]">{messages.result.aiUnavailable}</p>
                 : result?.professionalAnalysis
                   ? <StructuredText text={String(result.professionalAnalysis)} className="animate-fade-in" />
-                  : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">断卦释义生成中…</p>
+                  : <p className="animate-fade-in text-sm leading-9 text-[var(--text-muted)]">{messages.result.aiProGenerating}</p>
           )}
         </div>
       </section>
@@ -439,34 +439,34 @@ export function ResultClient({ id }: { id: string }) {
       <section className="animate-fade-in-up delay-600 space-y-4 pb-8">
         {!isAuthenticated ? (
           <div className="rounded-xl border border-[rgba(184,160,112,0.12)] bg-[var(--bg-card)] p-5 text-sm leading-8 text-[var(--text-muted)]">
-            这次结果已经可以继续阅读；如果你想下次回来接着看，先登录即可，系统会自动带你回到当前结果页。
+            {messages.result.notLoggedHint}
           </div>
         ) : null}
 
         {saveState === 'error' ? (
           <div className="rounded-xl bg-[var(--bg-card)] p-4 text-sm text-[var(--error)]">
-            保存失败，请稍后重试。
+            {messages.result.saveFailed}
           </div>
         ) : null}
 
         {saveState === 'saved' ? (
           <div className="rounded-xl bg-[var(--bg-card)] p-4 text-sm text-[var(--success)]">
-            已保存到记录。
+            {messages.result.saved}
             <Link href="/history" className="ml-3 underline underline-offset-2 transition-colors duration-200 hover:text-white">
-              查看历史记录
+              {messages.result.viewHistory}
             </Link>
           </div>
         ) : null}
 
         {shareState === 'error' ? (
           <div className="rounded-xl bg-[var(--bg-card)] p-4 text-sm text-[var(--error)]">
-            生成分享链接失败，请稍后重试。
+            {messages.result.shareFailed}
           </div>
         ) : null}
 
         {shareUrl && shareState !== 'copied' ? (
           <div className="rounded-xl bg-[var(--bg-card)] p-4 text-sm text-[var(--text-muted)]">
-            分享链接：
+            {messages.result.shareLink}
             <a href={shareUrl} target="_blank" rel="noreferrer" className="ml-2 break-all text-[var(--gold)] underline underline-offset-2 transition-colors duration-200 hover:text-white">
               {shareUrl}
             </a>
@@ -475,7 +475,7 @@ export function ResultClient({ id }: { id: string }) {
 
         {shareState === 'copied' ? (
           <div className="rounded-xl bg-[var(--bg-card)] p-4 text-sm text-[var(--success)]">
-            分享链接已复制到剪贴板！
+            {messages.result.shareLinkCopied}
           </div>
         ) : null}
 
@@ -486,7 +486,7 @@ export function ResultClient({ id }: { id: string }) {
               disabled={saveState === 'saving' || saveState === 'saved'}
               className="btn-primary rounded-full px-6 py-3 text-xs disabled:opacity-40 sm:px-8 sm:py-3.5 sm:text-sm"
             >
-              {saveState === 'saving' ? '保存中…' : saveState === 'saved' ? '已保存' : messages.result.save}
+              {saveState === 'saving' ? '…' : saveState === 'saved' ? '✓' : messages.result.save}
             </button>
           ) : (
             <Link
@@ -494,7 +494,7 @@ export function ResultClient({ id }: { id: string }) {
               onClick={() => track('click_register')}
               className="btn-primary rounded-full px-6 py-3 text-center text-xs sm:px-8 sm:py-3.5 sm:text-sm"
             >
-              登录后回到这条结果
+              {messages.result.loginToSave}
             </Link>
           )}
           <button
@@ -502,7 +502,7 @@ export function ResultClient({ id }: { id: string }) {
             disabled={shareState === 'sharing'}
             className="btn-secondary rounded-full px-6 py-3 text-xs disabled:opacity-40 sm:px-8 sm:py-3.5 sm:text-sm"
           >
-            {shareState === 'sharing' ? '生成中…' : shareState === 'copied' ? '已复制' : messages.result.share}
+            {shareState === 'sharing' ? '…' : shareState === 'copied' ? messages.result.linkCopied : messages.result.share}
           </button>
           <button
             className="btn-secondary rounded-full px-6 py-3 text-xs sm:px-8 sm:py-3.5 sm:text-sm"
@@ -515,7 +515,7 @@ export function ResultClient({ id }: { id: string }) {
               className="btn-secondary rounded-full px-6 py-3 text-xs sm:px-8 sm:py-3.5 sm:text-sm"
               onClick={() => { setShowShareCard(true); track('click_share_image'); }}
             >
-              生成分享图
+              {messages.result.shareImage}
             </button>
           )}
           {result && (
@@ -523,7 +523,7 @@ export function ResultClient({ id }: { id: string }) {
               className="btn-secondary rounded-full px-6 py-3 text-xs sm:px-8 sm:py-3.5 sm:text-sm"
               onClick={handleCopyUrl}
             >
-              {copiedUrl ? '已复制链接' : '复制分享链接'}
+              {copiedUrl ? messages.result.copiedShareLink : messages.result.copyShareLink}
             </button>
           )}
         </div>

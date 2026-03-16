@@ -9,16 +9,6 @@ import { track } from '@/lib/analytics';
 import { playCoinSound } from '@/lib/audio/coin-sound';
 import type { CastLine, DivinationDraft } from '@/lib/types';
 
-const CAST_OPTIONS: CastLine[] = ['old_yin', 'young_yin', 'young_yang', 'old_yang'];
-const CAST_LABELS: Record<CastLine, string> = {
-  old_yin: '老阴',
-  young_yin: '少阴',
-  young_yang: '少阳',
-  old_yang: '老阳',
-};
-
-const YAO_NAMES = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
-
 export function RitualClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -45,7 +35,7 @@ export function RitualClient() {
 
   const handleCast = useCallback(() => {
     if (!draft) {
-      setError('没有找到当前问题，请先回到起卦页。');
+      setError(messages.ritual.noQuestion);
       return;
     }
     if (isComplete || isShaking) return;
@@ -62,11 +52,10 @@ export function RitualClient() {
       const faces: boolean[] = [Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5];
       const backCount = faces.filter(Boolean).length; // 面的数量
       const COIN_RESULT: CastLine[] = ['old_yang', 'young_yin', 'young_yang', 'old_yin'];
-      // backCount: 0=三字(老阳), 1=二字一面(少阴), 2=一字二面(少阳), 3=三面(老阴)
       const next = COIN_RESULT[backCount];
       setCoinFaces(faces);
       setLines((current) => [...current, next]);
-      setLastLabel(CAST_LABELS[next]);
+      setLastLabel(messages.cast.labels[next]);
       setError('');
       setIsShaking(false);
     }, 900);
@@ -80,11 +69,11 @@ export function RitualClient() {
 
   const handleContinue = async () => {
     if (!draft) {
-      setError('没有找到当前问题，请先回到起卦页。');
+      setError(messages.ritual.noQuestion);
       return;
     }
     if (!isComplete) {
-      setError('还没有完成六次摇卦。');
+      setError(messages.ritual.notComplete);
       return;
     }
 
@@ -146,15 +135,15 @@ export function RitualClient() {
                           : 'bg-[var(--text-dim)]'
                     }`}
                   />
-                  <span>{YAO_NAMES[index]}</span>
-                  {isDone && <span className="ml-auto text-[var(--text-dim)]">{CAST_LABELS[lines[index]]}</span>}
+                  <span>{messages.ritual.yaoNames[index]}</span>
+                  {isDone && <span className="ml-auto text-[var(--text-dim)]">{messages.cast.labels[lines[index]]}</span>}
                 </div>
               );
             })}
           </div>
         </div>
 
-        <div className="text-[10px] text-[var(--text-dim)]">会话：{trialState.id}</div>
+        <div className="text-[10px] text-[var(--text-dim)]">{messages.ritual.session}{trialState.id}</div>
       </div>
 
       {/* Right — Ritual Stage */}
@@ -210,7 +199,7 @@ export function RitualClient() {
                   {/* Face label */}
                   {!isShaking && lines.length > 0 && (
                     <span className="absolute -bottom-6 text-[10px] text-[var(--text-dim)]">
-                      {showBack ? '面' : '字'}
+                      {showBack ? messages.ritual.coinBack : messages.ritual.coinFront}
                     </span>
                   )}
                 </div>
@@ -221,10 +210,10 @@ export function RitualClient() {
           {/* Status */}
           <div className="space-y-3">
             <div className="text-sm text-[var(--text-muted)]">
-              {isShaking ? '正在摇卦…' : isComplete ? '六次摇卦完成，可以生成排盘了。' : '请专注你想问的事情，然后摇出这一爻。'}
+              {isShaking ? messages.ritual.shaking : isComplete ? messages.ritual.complete : messages.ritual.focusHint}
             </div>
             <div className={`font-display text-xs tracking-[0.3em] uppercase transition-all duration-200 ${lastLabel && !isShaking ? 'text-[var(--gold)]' : 'text-[var(--text-dim)]'}`}>
-              {isShaking ? '…' : lastLabel || '少阳 / 少阴 / 老阳 / 老阴'}
+              {isShaking ? '…' : lastLabel || messages.ritual.labelHint}
             </div>
           </div>
 
@@ -236,7 +225,7 @@ export function RitualClient() {
                 onClick={handleContinue}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? '正在生成排盘…' : '六次已完成，生成排盘与结果'}
+                {isSubmitting ? messages.ritual.submitting : messages.ritual.submitComplete}
               </button>
             ) : (
               <button
@@ -244,7 +233,7 @@ export function RitualClient() {
                 onClick={handleCast}
                 disabled={isSubmitting || isShaking}
               >
-                {isShaking ? '摇卦中…' : messages.cast.cta}
+                {isShaking ? messages.ritual.shakingBtn : messages.cast.cta}
               </button>
             )}
             <button

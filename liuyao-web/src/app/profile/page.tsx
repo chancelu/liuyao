@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useI18n } from '@/lib/i18n';
 import { getSession } from '@/lib/supabase/auth';
 
 interface Profile {
@@ -23,7 +24,6 @@ interface PointsLogEntry {
 }
 
 function generateAvatarSvg(seed: string): string {
-  // Simple deterministic color from seed
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
     hash = seed.charCodeAt(i) + ((hash << 5) - hash);
@@ -37,14 +37,9 @@ function generateAvatarSvg(seed: string): string {
   )}`;
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  checkin: '每日签到',
-  share: '分享奖励',
-  admin_grant: '管理员发放',
-};
-
 export default function ProfilePage() {
   const router = useRouter();
+  const { messages, locale } = useI18n();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pointsLog, setPointsLog] = useState<PointsLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,7 +82,7 @@ export default function ProfilePage() {
     if (!newEmail.trim()) return;
     setEmailBusy(true); setEmailMsg(null);
     const session = await getSession();
-    if (!session) { setEmailMsg({ type: 'err', text: '请重新登录' }); setEmailBusy(false); return; }
+    if (!session) { setEmailMsg({ type: 'err', text: messages.profile.email.relogin }); setEmailBusy(false); return; }
 
     try {
       const resp = await fetch('/api/user/change-email', {
@@ -98,10 +93,9 @@ export default function ProfilePage() {
       const data = await resp.json();
       setEmailBusy(false);
       if (data.success) {
-        setEmailMsg({ type: 'ok', text: data.message || '邮箱已更新' });
+        setEmailMsg({ type: 'ok', text: data.message || messages.profile.email.updated });
         setChangingEmail(false);
         setNewEmail('');
-        // Refresh profile
         const p = await fetchProfile(session.access_token);
         if (p) setProfile(p);
       } else {
@@ -109,7 +103,7 @@ export default function ProfilePage() {
       }
     } catch {
       setEmailBusy(false);
-      setEmailMsg({ type: 'err', text: '网络错误' });
+      setEmailMsg({ type: 'err', text: messages.profile.email.networkError });
     }
   }
 
@@ -123,7 +117,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="animate-breathe text-sm text-[var(--text-dim)]">加载中…</div>
+        <div className="animate-breathe text-sm text-[var(--text-dim)]">{messages.common.loading}</div>
       </div>
     );
   }
@@ -131,46 +125,44 @@ export default function ProfilePage() {
   if (!profile) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-sm text-[var(--text-dim)]">无法加载用户信息</p>
+        <p className="text-sm text-[var(--text-dim)]">{messages.profile.loadFailed}</p>
       </div>
     );
   }
 
   const avatarSrc = profile.avatarUrl || generateAvatarSvg(profile.email || profile.shortUid);
+  const typeLabels = messages.profile.pointsLog.types;
 
   return (
     <div className="glow-top mx-auto max-w-2xl space-y-8">
       {/* Header */}
       <div className="animate-fade-in-up">
-        <div className="text-[10px] tracking-[0.4em] text-[var(--text-dim)] uppercase">个人中心</div>
-        <h1 className="mt-2 font-display text-2xl font-extralight tracking-[0.02em] text-white sm:text-3xl">我的账户</h1>
+        <div className="text-[10px] tracking-[0.4em] text-[var(--text-dim)] uppercase">{messages.profile.title}</div>
+        <h1 className="mt-2 font-display text-2xl font-extralight tracking-[0.02em] text-white sm:text-3xl">{messages.profile.subtitle}</h1>
         <div className="mt-6 h-px w-full bg-[rgba(255,255,255,0.06)]" />
       </div>
 
       {/* Profile card */}
       <div className="animate-fade-in-up delay-100 card-solid rounded-2xl p-5 sm:p-8">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
-          {/* Avatar */}
           <div className="relative shrink-0">
             <img
               src={avatarSrc}
-              alt="头像"
+              alt={messages.profile.avatarAlt}
               className="h-16 w-16 rounded-full border border-[rgba(255,255,255,0.1)] object-cover sm:h-20 sm:w-20"
             />
           </div>
-
-          {/* Info */}
           <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left">
             <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start sm:gap-3">
               <span className="truncate font-display text-base text-white sm:text-lg">{profile.email}</span>
               {profile.role === 'admin' && (
-                <span className="rounded-full bg-[rgba(184,160,112,0.15)] px-2.5 py-0.5 text-[10px] text-[var(--gold)]">管理员</span>
+                <span className="rounded-full bg-[rgba(184,160,112,0.15)] px-2.5 py-0.5 text-[10px] text-[var(--gold)]">{messages.profile.admin}</span>
               )}
             </div>
             <div className="flex items-center gap-2 text-xs text-[var(--text-dim)]">
-              <span>UID: {profile.shortUid}</span>
+              <span>{messages.profile.uid}: {profile.shortUid}</span>
               <button onClick={copyUid} className="text-[var(--text-muted)] transition-colors hover:text-[var(--gold)]">
-                {copied ? '已复制' : '复制'}
+                {copied ? messages.profile.copied : messages.profile.copy}
               </button>
             </div>
           </div>
@@ -181,41 +173,41 @@ export default function ProfilePage() {
       <div className="animate-fade-in-up delay-200 card-gold rounded-2xl p-6 sm:p-8">
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-[10px] tracking-[0.25em] text-[var(--gold)] uppercase">我的积分</div>
+            <div className="text-[10px] tracking-[0.25em] text-[var(--gold)] uppercase">{messages.profile.points.title}</div>
             <div className="mt-2 font-display text-4xl font-extralight text-white">{profile.points}</div>
           </div>
           <div className="text-right text-xs text-[var(--text-dim)]">
-            <div>每日签到 +100</div>
-            <div>每日分享 +100</div>
+            <div>{messages.profile.points.checkinDaily}</div>
+            <div>{messages.profile.points.shareDaily}</div>
           </div>
         </div>
       </div>
 
       {/* Email management */}
       <div className="animate-fade-in-up delay-300 card-solid rounded-2xl p-6 sm:p-8">
-        <div className="mb-4 text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">邮箱管理</div>
+        <div className="mb-4 text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.profile.email.title}</div>
         <div className="flex items-center justify-between">
           <span className="text-sm text-white">{profile.email}</span>
           {!changingEmail && (
             <button onClick={() => setChangingEmail(true)}
               className="text-xs text-[var(--text-muted)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]">
-              换绑邮箱
+              {messages.profile.email.change}
             </button>
           )}
         </div>
 
         {changingEmail && (
           <form onSubmit={handleChangeEmail} className="mt-4 space-y-3">
-            <input type="email" required placeholder="新邮箱地址" value={newEmail}
+            <input type="email" required placeholder={messages.profile.email.newPlaceholder} value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               className="w-full rounded-lg border border-[rgba(255,255,255,0.06)] bg-[var(--bg-deep)] px-4 py-3 text-sm text-white placeholder-[var(--text-dim)] outline-none focus:border-[rgba(255,255,255,0.15)]" />
             <div className="flex gap-2">
               <button type="submit" disabled={emailBusy}
                 className="btn-primary rounded-full px-6 py-2.5 text-xs disabled:opacity-40">
-                {emailBusy ? '提交中…' : '确认换绑'}
+                {emailBusy ? messages.profile.email.confirming : messages.profile.email.confirm}
               </button>
               <button type="button" onClick={() => { setChangingEmail(false); setNewEmail(''); setEmailMsg(null); }}
-                className="btn-secondary rounded-full px-6 py-2.5 text-xs">取消</button>
+                className="btn-secondary rounded-full px-6 py-2.5 text-xs">{messages.profile.email.cancel}</button>
             </div>
           </form>
         )}
@@ -230,14 +222,14 @@ export default function ProfilePage() {
       {/* Points log */}
       {pointsLog.length > 0 && (
         <div className="animate-fade-in-up delay-400 card-solid rounded-2xl p-6 sm:p-8">
-          <div className="mb-4 text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">积分记录</div>
+          <div className="mb-4 text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">{messages.profile.pointsLog.title}</div>
           <div className="space-y-3">
             {pointsLog.map((entry) => (
               <div key={entry.id} className="flex items-center justify-between rounded-lg bg-[var(--bg-elevated)] px-4 py-3">
                 <div>
-                  <div className="text-sm text-white">{TYPE_LABELS[entry.type] || entry.type}</div>
+                  <div className="text-sm text-white">{typeLabels[entry.type as keyof typeof typeLabels] || entry.type}</div>
                   <div className="text-[10px] text-[var(--text-dim)]">
-                    {new Date(entry.createdAt).toLocaleString('zh-CN')}
+                    {new Date(entry.createdAt).toLocaleString(locale === 'en' ? 'en-US' : 'zh-CN')}
                   </div>
                 </div>
                 <div className={`font-mono text-sm ${entry.amount > 0 ? 'text-[var(--success)]' : 'text-[var(--error)]'}`}>
@@ -253,7 +245,7 @@ export default function ProfilePage() {
       {profile.role === 'admin' && (
         <div className="animate-fade-in-up delay-500 text-center">
           <a href="/admin" className="text-xs text-[var(--text-dim)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]">
-            进入管理后台
+            {messages.profile.adminLink}
           </a>
         </div>
       )}

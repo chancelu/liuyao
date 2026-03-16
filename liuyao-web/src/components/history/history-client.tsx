@@ -7,16 +7,6 @@ import { listDivinationsApi } from '@/lib/api/client';
 import type { DivinationListItem } from '@/lib/api/types';
 import { useI18n } from '@/lib/i18n';
 
-const CATEGORY_LABELS: Record<string, string> = {
-  relationship: '感情',
-  career: '事业',
-  wealth: '财运',
-  health: '健康',
-  study: '学业',
-  lost: '失物',
-  other: '其他',
-};
-
 function formatDate(iso: string) {
   const d = new Date(iso);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -53,7 +43,7 @@ export function HistoryClient() {
   if (isLoggedIn === null) {
     return (
       <div className="flex items-center justify-center py-20 text-sm text-[var(--text-dim)]">
-        加载中…
+        {messages.common.loading}
       </div>
     );
   }
@@ -61,12 +51,12 @@ export function HistoryClient() {
   if (!isLoggedIn) {
     return (
       <div className="rounded-2xl border border-dashed border-[rgba(196,149,107,0.12)] bg-[var(--bg-card)] p-10 text-center">
-        <p className="text-sm text-[var(--text-muted)]">登录后才能查看历史记录。</p>
+        <p className="text-sm text-[var(--text-muted)]">{messages.history.loginRequired}</p>
         <Link
           href="/login?next=/history"
           className="btn-primary mt-5 inline-flex rounded-full px-6 py-3 text-sm"
         >
-          去登录
+          {messages.history.loginBtn}
         </Link>
       </div>
     );
@@ -97,7 +87,7 @@ export function HistoryClient() {
             <div className="min-w-0 flex-1 space-y-2">
               <div className="flex items-center gap-2">
                 <span className="rounded-full border border-[rgba(196,149,107,0.15)] px-2.5 py-0.5 text-xs text-[var(--gold)]">
-                  {CATEGORY_LABELS[item.category] ?? item.category}
+                  {messages.ask.categories[item.category as keyof typeof messages.ask.categories] ?? item.category}
                 </span>
                 <span className="text-xs text-[var(--text-dim)]">{formatDate(item.createdAt)}</span>
               </div>
@@ -117,13 +107,13 @@ export function HistoryClient() {
                 href={`/result/${item.id}`}
                 className="btn-secondary rounded-full px-4 py-2 text-xs"
               >
-                查看详情
+                {messages.history.viewDetail}
               </Link>
               <Link
                 href="/cast"
                 className="rounded-full border border-[rgba(196,149,107,0.08)] px-4 py-2 text-xs text-[var(--text-dim)] transition-colors duration-200 hover:border-[rgba(196,149,107,0.2)] hover:text-[var(--text-muted)]"
               >
-                再次起卦
+                {messages.history.castAgain}
               </Link>
             </div>
           </div>

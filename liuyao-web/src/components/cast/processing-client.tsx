@@ -8,19 +8,19 @@ import { buildPromptFromResult } from '@/lib/analysis/build-prompt';
 import { callLLMStream } from '@/lib/api/llm-stream';
 import type { MockResult } from '@/lib/types';
 
-const PROGRESS_STAGES = [
-  { label: '正在排盘…', threshold: 0 },
-  { label: '分析卦象结构…', threshold: 20 },
-  { label: '解读动爻变化…', threshold: 40 },
-  { label: '综合分析中…', threshold: 60 },
-  { label: '生成解读报告…', threshold: 80 },
-];
-
 export function ProcessingClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
-  const { messages } = useI18n();
+  const { messages, locale } = useI18n();
+
+  const PROGRESS_STAGES = [
+    { label: messages.processing.steps[0], threshold: 0 },
+    { label: messages.processing.steps[1], threshold: 20 },
+    { label: messages.processing.steps[2], threshold: 40 },
+    { label: messages.processing.steps[3], threshold: 60 },
+    { label: messages.processing.steps[4], threshold: 80 },
+  ];
   const [progress, setProgress] = useState(0);
   const [stageIndex, setStageIndex] = useState(0);
   const [error, setError] = useState('');
@@ -104,7 +104,7 @@ export function ProcessingClient() {
           return;
         }
 
-        const prompt = buildPromptFromResult(result as MockResult);
+        const prompt = buildPromptFromResult(result as MockResult, locale);
         if (!prompt) {
           console.warn('[processing] Could not build prompt');
           analysisComplete.current = true;
@@ -209,7 +209,7 @@ export function ProcessingClient() {
       </div>
 
       <p className="mt-10 text-xs text-[var(--text-dim)]">
-        AI 正在深度分析你的卦象，通常需要 15-30 秒，请耐心等待…
+        {messages.processing.aiHint}
       </p>
 
       {error && (

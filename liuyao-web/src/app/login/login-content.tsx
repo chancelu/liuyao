@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useI18n } from '@/lib/i18n';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 import {
   sendOtpCode,
@@ -14,23 +15,24 @@ type Tab = 'otp' | 'password';
 type View = 'login' | 'register' | 'forgot';
 type OtpStep = 'email' | 'code' | 'done';
 
-function describeNextPath(next: string | null) {
-  if (!next || next === '/') return '首页';
-  if (next.startsWith('/cast/ritual')) return '继续刚才的摇卦';
-  if (next.startsWith('/cast/processing')) return '继续生成中的排盘';
-  if (next.startsWith('/cast')) return '继续起卦';
-  if (next.startsWith('/result/')) return '回到这次结果页';
-  if (next.startsWith('/history')) return '查看历史记录';
-  if (next.startsWith('/profile')) return '个人中心';
-  return '刚才离开的页面';
-}
-
 export function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const errorParam = searchParams.get('error') ?? undefined;
   const next = searchParams.get('next');
-  const nextLabel = useMemo(() => describeNextPath(next), [next]);
+  const { messages } = useI18n();
+
+  const nextLabel = useMemo(() => {
+    const d = messages.login.nextDescriptions;
+    if (!next || next === '/') return d.home;
+    if (next.startsWith('/cast/ritual')) return d.ritual;
+    if (next.startsWith('/cast/processing')) return d.processing;
+    if (next.startsWith('/cast')) return d.cast;
+    if (next.startsWith('/result/')) return d.result;
+    if (next.startsWith('/history')) return d.history;
+    if (next.startsWith('/profile')) return d.profile;
+    return d.default;
+  }, [next, messages]);
 
   const [tab, setTab] = useState<Tab>('otp');
   const [view, setView] = useState<View>('login');
@@ -133,8 +135,8 @@ export function LoginContent() {
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     if (!regEmail.trim() || !regPassword) return;
-    if (regPassword !== regConfirm) { setError('两次密码不一致'); return; }
-    if (regPassword.length < 6) { setError('密码至少 6 个字符'); return; }
+    if (regPassword !== regConfirm) { setError(messages.login.register.passwordMismatch); return; }
+    if (regPassword.length < 6) { setError(messages.login.register.passwordTooShort); return; }
     setBusy(true); setError(null);
     const res = await signUpWithEmail(regEmail.trim(), regPassword);
     setBusy(false);
@@ -160,7 +162,7 @@ export function LoginContent() {
       else setError(data.error);
     } catch {
       setBusy(false);
-      setError('网络错误，请重试');
+      setError(messages.login.forgot.networkError);
     }
   }
 
@@ -172,7 +174,7 @@ export function LoginContent() {
     return (
       <div className="space-y-4 text-center">
         <div className="font-display text-2xl text-[var(--gold)]">✓</div>
-        <p className="text-sm leading-7 text-[var(--text-muted)]">登录成功，正在跳转…</p>
+        <p className="text-sm leading-7 text-[var(--text-muted)]">{messages.login.success}</p>
       </div>
     );
   }
@@ -191,30 +193,30 @@ export function LoginContent() {
         )}
         <form onSubmit={handleRegister} className="space-y-5">
           <div className="space-y-2">
-            <label htmlFor="reg-email" className={labelClass}>邮箱地址</label>
-            <input id="reg-email" type="email" required autoComplete="email" placeholder="your@email.com"
+            <label htmlFor="reg-email" className={labelClass}>{messages.login.emailLabel}</label>
+            <input id="reg-email" type="email" required autoComplete="email" placeholder={messages.login.emailPlaceholder}
               value={regEmail} onChange={(e) => setRegEmail(e.target.value)} className={inputClass} />
           </div>
           <div className="space-y-2">
-            <label htmlFor="reg-pass" className={labelClass}>密码</label>
-            <input id="reg-pass" type="password" required autoComplete="new-password" placeholder="至少 6 个字符"
+            <label htmlFor="reg-pass" className={labelClass}>{messages.login.passwordLabel}</label>
+            <input id="reg-pass" type="password" required autoComplete="new-password" placeholder={messages.login.register.passwordHint}
               value={regPassword} onChange={(e) => setRegPassword(e.target.value)} className={inputClass} />
           </div>
           <div className="space-y-2">
-            <label htmlFor="reg-confirm" className={labelClass}>确认密码</label>
-            <input id="reg-confirm" type="password" required autoComplete="new-password" placeholder="再输入一次"
+            <label htmlFor="reg-confirm" className={labelClass}>{messages.login.register.confirmLabel}</label>
+            <input id="reg-confirm" type="password" required autoComplete="new-password" placeholder={messages.login.register.confirmPlaceholder}
               value={regConfirm} onChange={(e) => setRegConfirm(e.target.value)} className={inputClass} />
           </div>
           <button type="submit" disabled={busy || !regEmail.trim() || !regPassword || !regConfirm}
             className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
-            {busy ? '注册中…' : '注册'}
+            {busy ? messages.login.register.submitting : messages.login.register.submit}
           </button>
-          <p className="text-center text-xs text-[var(--text-dim)]">注册后请查收验证邮件完成激活。</p>
+          <p className="text-center text-xs text-[var(--text-dim)]">{messages.login.register.emailHint}</p>
         </form>
         <div className="text-center">
           <button type="button" onClick={() => switchView('login')}
             className="text-xs text-[var(--text-dim)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]">
-            已有账号？返回登录
+            {messages.login.register.backToLogin}
           </button>
         </div>
       </div>
@@ -235,22 +237,22 @@ export function LoginContent() {
         )}
         <form onSubmit={handleForgotPassword} className="space-y-5">
           <div className="space-y-3 text-center">
-            <p className="text-sm leading-7 text-[var(--text-muted)]">输入注册邮箱，我们将发送密码重置链接。</p>
+            <p className="text-sm leading-7 text-[var(--text-muted)]">{messages.login.forgot.description}</p>
           </div>
           <div className="space-y-2">
-            <label htmlFor="forgot-email" className={labelClass}>邮箱地址</label>
-            <input id="forgot-email" type="email" required autoComplete="email" placeholder="your@email.com"
+            <label htmlFor="forgot-email" className={labelClass}>{messages.login.emailLabel}</label>
+            <input id="forgot-email" type="email" required autoComplete="email" placeholder={messages.login.emailPlaceholder}
               value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className={inputClass} />
           </div>
           <button type="submit" disabled={busy || !forgotEmail.trim() || forgotSent}
             className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
-            {busy ? '发送中…' : forgotSent ? '已发送' : '发送重置邮件'}
+            {busy ? messages.login.forgot.sending : forgotSent ? messages.login.forgot.sent : messages.login.forgot.submit}
           </button>
         </form>
         <div className="text-center">
           <button type="button" onClick={() => switchView('login')}
             className="text-xs text-[var(--text-dim)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]">
-            返回登录
+            {messages.login.forgot.backToLogin}
           </button>
         </div>
       </div>
@@ -265,8 +267,8 @@ export function LoginContent() {
       {/* Tab bar */}
       <div className="flex gap-1 rounded-xl bg-[var(--bg-elevated)] p-1">
         {([
-          ['otp', '验证码登录'],
-          ['password', '密码登录'],
+          ['otp', messages.login.otpTab],
+          ['password', messages.login.passwordTab],
         ] as [Tab, string][]).map(([key, label]) => (
           <button
             key={key}
@@ -285,7 +287,7 @@ export function LoginContent() {
       {/* Next hint */}
       {next && (
         <div className="rounded-xl bg-[var(--bg-elevated)] px-4 py-3 text-xs leading-6 text-[var(--text-muted)]">
-          登录后会自动返回：<span className="text-[var(--text-primary)]">{nextLabel}</span>
+          {messages.login.nextHint}<span className="text-[var(--text-primary)]">{nextLabel}</span>
         </div>
       )}
 
@@ -301,15 +303,15 @@ export function LoginContent() {
       {tab === 'otp' && otpStep === 'email' && (
         <form onSubmit={handleSendOtp} className="space-y-5">
           <div className="space-y-2">
-            <label htmlFor="otp-email" className={labelClass}>邮箱地址</label>
-            <input id="otp-email" type="email" required autoComplete="email" placeholder="your@email.com"
+            <label htmlFor="otp-email" className={labelClass}>{messages.login.emailLabel}</label>
+            <input id="otp-email" type="email" required autoComplete="email" placeholder={messages.login.emailPlaceholder}
               value={otpEmail} onChange={(e) => setOtpEmail(e.target.value)} className={inputClass} />
           </div>
           <button type="submit" disabled={busy || !otpEmail.trim()}
             className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
-            {busy ? '发送中…' : '发送验证码'}
+            {busy ? messages.login.sending : messages.login.sendOtp}
           </button>
-          <p className="text-center text-xs text-[var(--text-dim)]">无需密码，输入邮箱验证码即可登录。</p>
+          <p className="text-center text-xs text-[var(--text-dim)]">{messages.login.otpHint}</p>
         </form>
       )}
 
@@ -317,11 +319,11 @@ export function LoginContent() {
         <form onSubmit={handleVerifyOtp} className="space-y-5">
           <div className="space-y-3 text-center">
             <p className="text-sm leading-7 text-[var(--text-muted)]">
-              验证码已发送至 <span className="text-[var(--text-primary)]">{otpEmail}</span>
+              {messages.login.otpSentTo} <span className="text-[var(--text-primary)]">{otpEmail}</span>
             </p>
           </div>
           <div className="space-y-2">
-            <label htmlFor="otp-code" className={labelClass}>验证码</label>
+            <label htmlFor="otp-code" className={labelClass}>{messages.login.codeLabel}</label>
             <input id="otp-code" type="text" inputMode="numeric" pattern="[0-9]{6,8}" maxLength={8}
               required autoFocus autoComplete="one-time-code" placeholder="000000"
               value={otpCode} onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 8))}
@@ -329,15 +331,15 @@ export function LoginContent() {
           </div>
           <button type="submit" disabled={busy || otpCode.trim().length < 6}
             className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
-            {busy ? '验证中…' : '验证并登录'}
+            {busy ? messages.login.verifying : messages.login.verifyAndLogin}
           </button>
           <div className="flex items-center justify-center gap-4 text-xs text-[var(--text-dim)]">
             <button type="button" onClick={() => { setOtpStep('email'); setOtpCode(''); setError(null); }}
-              className="underline underline-offset-2 transition-colors hover:text-[var(--gold)]">换个邮箱</button>
+              className="underline underline-offset-2 transition-colors hover:text-[var(--gold)]">{messages.login.changeEmail}</button>
             <span>·</span>
             <button type="button" disabled={busy}
               onClick={async () => { setBusy(true); setError(null); const r = await sendOtpCode(otpEmail.trim()); setBusy(false); if (!r.success) setError(r.message); }}
-              className="underline underline-offset-2 transition-colors hover:text-[var(--gold)]">重新发送</button>
+              className="underline underline-offset-2 transition-colors hover:text-[var(--gold)]">{messages.login.resend}</button>
           </div>
         </form>
       )}
@@ -346,23 +348,23 @@ export function LoginContent() {
       {tab === 'password' && (
         <form onSubmit={handlePasswordLogin} className="space-y-5">
           <div className="space-y-2">
-            <label htmlFor="pw-email" className={labelClass}>邮箱地址</label>
-            <input id="pw-email" type="email" required autoComplete="email" placeholder="your@email.com"
+            <label htmlFor="pw-email" className={labelClass}>{messages.login.emailLabel}</label>
+            <input id="pw-email" type="email" required autoComplete="email" placeholder={messages.login.emailPlaceholder}
               value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} className={inputClass} />
           </div>
           <div className="space-y-2">
-            <label htmlFor="pw-pass" className={labelClass}>密码</label>
-            <input id="pw-pass" type="password" required autoComplete="current-password" placeholder="••••••"
+            <label htmlFor="pw-pass" className={labelClass}>{messages.login.passwordLabel}</label>
+            <input id="pw-pass" type="password" required autoComplete="current-password" placeholder={messages.login.passwordPlaceholder}
               value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} className={inputClass} />
           </div>
           <button type="submit" disabled={busy || !loginEmail.trim() || !loginPassword}
             className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40">
-            {busy ? '登录中…' : '登录'}
+            {busy ? messages.login.loggingIn : messages.login.loginBtn}
           </button>
           <div className="text-center">
             <button type="button" onClick={() => switchView('forgot')}
               className="text-xs text-[var(--text-dim)] underline underline-offset-2 transition-colors hover:text-[var(--gold)]">
-              忘记密码？
+              {messages.login.forgotPassword}
             </button>
           </div>
         </form>
@@ -372,7 +374,7 @@ export function LoginContent() {
       <div className="flex justify-end">
         <button type="button" onClick={() => switchView('register')}
           className="text-xs text-[var(--text-dim)] transition-colors hover:text-[var(--gold)]">
-          新用户注册 →
+          {messages.login.registerLink}
         </button>
       </div>
     </div>
