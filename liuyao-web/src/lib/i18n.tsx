@@ -67,3 +67,11 @@ export function useI18n() {
 export function getMessages(locale: Locale = 'zh-CN'): Messages {
   return messagesMap[locale] ?? zhCN;
 }
+
+/** Non-hook version for use outside React components — reads locale from localStorage */
+export function getCurrentMessages(): Messages {
+  if (typeof window === 'undefined') return zhCN;
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored === 'en') return en;
+  return zhCN;
+}

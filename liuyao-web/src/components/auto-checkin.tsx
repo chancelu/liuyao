@@ -2,15 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { getSession } from '@/lib/supabase/auth';
+import { useI18n } from '@/lib/i18n';
 
 /**
- * 自动签到组件 — 放在 SiteShell 中，每天首次加载自动签到。
- * 使用 localStorage 防止同一天重复请求。
- * 签到成功后弹出 toast 提示。
+ * Auto check-in component — placed in SiteShell, auto check-in on first daily load.
+ * Uses localStorage to prevent duplicate requests on the same day.
  */
 export function AutoCheckin() {
   const fired = useRef(false);
   const [showToast, setShowToast] = useState(false);
+  const { messages } = useI18n();
 
   useEffect(() => {
     if (fired.current) return;
@@ -35,7 +36,6 @@ export function AutoCheckin() {
         if (resp.ok) {
           localStorage.setItem(key, today);
           const data = await resp.json().catch(() => null);
-          // Show toast if points were actually granted (not already checked in)
           if (data && data.granted !== false) {
             setShowToast(true);
             setTimeout(() => setShowToast(false), 3000);
@@ -54,8 +54,8 @@ export function AutoCheckin() {
       <div className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[var(--bg-card)] px-6 py-3.5 shadow-2xl">
         <div className="flex items-center gap-3 text-sm">
           <span className="text-[var(--gold)]">✦</span>
-          <span className="text-white">每日签到</span>
-          <span className="font-medium text-[var(--gold)]">积分 +100</span>
+          <span className="text-white">{messages.common.checkinToast}</span>
+          <span className="font-medium text-[var(--gold)]">{messages.common.checkinPoints}</span>
         </div>
       </div>
     </div>

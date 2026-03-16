@@ -1,32 +1,29 @@
 /**
- * 邮箱认证：支持 Magic Link 和密码登录。
+ * Email authentication: supports OTP and password login.
  *
- * 所有函数在客户端（浏览器）调用。
- * 若 Supabase 未配置则返回友好中文错误，UI 层可直接展示。
+ * All functions are called on the client (browser).
+ * If Supabase is not configured, returns a friendly error message via i18n.
  */
 
 import { getSupabaseBrowserClient } from './client';
+import { getCurrentMessages } from '@/lib/i18n';
 
 export interface AuthResult {
   success: boolean;
-  /** 中文错误或提示信息 */
   message: string | null;
 }
 
 // ---------------------------------------------------------------------------
-// OTP 验证码（推荐首选方式）
+// OTP
 // ---------------------------------------------------------------------------
 
-/**
- * 发送 6 位数验证码到指定邮箱。
- * 不需要跳转链接，用户在页面上直接输入验证码。
- */
 export async function sendOtpCode(email: string): Promise<AuthResult> {
+  const m = getCurrentMessages();
   let client;
   try {
     client = getSupabaseBrowserClient();
   } catch {
-    return { success: false, message: '账号系统暂未开放，请稍后再试。' };
+    return { success: false, message: m.auth.unavailable };
   }
 
   const { error } = await client.auth.signInWithOtp({
@@ -35,19 +32,16 @@ export async function sendOtpCode(email: string): Promise<AuthResult> {
   });
 
   if (error) return { success: false, message: translateAuthError(error.message) };
-  return { success: true, message: '验证码已发送，请查收邮件。' };
+  return { success: true, message: m.auth.otpSent };
 }
 
-/**
- * 验证 6 位数 OTP 验证码。
- * 验证成功后 Supabase 会自动建立会话。
- */
 export async function verifyOtpCode(email: string, token: string): Promise<AuthResult> {
+  const m = getCurrentMessages();
   let client;
   try {
     client = getSupabaseBrowserClient();
   } catch {
-    return { success: false, message: '账号系统暂未开放，请稍后再试。' };
+    return { success: false, message: m.auth.unavailable };
   }
 
   const { error } = await client.auth.verifyOtp({
@@ -61,18 +55,16 @@ export async function verifyOtpCode(email: string, token: string): Promise<AuthR
 }
 
 // ---------------------------------------------------------------------------
-// Magic Link（备用）
+// Magic Link
 // ---------------------------------------------------------------------------
 
-/**
- * 发送 Magic Link 到指定邮箱（备用方式）。
- */
 export async function sendMagicLink(email: string, next?: string): Promise<AuthResult> {
+  const m = getCurrentMessages();
   let client;
   try {
     client = getSupabaseBrowserClient();
   } catch {
-    return { success: false, message: '账号系统暂未开放，请稍后再试。' };
+    return { success: false, message: m.auth.unavailable };
   }
 
   const redirectBase =
@@ -94,32 +86,34 @@ export async function sendMagicLink(email: string, next?: string): Promise<AuthR
   });
 
   if (error) return { success: false, message: translateAuthError(error.message) };
-  return { success: true, message: '验证邮件已发送，请查收并点击链接登录。' };
+  return { success: true, message: m.auth.magicLinkSent };
 }
 
 // ---------------------------------------------------------------------------
-// 密码注册 / 登录（备用）
+// Password register / login
 // ---------------------------------------------------------------------------
 
 export async function signUpWithEmail(email: string, password: string): Promise<AuthResult> {
+  const m = getCurrentMessages();
   let client;
   try {
     client = getSupabaseBrowserClient();
   } catch {
-    return { success: false, message: '账号系统暂未开放，请稍后再试。' };
+    return { success: false, message: m.auth.unavailable };
   }
 
   const { error } = await client.auth.signUp({ email, password });
   if (error) return { success: false, message: translateAuthError(error.message) };
-  return { success: true, message: '注册成功，请查收验证邮件。' };
+  return { success: true, message: m.auth.registerSuccess };
 }
 
 export async function signInWithEmail(email: string, password: string): Promise<AuthResult> {
+  const m = getCurrentMessages();
   let client;
   try {
     client = getSupabaseBrowserClient();
   } catch {
-    return { success: false, message: '账号系统暂未开放，请稍后再试。' };
+    return { success: false, message: m.auth.unavailable };
   }
 
   const { error } = await client.auth.signInWithPassword({ email, password });
@@ -128,7 +122,7 @@ export async function signInWithEmail(email: string, password: string): Promise<
 }
 
 // ---------------------------------------------------------------------------
-// 当前会话
+// Session
 // ---------------------------------------------------------------------------
 
 export async function getSession() {
@@ -154,15 +148,16 @@ export async function getUser() {
 }
 
 // ---------------------------------------------------------------------------
-// 登出
+// Sign out
 // ---------------------------------------------------------------------------
 
 export async function signOut(): Promise<AuthResult> {
+  const m = getCurrentMessages();
   let client;
   try {
     client = getSupabaseBrowserClient();
   } catch {
-    return { success: false, message: '未登录。' };
+    return { success: false, message: m.auth.notLoggedIn };
   }
 
   const { error } = await client.auth.signOut();
@@ -171,15 +166,16 @@ export async function signOut(): Promise<AuthResult> {
 }
 
 // ---------------------------------------------------------------------------
-// 错误翻译
+// Error translation
 // ---------------------------------------------------------------------------
 
 function translateAuthError(message: string): string {
-  if (/invalid login credentials/i.test(message)) return '邮箱或密码错误，请重试。';
-  if (/email not confirmed/i.test(message)) return '请先前往邮箱完成验证后再登录。';
-  if (/user already registered/i.test(message)) return '该邮箱已注册，请直接登录。';
-  if (/password.*characters/i.test(message)) return '密码至少需要 6 个字符。';
-  if (/rate limit/i.test(message)) return '操作过于频繁，请稍后再试。';
-  if (/over.*email.*limit/i.test(message)) return '今日邮件发送已达上限，请明天再试。';
-  return `认证失败：${message}`;
+  const m = getCurrentMessages();
+  if (/invalid login credentials/i.test(message)) return m.auth.invalidCredentials;
+  if (/email not confirmed/i.test(message)) return m.auth.emailNotConfirmed;
+  if (/user already registered/i.test(message)) return m.auth.alreadyRegistered;
+  if (/password.*characters/i.test(message)) return m.auth.passwordTooShort;
+  if (/rate limit/i.test(message)) return m.auth.rateLimit;
+  if (/over.*email.*limit/i.test(message)) return m.auth.emailLimit;
+  return `${m.auth.authFailed}${message}`;
 }

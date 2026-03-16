@@ -11,8 +11,7 @@ import { useI18n } from '@/lib/i18n';
 export function AuthNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { locale } = useI18n();
-  const isEn = locale === 'en';
+  const { messages } = useI18n();
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [points, setPoints] = useState<number | null>(null);
   const [signingOut, setSigningOut] = useState(false);
@@ -96,7 +95,7 @@ export function AuthNav() {
           className="flex items-center gap-2 text-xs text-[var(--text-muted)] transition-colors duration-200 hover:text-white"
         >
           <span className="text-[var(--gold)]">✦</span>
-          <span>{points !== null ? `${points} ${isEn ? 'pts' : '积分'}` : (isEn ? 'Me' : '我的')}</span>
+          <span>{points !== null ? `${points} ${messages.nav.points}` : messages.nav.me}</span>
           <svg className={`h-3 w-3 transition-transform ${menuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
@@ -107,16 +106,16 @@ export function AuthNav() {
             <div className="border-b border-[rgba(255,255,255,0.06)] px-4 py-2.5">
               <div className="truncate text-[10px] text-[var(--text-dim)]">{user.email}</div>
               {points !== null && (
-                <div className="mt-1 text-xs text-[var(--gold)]">✦ {points} {isEn ? 'pts' : '积分'}</div>
+                <div className="mt-1 text-xs text-[var(--gold)]">✦ {points} {messages.nav.points}</div>
               )}
             </div>
             <Link href="/profile" onClick={() => setMenuOpen(false)}
               className="block px-4 py-2.5 text-xs text-[var(--text-muted)] transition-colors hover:bg-[rgba(255,255,255,0.04)] hover:text-white">
-              {isEn ? 'Profile' : '个人中心'}
+              {messages.nav.profile}
             </Link>
             <Link href="/history" onClick={() => setMenuOpen(false)}
               className="block px-4 py-2.5 text-xs text-[var(--text-muted)] transition-colors hover:bg-[rgba(255,255,255,0.04)] hover:text-white">
-              {isEn ? 'History' : '历史记录'}
+              {messages.nav.history}
             </Link>
             <div className="border-t border-[rgba(255,255,255,0.06)]">
               <button
@@ -124,7 +123,7 @@ export function AuthNav() {
                 disabled={signingOut}
                 className="w-full px-4 py-2.5 text-left text-xs text-[var(--text-muted)] transition-colors hover:bg-[rgba(255,255,255,0.04)] hover:text-[var(--error)] disabled:opacity-50"
               >
-                {signingOut ? (isEn ? 'Signing out…' : '登出中…') : (isEn ? 'Sign out' : '登出')}
+                {signingOut ? messages.nav.signingOut : messages.nav.signOut}
               </button>
             </div>
           </div>
@@ -138,7 +137,7 @@ export function AuthNav() {
       href={loginHref}
       className="text-[var(--text-dim)] transition-colors duration-200 hover:text-[var(--gold)]"
     >
-      {isEn ? 'Log in' : '登录'}
+      {messages.nav.logIn}
     </Link>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useI18n } from '@/lib/i18n';
 import { sendOtpCode, verifyOtpCode } from '@/lib/supabase/auth';
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 type Step = 'email' | 'code' | 'done';
 
 export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel }: Props) {
+  const { messages } = useI18n();
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [step, setStep] = useState<Step>('email');
@@ -47,7 +49,6 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
     if (result.success) {
       setStep('done');
       onSuccess?.();
-      // Redirect after short delay
       const next = initialNext ?? '/';
       setTimeout(() => {
         window.location.href = next;
@@ -62,7 +63,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
       <div className="space-y-4 text-center">
         <div className="font-display text-2xl">✓</div>
         <p className="text-sm leading-7 text-[var(--text-muted)]">
-          登录成功，正在跳转…
+          {messages.login.success}
         </p>
       </div>
     );
@@ -73,16 +74,13 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
       <form onSubmit={handleVerifyCode} className="space-y-5">
         <div className="space-y-3 text-center">
           <p className="text-sm leading-7 text-[var(--text-muted)]">
-            验证码已发送至 <span className="text-white">{email}</span>
-          </p>
-          <p className="text-xs text-[var(--text-dim)]">
-            请查收邮件，输入验证码。若未收到请检查垃圾邮件。
+            {messages.login.otpSentTo} <span className="text-white">{email}</span>
           </p>
         </div>
 
         <div className="space-y-2">
           <label htmlFor="otp-code" className="block text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">
-            验证码
+            {messages.login.codeLabel}
           </label>
           <input
             id="otp-code"
@@ -111,7 +109,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
           disabled={busy || code.trim().length < 6}
           className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {busy ? '验证中…' : '验证并登录'}
+          {busy ? messages.login.verifying : messages.login.verifyAndLogin}
         </button>
 
         <div className="flex items-center justify-center gap-4 text-xs text-[var(--text-dim)]">
@@ -120,7 +118,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
             onClick={() => { setStep('email'); setCode(''); setError(null); }}
             className="underline underline-offset-2 transition-colors hover:text-[var(--gold)]"
           >
-            换个邮箱
+            {messages.login.changeEmail}
           </button>
           <span>·</span>
           <button
@@ -135,7 +133,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
             disabled={busy}
             className="underline underline-offset-2 transition-colors hover:text-[var(--gold)]"
           >
-            重新发送
+            {messages.login.resend}
           </button>
         </div>
       </form>
@@ -146,14 +144,14 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
     <form onSubmit={handleSendCode} className="space-y-5">
       <div className="space-y-2">
         <label htmlFor="magic-email" className="block text-[10px] tracking-[0.25em] text-[var(--text-dim)] uppercase">
-          邮箱地址
+          {messages.login.emailLabel}
         </label>
         <input
           id="magic-email"
           type="email"
           required
           autoComplete="email"
-          placeholder="your@email.com"
+          placeholder={messages.login.emailPlaceholder}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full rounded-lg border border-[rgba(255,255,255,0.06)] bg-[var(--bg-deep)] px-5 py-3.5 text-sm text-white placeholder-[var(--text-dim)] outline-none transition-colors focus:border-[rgba(255,255,255,0.15)]"
@@ -168,7 +166,7 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
 
       {initialNext ? (
         <div className="rounded-lg bg-[var(--bg-elevated)] px-4 py-3 text-xs leading-6 text-[var(--text-muted)]">
-          登录后会自动返回：<span className="text-white">{nextLabel ?? initialNext}</span>
+          {messages.login.nextHint}<span className="text-white">{nextLabel ?? initialNext}</span>
         </div>
       ) : null}
 
@@ -177,11 +175,11 @@ export function MagicLinkForm({ onSuccess, initialError, initialNext, nextLabel 
         disabled={busy || !email.trim()}
         className="btn-primary w-full rounded-full px-6 py-3.5 text-sm disabled:cursor-not-allowed disabled:opacity-40"
       >
-        {busy ? '发送中…' : '发送验证码'}
+        {busy ? messages.login.sending : messages.login.sendOtp}
       </button>
 
       <p className="text-center text-xs text-[var(--text-dim)]">
-        无需密码，输入邮箱验证码即可登录 / 注册。
+        {messages.login.otpHint}
       </p>
     </form>
   );
