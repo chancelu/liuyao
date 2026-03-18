@@ -28,7 +28,7 @@ export async function sendOtpCode(email: string): Promise<AuthResult> {
 
   const { error } = await client.auth.signInWithOtp({
     email,
-    options: { shouldCreateUser: true },
+    options: { shouldCreateUser: false },
   });
 
   if (error) return { success: false, message: translateAuthError(error.message) };
@@ -93,7 +93,7 @@ export async function sendMagicLink(email: string, next?: string): Promise<AuthR
 // Password register / login
 // ---------------------------------------------------------------------------
 
-export async function signUpWithEmail(email: string, password: string): Promise<AuthResult> {
+export async function signUpWithEmail(email: string): Promise<AuthResult> {
   const m = getCurrentMessages();
   let client;
   try {
@@ -102,7 +102,24 @@ export async function signUpWithEmail(email: string, password: string): Promise<
     return { success: false, message: m.auth.unavailable };
   }
 
-  const { error } = await client.auth.signUp({ email, password });
+  // Generate a random password the user never needs to know —
+  // login is always via OTP, but Supabase signUp requires a password.
+  const randomPassword = crypto.randomUUID() + crypto.randomUUID();
+
+  const redirectBase =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/api/auth/callback`
+      : process.env.NEXT_PUBLIC_SITE_URL
+        ? `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`
+        : undefined;
+
+  const { error } = await client.auth.signUp({
+    email,
+    password: randomPassword,
+    options: {
+      emailRedirectTo: redirectBase,
+    },
+  });
   if (error) return { success: false, message: translateAuthError(error.message) };
   return { success: true, message: m.auth.registerSuccess };
 }

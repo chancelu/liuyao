@@ -208,11 +208,9 @@ describe('i18n component coverage', () => {
     expect(missing).toEqual([]);
   });
 
-  it('login should have register and forgot sub-sections', () => {
+  it('login should have register sub-section', () => {
     expect(zhCN.login.register).toBeDefined();
-    expect(zhCN.login.forgot).toBeDefined();
     expect(en.login.register).toBeDefined();
-    expect(en.login.forgot).toBeDefined();
   });
 
   it('ritual.yaoNames should have 6 entries', () => {
