@@ -209,7 +209,7 @@ export function LoginContent() {
           <div className="space-y-2">
             <label htmlFor="otp-code" className={labelClass}>{messages.login.codeLabel}</label>
             <input id="otp-code" type="text" inputMode="numeric" pattern="[0-9]{6,8}" maxLength={8}
-              required autoFocus autoComplete="one-time-code" placeholder="000000"
+              required autoFocus autoComplete="one-time-code" placeholder="00000000"
               value={otpCode} onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 8))}
               className={`${inputClass} text-center font-mono text-2xl tracking-[0.3em]`} />
           </div>
