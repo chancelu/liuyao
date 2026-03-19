@@ -113,6 +113,8 @@ describe('i18n message files', () => {
     const EXCEPTIONS = new Set([
       // Login symbol is intentionally Chinese
       'pages.login.symbol',
+      // Language name displayed in its own script
+      'nav.localeChinese',
     ]);
 
     const zhRe = /[\u4e00-\u9fff]/;

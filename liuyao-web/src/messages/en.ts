@@ -15,6 +15,9 @@ export const en: Messages = {
     signingOut: 'Signing out…',
     signOut: 'Sign out',
     logIn: 'Log in',
+    language: 'Language',
+    localeChinese: '中文',
+    localeEnglish: 'English',
   },
   common: {
     loading: 'Loading…',

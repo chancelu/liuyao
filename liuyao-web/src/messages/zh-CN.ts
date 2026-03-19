@@ -13,6 +13,9 @@ const _zhCN = {
     signingOut: '登出中…',
     signOut: '登出',
     logIn: '登录',
+    language: '语言',
+    localeChinese: '中文',
+    localeEnglish: 'English',
   },
   common: {
     loading: '加载中…',
