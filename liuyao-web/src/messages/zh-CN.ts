@@ -24,7 +24,7 @@ const _zhCN = {
     ritual: { loading: '正在载入摇卦页…' },
     processing: { loading: '正在载入推演流程…' },
     history: { badge: '往卦', title: '历史记录', loading: '…' },
-    login: { symbol: '爻', title: '入', loading: '…' },
+    login: { symbol: '✦', title: '雅若 · 登录', loading: '…' },
   },
   home: {
     heroTitle: '问一件事，起一卦，见一条脉络。',

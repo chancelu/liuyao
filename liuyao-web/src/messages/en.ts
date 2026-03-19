@@ -26,7 +26,7 @@ export const en: Messages = {
     ritual: { loading: 'Loading ritual…' },
     processing: { loading: 'Loading…' },
     history: { badge: 'History', title: 'Past Readings', loading: '…' },
-    login: { symbol: '爻', title: 'Sign In', loading: '…' },
+    login: { symbol: '✦', title: 'Yarrow · Sign In', loading: '…' },
   },
   home: {
     heroTitle: 'Ask one question. Cast one hexagram. See one thread of fate.',
